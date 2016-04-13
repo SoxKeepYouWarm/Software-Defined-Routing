@@ -21,6 +21,12 @@
  * This contains the main function. Add further description here....
  */
 
+#include <iostream>
+#include <stdio.h>
+
+#include "../include/logger.h"
+#include "../include/router.h"
+
 /**
  * main function
  *
@@ -30,7 +36,21 @@
  */
 int main(int argc, char **argv)
 {
-	/*Start Here*/
+	/*Init. Logger*/
+	cse4589_init_log(argv[2]);
+
+	/* Clear LOGFILE*/
+	fclose(fopen(LOGFILE, "w"));
+
+	printf("argc is %d\n", argc);
+	for (int i = 0; i < argc; i++) {
+		printf("arg is %s\n", argv[i]);
+	}
+
+	char* control_port = argv[1];
 	
+	Router router(control_port);
+	router.main();
+
 	return 0;
 }

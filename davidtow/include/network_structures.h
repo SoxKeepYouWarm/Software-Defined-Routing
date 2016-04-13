@@ -105,5 +105,40 @@ typedef struct Data_packet {
 	unsigned char data[1024];
 } Data_packet;
 
+/*
+typedef struct Router_socket_manager {
+	struct addrinfo hints, *res, *p;
+	int listening_socket;
+	int router_port;
+	Router_socket_manager(int port): router_port(port),
+			res(0), p(0), listening_socket(0) {
+
+	}
+} Router_socket_manager;
+
+
+typedef struct Control_socket_manager {
+	struct addrinfo hints, *res, *p;
+	int listening_socket;
+	int control_port;
+	Control_socket_manager(int port): control_port(port),
+			res(0), p(0), listening_socket(0) {
+
+	}
+} Control_socket_manager;
+
+
+typedef struct Data_socket_manager {
+	struct addrinfo hints, *res, *p;
+	int listening_socket;
+	int data_port;
+	Data_socket_manager(int port): data_port(port),
+			res(0), p(0), listening_socket(0) {
+
+	}
+} Data_socket_manager;
+*/
+
+
 
 #endif
