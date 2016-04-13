@@ -1,13 +1,12 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
 
-#include "../include/Socket_manager.h"
+#include <stdio.h>
+
+#include "Socket_manager.h"
+
+
+Socket_manager::~Socket_manager() {
+
+}
 
 
 void Socket_manager::create_socket() {
@@ -49,3 +48,10 @@ void Socket_manager::listen() {
 	}
 
 }
+
+
+int Socket_manager::get_socketFD() {
+	return listener;
+}
+
+

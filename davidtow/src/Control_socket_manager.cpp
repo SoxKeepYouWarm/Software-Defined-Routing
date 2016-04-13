@@ -1,19 +1,19 @@
+#include <iostream>
+
+#include <sstream>
+#include <string>
+#include <string.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-
-#include "../include/Socket_manager.h"
-#include "../include/Control_socket_manager.h"
 
 
-Control_socket_manager::Control_socket_manager(char* port): port(port),
-		listener(0), res(0), p(0), MAXIMUM_CONNECTIONS(1){
+#include "Control_socket_manager.h"
 
+
+Control_socket_manager::Control_socket_manager(char* port) {
+	this->port = port;
+	this->listener = listener;
+	this->res = 0;
+	this->p = 0;
 }
 
 
@@ -32,7 +32,9 @@ void Control_socket_manager::initialize_addrinfo() {
 }
 
 
+void Control_socket_manager::handle_connection() {
 
+}
 
 
 

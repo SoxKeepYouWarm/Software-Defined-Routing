@@ -1,26 +1,20 @@
+#include <iostream>
 #include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
 
-#include "../include/router.h"
-#include "../include/network_structures.h"
-#include "../include/Control_socket_manager.h"
-#include "../include/Router_socket_manager.h"
-#include "../include/Data_socket_manager.h"
+#include "network_structures.h"
 
+#include "router.h"
 
-Router::Router(char* control_port): fdmax(0),
-			router_socket_manager(0), data_socket_manager(0){
+Router::Router(char* control_port): fdmax(0) {
 	// clear the master and temp sets
 	FD_ZERO(&master);
 	FD_ZERO(&read_fds);
-	control_socket_manager = new Control_socket_manager(control_port);
 
+	router_socket_manager = 0;
+	data_socket_manager = 0;
+
+	control_socket_manager = new Control_socket_manager(control_port);
+	register_socket(control_socket_manager);
 
 }
 
@@ -28,6 +22,20 @@ Router::~Router() {
 	delete control_socket_manager;
 }
 
+
+void Router::register_socket(Socket_manager* socket_manager) {
+	socket_manager->initialize_addrinfo();
+	socket_manager->create_socket();
+	socket_manager->listen();
+
+	// add to master set
+	FD_SET(socket_manager->get_socketFD(), &master);
+
+	// update max
+	if (socket_manager->get_socketFD() > fdmax) {
+		fdmax = socket_manager->get_socketFD();
+	}
+}
 
 
 void Router::main() {
@@ -49,19 +57,20 @@ void Router::main() {
 
 		for(int i = 0; i <= fdmax; i++) {
 			if (FD_ISSET(i, &read_fds)) {
-				if (i == STDIN) {
-					printf("hit stdin handler\n");
-					stdin_handler();
 
-				} else if (i == listener) {
-					printf("hit listener handler\n");
-					listener_handler();
-
-				} else {
-					printf("hit client handler\n");
-					client_handler(i);
-
+				if (i == control_socket_manager->get_socketFD()) {
+					control_socket_manager->handle_connection();
 				}
+				else if (i == router_socket_manager->get_socketFD()) {
+					router_socket_manager->handle_connection();
+				}
+				else if (i == data_socket_manager->get_socketFD()) {
+					data_socket_manager->handle_connection();
+				}
+				else {
+					std::cout << "MAIN: error FD not detected" << std::endl;
+				}
+
 			}
 		}
 	}

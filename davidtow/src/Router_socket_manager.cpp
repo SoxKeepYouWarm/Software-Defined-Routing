@@ -1,18 +1,18 @@
+#include <iostream>
+
+#include <sstream>
+#include <string>
+#include <string.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
 
-#include "../include/Router_socket_manager.h"
+#include "Router_socket_manager.h"
 
 
-Router_socket_manager::Router_socket_manager(char* port): port(port),
-		listener(0), res(0), p(0), MAXIMUM_CONNECTIONS(5){
-
+Router_socket_manager::Router_socket_manager(char* port) {
+	this->port = port;
+	this->listener = listener;
+	this->res = 0;
+	this->p = 0;
 }
 
 
@@ -27,5 +27,10 @@ void Router_socket_manager::initialize_addrinfo() {
 		fprintf(stderr, "selectserver: %s\n", gai_strerror(rv));
 		exit(1);
 	}
+
+}
+
+
+void Router_socket_manager::handle_connection() {
 
 }

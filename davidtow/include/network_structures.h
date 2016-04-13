@@ -71,7 +71,7 @@ typedef struct Control_response_routingTable_payload {
 typedef struct Control_message_update_payload {
 	unsigned short router_id;
 	unsigned short cost;
-};
+} Control_message_update_payload;
 
 
 typedef struct Control_message_sendFile_payload {
