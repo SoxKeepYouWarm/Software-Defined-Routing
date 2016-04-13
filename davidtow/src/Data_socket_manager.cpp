@@ -7,16 +7,17 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
-#include "../include/Router_socket_manager.h"
+#include "../include/Socket_manager.h"
+#include "../include/Data_socket_manager.h"
 
 
-Router_socket_manager::Router_socket_manager(char* port): port(port),
+Data_socket_manager::Data_socket_manager(char* port): port(port),
 		listener(0), res(0), p(0), MAXIMUM_CONNECTIONS(5){
 
 }
 
 
-void Router_socket_manager::initialize_addrinfo() {
+void Data_socket_manager::initialize_addrinfo() {
 
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_UNSPEC;
@@ -29,3 +30,9 @@ void Router_socket_manager::initialize_addrinfo() {
 	}
 
 }
+
+
+
+
+
+

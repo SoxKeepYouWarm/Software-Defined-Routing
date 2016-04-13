@@ -14,7 +14,8 @@
 #include "../include/Data_socket_manager.h"
 
 
-Router::Router(char* control_port): fdmax(0) {
+Router::Router(char* control_port): fdmax(0),
+			router_socket_manager(0), data_socket_manager(0){
 	// clear the master and temp sets
 	FD_ZERO(&master);
 	FD_ZERO(&read_fds);
