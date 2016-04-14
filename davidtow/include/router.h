@@ -30,7 +30,7 @@ public:
 	Router(char* control_port);
 	~Router();
 	void main();
-	void register_socket(Socket_manager* socket_manager);
+	void register_fd(int fd);
 };
 
 

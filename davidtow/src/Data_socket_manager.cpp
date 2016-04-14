@@ -9,14 +9,17 @@
 #include "Data_socket_manager.h"
 
 
-Data_socket_manager::Data_socket_manager(char* port) {
+Data_socket_manager::Data_socket_manager(Router* router, char* port) {
+	this->router = router;
 	this->port = port;
 	this->listener = 0;
+	this->newfd = 0;
+	this->addrlen = 0;
 	this->res = 0;
 	this->p = 0;
 	this->MAXIMUM_CONNECTIONS = 1;
-		std::cout << "DATA_SOCKET_MANAGER: initialized with port: "
-				<< port << std::endl;
+	std::cout << "DATA_SOCKET_MANAGER: initialized with port: "
+			<< port << std::endl;
 }
 
 

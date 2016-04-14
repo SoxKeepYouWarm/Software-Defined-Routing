@@ -55,7 +55,7 @@ void Socket_manager::listen() {
 }
 
 
-int Socket_manager::get_socketFD() {
+int Socket_manager::get_listener_fd() {
 	return this->listener;
 }
 

@@ -14,14 +14,11 @@
 
 class Control_socket_manager: public Socket_manager {
 
-	int newfd;
-	struct sockaddr_storage remoteaddr;
-	socklen_t addrlen;
-
 public:
-	Control_socket_manager(char* port);
+	Control_socket_manager(Router* router, char* port);
 	void initialize_addrinfo();
 	void handle_connection();
+	int get_control_socket_fd();
 };
 
 

@@ -14,8 +14,10 @@ Router::Router(char* control_port): fdmax(0) {
 	data_socket_manager = 0;
 
 	control_socket_manager = new Control_socket_manager(control_port);
-	register_socket(control_socket_manager);
-
+	control_socket_manager->initialize_addrinfo();
+	control_socket_manager->create_socket();
+	control_socket_manager->listen();
+	register_fd(control_socket_manager->get_listener_fd());
 }
 
 Router::~Router() {
@@ -23,20 +25,17 @@ Router::~Router() {
 }
 
 
-void Router::register_socket(Socket_manager* socket_manager) {
-	socket_manager->initialize_addrinfo();
-	socket_manager->create_socket();
-	socket_manager->listen();
+void Router::register_fd(int fd) {
 
 	// add to master set
-	FD_SET(socket_manager->get_socketFD(), &master);
+	FD_SET(fd, &master);
 
 	std::cout << "MAIN: new socket FD is: "
-			<< socket_manager->get_socketFD() << std::endl;
+			<< fd << std::endl;
 
 	// update max
-	if (socket_manager->get_socketFD() > fdmax) {
-		fdmax = socket_manager->get_socketFD();
+	if (fd > fdmax) {
+		fdmax = fd;
 		std::cout << "REGISTER_SOCKET: new fdmax is: "
 				<< fdmax << std::endl;
 	}
@@ -65,13 +64,13 @@ void Router::main() {
 			if (FD_ISSET(i, &read_fds)) {
 
 				std::cout << "MAIN: FD_ISSET was hit" << std::endl;
-				if (i == control_socket_manager->get_socketFD()) {
+				if (i == control_socket_manager->get_listener_fd()) {
 					control_socket_manager->handle_connection();
 				}
-				else if (i == router_socket_manager->get_socketFD()) {
+				else if (i == router_socket_manager->get_listener_fd()) {
 					router_socket_manager->handle_connection();
 				}
-				else if (i == data_socket_manager->get_socketFD()) {
+				else if (i == data_socket_manager->get_listener_fd()) {
 					data_socket_manager->handle_connection();
 				}
 				else {
