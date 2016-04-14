@@ -42,6 +42,17 @@ void Control_socket_manager::handle_connection() {
 	std::cout << "CONTROL_SOCKET_MANAGER: "
 			<< "handle connection hit" << std::endl;
 
+	addrlen = sizeof remoteaddr;
+	newfd = accept(listener, (struct sockaddr*)&remoteaddr, &addrlen);
+	if (newfd == -1) {
+		perror("accept");
+	}
+
+	std::cout <<"CONTROL_SOCKET_MANAGER: "
+			<< "socket accepted" << std::endl;
+
+
+
 }
 
 

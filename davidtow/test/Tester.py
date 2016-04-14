@@ -38,7 +38,8 @@ if __name__ == '__main__':
 
     time.sleep(1)
 
-    subprocess.call(CONTROLLER + " -t " + TOPOLOGY_FILE + " 1> " + CONTROLLER_OUTPUT + " 2> " + CONTROLLER_ERROR + " &", shell=True)
+    subprocess.call(CONTROLLER + " -t " + TOPOLOGY_FILE + " 1> " + CONTROLLER_OUTPUT + " 2> " + CONTROLLER_ERROR +
+                    " -a 1 " + " &", shell=True)
 
 
 

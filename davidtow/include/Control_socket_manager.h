@@ -14,6 +14,10 @@
 
 class Control_socket_manager: public Socket_manager {
 
+	int newfd;
+	struct sockaddr_storage remoteaddr;
+	socklen_t addrlen;
+
 public:
 	Control_socket_manager(char* port);
 	void initialize_addrinfo();
