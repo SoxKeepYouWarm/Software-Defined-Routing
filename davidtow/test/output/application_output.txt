@@ -1,0 +1,8 @@
+Running main
+argc is 2
+CONTROL_SOCKET_MANAGER: initialized with port: 40000
+CONTROL_SOCKET_MANAGER: initialized address info successfully
+CREATE_SOCKET:  created socket successfully
+LISTEN: FD: 3
+running main in chat server
+

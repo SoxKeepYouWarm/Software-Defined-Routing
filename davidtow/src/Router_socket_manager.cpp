@@ -13,6 +13,9 @@ Router_socket_manager::Router_socket_manager(char* port) {
 	this->listener = listener;
 	this->res = 0;
 	this->p = 0;
+	this->MAXIMUM_CONNECTIONS = 1;
+		std::cout << "ROUTER_SOCKET_MANAGER: initialized with port: "
+				<< port << std::endl;
 }
 
 
@@ -32,5 +35,5 @@ void Router_socket_manager::initialize_addrinfo() {
 
 
 void Router_socket_manager::handle_connection() {
-
+	std::cout << "ROUTER_SOCKET_MANAGER: handle connection hit" << std::endl;
 }

@@ -40,7 +40,7 @@ void Router::register_socket(Socket_manager* socket_manager) {
 
 void Router::main() {
 
-	printf("running main in chat server\n");
+	std::cout << "running main in chat server\n" << std::endl;
 
 	// clear the master and read sets
 	FD_ZERO(&master);
@@ -56,8 +56,10 @@ void Router::main() {
 		}
 
 		for(int i = 0; i <= fdmax; i++) {
+
 			if (FD_ISSET(i, &read_fds)) {
 
+				std::cout << "MAIN: FD_ISSET was hit" << std::endl;
 				if (i == control_socket_manager->get_socketFD()) {
 					control_socket_manager->handle_connection();
 				}

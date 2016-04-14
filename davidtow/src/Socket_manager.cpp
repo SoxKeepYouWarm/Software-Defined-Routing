@@ -1,4 +1,4 @@
-
+#include <iostream>
 #include <stdio.h>
 
 #include "Socket_manager.h"
@@ -37,6 +37,9 @@ void Socket_manager::create_socket() {
 	freeaddrinfo(res);
 	// all done with this
 
+	std::cout << "CREATE_SOCKET: "
+			<< " created socket successfully" << std::endl;
+
 }
 
 
@@ -46,6 +49,8 @@ void Socket_manager::listen() {
 		perror("listen");
 		exit(3);
 	}
+
+	std::cout << "LISTEN: FD: " << listener << std::endl;
 
 }
 
