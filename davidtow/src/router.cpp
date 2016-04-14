@@ -31,9 +31,14 @@ void Router::register_socket(Socket_manager* socket_manager) {
 	// add to master set
 	FD_SET(socket_manager->get_socketFD(), &master);
 
+	std::cout << "MAIN: new socket FD is: "
+			<< socket_manager->get_socketFD() << std::endl;
+
 	// update max
 	if (socket_manager->get_socketFD() > fdmax) {
 		fdmax = socket_manager->get_socketFD();
+		std::cout << "REGISTER_SOCKET: new fdmax is: "
+				<< fdmax << std::endl;
 	}
 }
 
@@ -42,11 +47,9 @@ void Router::main() {
 
 	std::cout << "running main in chat server\n" << std::endl;
 
-	// clear the master and read sets
-	FD_ZERO(&master);
-	FD_ZERO(&read_fds);
-
 	while (1) {
+
+		std::cout << "MAIN: entered main loop" << std::endl;
 
 		read_fds = master;
 
@@ -56,6 +59,8 @@ void Router::main() {
 		}
 
 		for(int i = 0; i <= fdmax; i++) {
+
+			std::cout << "MAIN: looping over FD's" << std::endl;
 
 			if (FD_ISSET(i, &read_fds)) {
 

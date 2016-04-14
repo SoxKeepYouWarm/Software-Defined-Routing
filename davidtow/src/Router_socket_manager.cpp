@@ -10,7 +10,7 @@
 
 Router_socket_manager::Router_socket_manager(char* port) {
 	this->port = port;
-	this->listener = listener;
+	this->listener = 0;
 	this->res = 0;
 	this->p = 0;
 	this->MAXIMUM_CONNECTIONS = 1;
