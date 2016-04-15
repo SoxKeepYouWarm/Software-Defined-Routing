@@ -10,7 +10,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
-#include "Socket_manager.h"
+//#include "Socket_manager.h"
 #include "Control_socket_manager.h"
 #include "Router_socket_manager.h"
 #include "Data_socket_manager.h"
@@ -31,6 +31,7 @@ public:
 	~Router();
 	void main();
 	void register_fd(int fd);
+	void unregister_fd(int fd);
 };
 
 

@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdio.h>
 
-
+#include "router.h"
 #include "Data_socket_manager.h"
 
 
@@ -13,7 +13,6 @@ Data_socket_manager::Data_socket_manager(Router* router, char* port) {
 	this->router = router;
 	this->port = port;
 	this->listener = 0;
-	this->newfd = 0;
 	this->addrlen = 0;
 	this->res = 0;
 	this->p = 0;
@@ -38,8 +37,17 @@ void Data_socket_manager::initialize_addrinfo() {
 }
 
 
-void Data_socket_manager::handle_connection() {
+void Data_socket_manager::handle_connection(int fd) {
 	std::cout << "DATA_SOCKET_MANAGER: handle connection hit" << std::endl;
+}
+
+
+int Data_socket_manager::manages_fd(int fd) {
+	if (fd == listener) {
+		return 1;
+	} else {
+		return 0;
+	}
 }
 
 

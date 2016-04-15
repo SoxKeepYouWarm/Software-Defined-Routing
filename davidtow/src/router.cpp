@@ -13,7 +13,7 @@ Router::Router(char* control_port): fdmax(0) {
 	router_socket_manager = 0;
 	data_socket_manager = 0;
 
-	control_socket_manager = new Control_socket_manager(control_port);
+	control_socket_manager = new Control_socket_manager(this, control_port);
 	control_socket_manager->initialize_addrinfo();
 	control_socket_manager->create_socket();
 	control_socket_manager->listen();
@@ -42,6 +42,11 @@ void Router::register_fd(int fd) {
 }
 
 
+void Router::unregister_fd(int fd) {
+	FD_CLR(fd, &master);
+}
+
+
 void Router::main() {
 
 	std::cout << "running main in chat server\n" << std::endl;
@@ -64,14 +69,14 @@ void Router::main() {
 			if (FD_ISSET(i, &read_fds)) {
 
 				std::cout << "MAIN: FD_ISSET was hit" << std::endl;
-				if (i == control_socket_manager->get_listener_fd()) {
-					control_socket_manager->handle_connection();
+				if (control_socket_manager->manages_fd(i)) {
+					control_socket_manager->handle_connection(i);
 				}
-				else if (i == router_socket_manager->get_listener_fd()) {
-					router_socket_manager->handle_connection();
+				else if (router_socket_manager->manages_fd(i)) {
+					router_socket_manager->handle_connection(i);
 				}
-				else if (i == data_socket_manager->get_listener_fd()) {
-					data_socket_manager->handle_connection();
+				else if (data_socket_manager->manages_fd(i)) {
+					data_socket_manager->handle_connection(i);
 				}
 				else {
 					std::cout << "MAIN: error FD not detected" << std::endl;
