@@ -135,6 +135,11 @@ void Network_services::encode_control_message_sendfile_payload() {
 
 
 void Network_services::encode_control_message_sendfile_stats_payload() {
+	Control_message_sendFileStats_payload payload;
+
+	memcpy(&payload.transfer_id, payload_pointer, 1);
+
+	msg->payload = &payload;
 
 }
 
