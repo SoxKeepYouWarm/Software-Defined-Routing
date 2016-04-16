@@ -142,7 +142,7 @@ public:
 	static void encode_control_message(Control_message* message,
 			unsigned char* buffer);
 	static void* get_in_addr(struct sockaddr* sa);
-	static void send(int fd, char* message, size_t size);
+	static void send(int fd, unsigned char* message, size_t size);
 };
 
 

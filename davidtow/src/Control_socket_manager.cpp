@@ -71,14 +71,14 @@ void Control_socket_manager::handle_author(Control_message* message) {
 			"the course academic integrity policy.";
 
 	unsigned short payload_length = sizeof(payload) / sizeof(payload[0]);
-	message->header.payload_length = htons(payload_length);
+	message->header.payload_length = payload_length;
 
 	message->header.response_time = 0;
 
-	memcpy(&(message->payload), payload, payload_length);
+	message->payload = (void*)payload;
 
 	int response_size = 8 + payload_length;
-	char response[response_size];
+	unsigned char response[response_size];
 	decode_control_message(message, response, response_size);
 
 	std::cout << "HANDLE_AUTHOR: response length is: "
@@ -223,16 +223,25 @@ void Control_socket_manager::handle_controller() {
 
 
 void Control_socket_manager::decode_control_message(Control_message* message,
-		char* response,
+		unsigned char* response,
 		int response_size) {
 
-	memcpy(response, &message->header.destination_router_ip, 4);
+	uint32_t dest_ip = 0;
+	memcpy(&dest_ip, &message->header.destination_router_ip, 4);
+	dest_ip = htonl(dest_ip);
+	memcpy(response, &dest_ip, 4);
+
 	memcpy(response + 4, &message->header.control_code, 1);
 	memcpy(response + 5, &message->header.response_time, 1);
-	memcpy(response + 6, &message->header.payload_length, 2);
-	if (ntohs(message->header.payload_length > 0)) {
+
+	unsigned short payload_length = 0;
+	payload_length = message->header.payload_length;
+	payload_length = htons(payload_length);
+	memcpy(response + 6, &payload_length, 2);
+
+	if (message->header.payload_length > 0) {
 		memcpy(response + 8, message->payload,
-				ntohs(message->header.payload_length));
+				message->header.payload_length);
 	}
 
 }

@@ -32,7 +32,7 @@ public:
 	void handle_controller();
 
 	void decode_control_message(Control_message* message,
-			char* response,
+			unsigned char* response,
 			int response_size);
 	void handle_control_message(Control_message* message);
 

@@ -36,7 +36,7 @@ if __name__ == '__main__':
     #subprocess.call("pkill assignment3", shell=True)
     #subprocess.call("../assignment3 40000 1> " + APPLICATION_OUTPUT + " 2> " + APPLICATION_ERROR + " &", shell=True)
 
-    time.sleep(1)
+    #time.sleep(1)
 
     subprocess.call(CONTROLLER + " -t " + TOPOLOGY_FILE + " 1> " + CONTROLLER_OUTPUT + " 2> " + CONTROLLER_ERROR +
                     " -a 1 " + " &", shell=True)

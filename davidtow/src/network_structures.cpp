@@ -22,7 +22,7 @@ void* Network_services::get_in_addr(struct sockaddr* sa) {
 }
 
 
-void Network_services::send(int fd, char* message, size_t size) {
+void Network_services::send(int fd, unsigned char* message, size_t size) {
 
 	if (int out_bytes = ::send(fd, message, size, 0) == -1) {
 		perror("send");
@@ -178,52 +178,51 @@ void Network_services::encode_control_message_penultimate_data_packet_payload() 
 
 void Network_services::encode_control_message(Control_message* message, unsigned char* buffer) {
 
+	uint32_t dest_ip = 0;
+	memcpy(&dest_ip, buffer, 4);
+	dest_ip = ntohl(dest_ip);
+	memcpy(&message->header.destination_router_ip, buffer, 4);
+
+	memcpy(&message->header.control_code, buffer + 4, 1);
+	memcpy(&message->header.response_time, buffer + 5, 1);
+
+	unsigned short payload_length = 0;
+	memcpy(&payload_length, buffer + 6, 2);
+	payload_length = ntohs(payload_length);
+	message->header.payload_length = payload_length;
+
 	msg = message;
 	buff = buffer;
 	control_code = message->header.control_code;
 	payload_length = message->header.payload_length;
 	payload_pointer = buffer + 8;
 
-	memcpy(&message->header.destination_router_ip, buffer, 4);
-	memcpy(&message->header.control_code, buffer + 4, 1);
-	memcpy(&message->header.response_time, buffer + 5, 1);
-	memcpy(&message->header.payload_length, buffer + 6, 2);
-
 	switch (control_code) {
 	case AUTHOR:
-
 		encode_control_message_author_payload();
 		break;
 	case INIT:
-
 		encode_control_message_init_payload();
 		break;
 	case ROUTING_TABLE:
-
 		encode_control_message_routing_table_payload();
 		break;
 	case UPDATE:
-
 		encode_control_message_update_payload();
 		break;
 	case CRASH:
-
 		encode_control_message_crash_payload();
 		break;
 	case SENDFILE:
-
 		encode_control_message_sendfile_payload();
 		break;
 	case SENDFILE_STATS:
-
 		encode_control_message_sendfile_stats_payload();
 		break;
 	case LAST_DATA_PACKET:
-
 		encode_control_message_last_data_packet_payload();
 		break;
 	case PENULTIMATE_DATA_PACKET:
-
 		encode_control_message_penultimate_data_packet_payload();
 		break;
 	}
