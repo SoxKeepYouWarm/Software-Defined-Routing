@@ -36,6 +36,8 @@ protected:
 	struct sockaddr_storage remoteaddr;
 	socklen_t addrlen;
 
+	char remoteIP[INET6_ADDRSTRLEN];
+
 };
 
 
