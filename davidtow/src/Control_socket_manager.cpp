@@ -241,6 +241,24 @@ Control_message Control_socket_manager::encode_control_message() {
 }
 
 
+char* Control_socket_manager::decode_control_message(Control_message* message) {
+
+	int response_size = 8 + ntohs(message->header.payload_length);
+	char* response = new char[response_size];
+	memcpy(response, &message->header.destination_router_ip, 4);
+	memcpy(response + 4, &message->header.control_code, 1);
+	memcpy(response + 5, &message->header.response_time, 1);
+	memcpy(response + 6, &message->header.payload_length, 2);
+	if (ntohs(message->header.payload_length > 0)) {
+		memcpy(response + 8, message->payload,
+				ntohs(message->header.payload_length));
+	}
+
+	return response;
+
+}
+
+
 void Control_socket_manager::handle_connection(int fd) {
 
 	request_fd = fd;
@@ -252,16 +270,8 @@ void Control_socket_manager::handle_connection(int fd) {
 
 void Control_socket_manager::send(int fd, Control_message* message) {
 
-	int response_size = 8 + message->header.payload_length;
-	char response[response_size];
-	memcpy(response, &message->header.destination_router_ip, 4);
-	memcpy(response + 4, &message->header.control_code, 1);
-	memcpy(response + 5, &message->header.response_time, 1);
-	memcpy(response + 6, &message->header.payload_length, 2);
-	if (ntohs(message->header.payload_length > 0)) {
-		memcpy(response + 8, message->payload,
-				ntohs(message->header.payload_length));
-	}
+	int response_size = 8 + ntohs(message->header.payload_length);
+	char* response = decode_control_message(message);
 
 	std::cout << "SEND: response length is: "
 			<< 8 + ntohs(message->header.payload_length)
@@ -272,8 +282,10 @@ void Control_socket_manager::send(int fd, Control_message* message) {
 
 	if (int out_bytes = ::send(fd, response, response_size, 0) == -1) {
 		perror("send");
+		delete response;
 	} else {
 		printf("SEND: response sent %d bytes successfully\n", out_bytes);
+		delete response;
 	}
 
 }

@@ -24,8 +24,7 @@
 #include <iostream>
 #include <stdio.h>
 
-#include "../include/logger.h"
-#include "../include/router.h"
+#include "router.h"
 
 /**
  * main function
@@ -37,11 +36,6 @@
 int main(int argc, char **argv)
 {
 	std::cout << "Running main" << std::endl;
-	/*Init. Logger*/
-	//cse4589_init_log(argv[2]);
-
-	/* Clear LOGFILE*/
-	//fclose(fopen(LOGFILE, "w"));
 
 	std::cout << "argc is " << argc << std::endl;
 

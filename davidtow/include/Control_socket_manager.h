@@ -45,6 +45,7 @@ public:
 	void send(int fd, Control_message* message);
 
 	Control_message encode_control_message();
+	char* decode_control_message(Control_message* message);
 	void handle_control_message(Control_message* message);
 
 	void handle_author(Control_message* message);
