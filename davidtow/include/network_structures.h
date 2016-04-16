@@ -2,6 +2,24 @@
 #ifndef NETWORK_STRUCTURES_H
 #define NETWORK_STRUCTURES_H
 
+#define AUTHOR 						0
+#define INIT 						1
+#define ROUTING_TABLE 				2
+#define UPDATE 						3
+#define CRASH 						4
+#define SENDFILE 					5
+#define SENDFILE_STATS 				6
+#define LAST_DATA_PACKET 			7
+#define PENULTIMATE_DATA_PACKET		8
+
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+
 typedef struct Router_update_entry {
 	char router_ip[32];
 	unsigned short port;
@@ -20,9 +38,6 @@ typedef struct Router_update_packet {
 } Router_update_packet;
 
 
-
-
-
 typedef struct Control_message_header {
 	unsigned char destination_router_ip[4];
 	unsigned char control_code;
@@ -32,17 +47,8 @@ typedef struct Control_message_header {
 
 typedef struct Control_message {
 	Control_message_header header;
-	unsigned char payload[1024];
-	int contains_payload;
+	void* payload;
 } Control_message;
-
-/*typedef struct Control_response_header {
-	unsigned char controller_ip[4];
-	unsigned char control_code;
-	unsigned char response_time;
-	unsigned short payload_length;
-} Control_response_header;*/
-
 
 // UPDATE PERIOD: seconds between successive routing update
 // packet broadcast
@@ -112,6 +118,30 @@ typedef struct Data_packet {
 	int fin_and_padding;
 	unsigned char data[1024];
 } Data_packet;
+
+
+class Network_services {
+
+	static Control_message* msg;
+	static unsigned char* buff;
+	static unsigned char* payload_pointer;
+	static int control_code;
+	static int payload_length;
+
+	static void encode_control_message_author_payload();
+	static void encode_control_message_init_payload();
+	static void encode_control_message_routing_table_payload();
+	static void encode_control_message_update_payload();
+	static void encode_control_message_crash_payload();
+	static void encode_control_message_sendfile_payload();
+	static void encode_control_message_sendfile_stats_payload();
+	static void encode_control_message_last_data_packet_payload();
+	static void encode_control_message_penultimate_data_packet_payload();
+
+public:
+	static void encode_control_message(Control_message* message,
+			unsigned char* buffer);
+};
 
 
 #endif

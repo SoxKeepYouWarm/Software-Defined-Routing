@@ -89,12 +89,38 @@ void Control_socket_manager::handle_author(Control_message* message) {
 
 	memcpy(&(message->payload), payload, length);
 
-	send(request_fd, message);
+	int response_size = 8 + ntohs(message->header.payload_length);
+	char response[response_size];
+	decode_control_message(message, response, response_size);
+
+	std::cout << "HANDLE_AUTHOR: response length is: "
+			<< response_size
+			<< std::endl;
+
+	printf("HANDLE_AUTHOR: response is: %.*s\n",
+			ntohs(message->header.payload_length), (char*)message->payload);
+
+	send(request_fd, response, (size_t) response_size);
 
 }
 
 
 void Control_socket_manager::handle_init(Control_message* message) {
+
+	// each router entry is 16 bytes long
+	unsigned short num_of_routers_bytes = 0;
+	memcpy(&num_of_routers_bytes, message->payload, 2);
+	int num_of_routers = ntohs(num_of_routers_bytes);
+
+	std::cout << "HANDLE_INIT: payload_length: "
+			<< message->header.payload_length
+			<< " num_of_routers " << num_of_routers << std::endl;
+
+	Control_message_init_payload payload;
+	for (int i = 0; i < num_of_routers; i++) {
+		int offset = (i * 12) + 2;
+
+	}
 
 }
 
@@ -134,25 +160,22 @@ void Control_socket_manager::handle_penultimate_data_packet(Control_message* mes
 }
 
 
-void Control_socket_manager::handle_control_message(Control_message* message) {
+void Control_socket_manager::set_message_destination_ip(Control_message* message) {
 
-	char client_ip[32] = "";
-	strcpy(client_ip, inet_ntop(remoteaddr.ss_family,
-			::get_in_addr((struct sockaddr*)&remoteaddr),
-			 remoteIP, INET6_ADDRSTRLEN));
-
-	std::cout << "HANDLE_CONTROL_MESSAGE: remote ip: "
-			<< remoteIP << std::endl;
-
-	uint32_t ip = ntohl(((in_addr*)
+	uint32_t net_ip = htonl(((in_addr*)
 			::get_in_addr((struct sockaddr*)&remoteaddr))->s_addr);
 
-	std::cout << "HANDLE_CONTROL_MESSAGE: remote ip int: %d"
-			<< ip << std::endl;
+	std::cout << "SET_MESSAGE_DESTINATION_IP: remote ip: %d"
+			<< net_ip << std::endl;
 
-	uint32_t net_ip = htonl(ip);
+	memcpy(&(message->header.destination_router_ip), &net_ip, 4);
 
-	memcpy(&message->header.destination_router_ip, &net_ip, 4);
+}
+
+
+void Control_socket_manager::handle_control_message(Control_message* message) {
+
+	set_message_destination_ip(message);
 
 	const int code = message->header.control_code;
 	switch (code) {
@@ -198,7 +221,7 @@ void Control_socket_manager::handle_controller() {
 			// got error or connection closed by client
 			if (num_of_bytes == 0) {
 				// connection closed
-				printf("CONTROL_SOCKET_MANAGER: controller hung up\n");
+				printf("HANDLE_CONTROLLER: controller hung up\n");
 
 			} else {
 				perror("recv");
@@ -206,13 +229,11 @@ void Control_socket_manager::handle_controller() {
 			close(control_fd);
 			router->unregister_fd(control_fd);
 		} else {
-			printf("Received %d bytes\n", num_of_bytes);
-			printf("Message received was: %s\n", buffer);
+			printf("HANDLE_CONTROLLER: Message received was: %s\n", buffer);
 
 			// handle incoming data
 			Control_message message = encode_control_message();
 			handle_control_message(&message);
-
 
 			memset(&buffer, 0, sizeof buffer);
 
@@ -231,20 +252,17 @@ Control_message Control_socket_manager::encode_control_message() {
 
 	// check if message contains a payload
 	if (message.header.payload_length > 0) {
-		message.contains_payload = 1;
 		memcpy(message.payload, buffer + 8, num_of_bytes - 8);
-	} else {
-		message.contains_payload = 0;
 	}
 	return message;
 
 }
 
 
-char* Control_socket_manager::decode_control_message(Control_message* message) {
+void Control_socket_manager::decode_control_message(Control_message* message,
+		char* response,
+		int response_size) {
 
-	int response_size = 8 + ntohs(message->header.payload_length);
-	char* response = new char[response_size];
 	memcpy(response, &message->header.destination_router_ip, 4);
 	memcpy(response + 4, &message->header.control_code, 1);
 	memcpy(response + 5, &message->header.response_time, 1);
@@ -253,8 +271,6 @@ char* Control_socket_manager::decode_control_message(Control_message* message) {
 		memcpy(response + 8, message->payload,
 				ntohs(message->header.payload_length));
 	}
-
-	return response;
 
 }
 
@@ -268,24 +284,13 @@ void Control_socket_manager::handle_connection(int fd) {
 }
 
 
-void Control_socket_manager::send(int fd, Control_message* message) {
+void Control_socket_manager::send(int fd, char* message, size_t size) {
 
-	int response_size = 8 + ntohs(message->header.payload_length);
-	char* response = decode_control_message(message);
 
-	std::cout << "SEND: response length is: "
-			<< 8 + ntohs(message->header.payload_length)
-			<< std::endl;
-
-	printf("SEND: response is: %.*s\n",
-			ntohs(message->header.payload_length), message->payload);
-
-	if (int out_bytes = ::send(fd, response, response_size, 0) == -1) {
+	if (int out_bytes = ::send(fd, message, size, 0) == -1) {
 		perror("send");
-		delete response;
 	} else {
 		printf("SEND: response sent %d bytes successfully\n", out_bytes);
-		delete response;
 	}
 
 }

@@ -13,17 +13,6 @@
 #include "Socket_manager.h"
 #include "network_structures.h"
 
-#define AUTHOR 						0
-#define INIT 						1
-#define ROUTING_TABLE 				2
-#define UPDATE 						3
-#define CRASH 						4
-#define SENDFILE 					5
-#define SENDFILE_STATS 				6
-#define LAST_DATA_PACKET 			7
-#define PENULTIMATE_DATA_PACKET		8
-
-
 
 class Router;
 class Control_socket_manager: public Socket_manager {
@@ -42,11 +31,15 @@ public:
 	void handle_listener();
 	void handle_controller();
 
-	void send(int fd, Control_message* message);
+	void send(int fd, char* message, size_t size);
 
 	Control_message encode_control_message();
-	char* decode_control_message(Control_message* message);
+	void decode_control_message(Control_message* message,
+			char* response,
+			int response_size);
 	void handle_control_message(Control_message* message);
+
+	void set_message_destination_ip(Control_message* message);
 
 	void handle_author(Control_message* message);
 	void handle_init(Control_message* message);

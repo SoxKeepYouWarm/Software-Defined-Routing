@@ -30,7 +30,7 @@ protected:
 	int listener;
 	char* port;
 
-	char buffer[1024];
+	unsigned char buffer[1024];
 	int num_of_bytes;
 
 	struct sockaddr_storage remoteaddr;
