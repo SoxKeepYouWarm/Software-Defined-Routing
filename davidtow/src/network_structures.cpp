@@ -68,6 +68,7 @@ void Network_services::encode_control_message_init_payload() {
 		entry.port_one = port_one_bytes;
 		entry.port_two = port_two_bytes;
 		entry.cost = cost_bytes;
+
 		memcpy(&entry.router_ip, &ip_bytes, 4);
 
 		payload.entry_list[i] = entry;
@@ -85,6 +86,21 @@ void Network_services::encode_control_message_routing_table_payload() {
 
 void Network_services::encode_control_message_update_payload() {
 
+	Control_message_update_payload payload;
+
+	unsigned short router_id = 0;
+	memcpy(&router_id, payload_pointer, 2);
+	router_id = ntohs(router_id);
+
+	unsigned short cost = 0;
+	memcpy(&cost, payload_pointer + 2, 2);
+	cost = ntohs(cost);
+
+	payload.router_id = router_id;
+	payload.cost = cost;
+
+	msg->payload = &payload;
+
 }
 
 
@@ -94,6 +110,26 @@ void Network_services::encode_control_message_crash_payload() {
 
 
 void Network_services::encode_control_message_sendfile_payload() {
+	Control_message_sendFile_payload payload;
+
+	uint32_t ip_bytes = 0;
+	memcpy(&ip_bytes, payload_pointer, 4);
+	ip_bytes = ntohl(ip_bytes);
+	memcpy(&payload, &ip_bytes, 4);
+
+	payload.ttl = *(payload_pointer + 4);
+	payload.transfer_id = *(payload_pointer + 5);
+
+	unsigned short seq_num = 0;
+	memcpy(&seq_num, payload_pointer + 6, 2);
+	seq_num = ntohs(seq_num);
+	memcpy(&payload + 6, &seq_num, 2);
+
+	char filename[payload_length];
+	memcpy(filename, payload_pointer, payload_length);
+	payload.filename = filename;
+
+	msg->payload = &payload;
 
 }
 
