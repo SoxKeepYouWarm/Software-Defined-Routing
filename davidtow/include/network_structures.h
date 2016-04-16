@@ -141,6 +141,8 @@ class Network_services {
 public:
 	static void encode_control_message(Control_message* message,
 			unsigned char* buffer);
+	static void* get_in_addr(struct sockaddr* sa);
+	static void send(int fd, char* message, size_t size);
 };
 
 

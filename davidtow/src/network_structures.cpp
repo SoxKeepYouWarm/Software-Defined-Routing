@@ -1,4 +1,5 @@
 
+#include <stdio.h>
 #include <iostream>
 #include <cstring>
 
@@ -9,6 +10,27 @@ unsigned char* Network_services::buff;
 unsigned char* Network_services::payload_pointer;
 int Network_services::control_code;
 int Network_services::payload_length;
+
+
+// get sockaddr, IPv4 or IPv6:
+void* Network_services::get_in_addr(struct sockaddr* sa) {
+	if (sa->sa_family == AF_INET) {
+		return &(((struct sockaddr_in*)sa)->sin_addr);
+	}
+
+	return &(((struct sockaddr_in6*)sa)->sin6_addr);
+}
+
+
+void Network_services::send(int fd, char* message, size_t size) {
+
+	if (int out_bytes = ::send(fd, message, size, 0) == -1) {
+		perror("send");
+	} else {
+		printf("SEND: response sent %d bytes successfully\n", out_bytes);
+	}
+
+}
 
 
 void Network_services::encode_control_message_author_payload() {
@@ -168,51 +190,42 @@ void Network_services::encode_control_message(Control_message* message, unsigned
 	memcpy(&message->header.payload_length, buffer + 6, 2);
 
 	switch (control_code) {
-	case AUTHOR: {
+	case AUTHOR:
 
 		encode_control_message_author_payload();
-
-	} break;
-	case INIT: {
+		break;
+	case INIT:
 
 		encode_control_message_init_payload();
-
-	} break;
-	case ROUTING_TABLE: {
+		break;
+	case ROUTING_TABLE:
 
 		encode_control_message_routing_table_payload();
-
-	} break;
-	case UPDATE: {
+		break;
+	case UPDATE:
 
 		encode_control_message_update_payload();
-
-	} break;
-	case CRASH: {
+		break;
+	case CRASH:
 
 		encode_control_message_crash_payload();
-
-	} break;
-	case SENDFILE: {
+		break;
+	case SENDFILE:
 
 		encode_control_message_sendfile_payload();
-
-	} break;
-	case SENDFILE_STATS: {
+		break;
+	case SENDFILE_STATS:
 
 		encode_control_message_sendfile_stats_payload();
-
-	} break;
-	case LAST_DATA_PACKET: {
+		break;
+	case LAST_DATA_PACKET:
 
 		encode_control_message_last_data_packet_payload();
-
-	} break;
-	case PENULTIMATE_DATA_PACKET: {
+		break;
+	case PENULTIMATE_DATA_PACKET:
 
 		encode_control_message_penultimate_data_packet_payload();
-
-	} break;
+		break;
 	}
 
 }

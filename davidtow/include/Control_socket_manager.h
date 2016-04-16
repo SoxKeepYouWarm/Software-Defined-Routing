@@ -31,9 +31,6 @@ public:
 	void handle_listener();
 	void handle_controller();
 
-	void send(int fd, char* message, size_t size);
-
-	Control_message encode_control_message();
 	void decode_control_message(Control_message* message,
 			char* response,
 			int response_size);
