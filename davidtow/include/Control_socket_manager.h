@@ -31,9 +31,9 @@ public:
 	void handle_listener();
 	void handle_controller();
 
-	void decode_control_message(Control_message* message,
-			unsigned char* response,
-			int response_size);
+	//void decode_control_message(Control_message* message,
+	//		unsigned char* response,
+	//		int response_size);
 	void handle_control_message(Control_message* message);
 
 	void set_message_destination_ip(Control_message* message);

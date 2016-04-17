@@ -8,7 +8,7 @@
 Control_message* Network_services::msg;
 unsigned char* Network_services::buff;
 unsigned char* Network_services::payload_pointer;
-int Network_services::control_code;
+unsigned char Network_services::control_code;
 int Network_services::payload_length;
 
 
@@ -55,10 +55,9 @@ void Network_services::encode_control_message_init_payload() {
 	payload.number_of_routers = num_of_routers_bytes;
 	payload.update_period = update_period_bytes;
 
-	std::cout << "HANDLE_INIT: payload_length: "
-			<< msg->header.payload_length
-			<< " num_of_routers " << num_of_routers_bytes << std::endl;
-
+	printf("HANDLE_INIT: payload length: %d, num_of_routers: %d\n",
+			msg->header.payload_length,
+			num_of_routers_bytes);
 
 	payload.entry_list = new Init_payload_router_entry[num_of_routers_bytes];
 	for (int i = 0; i < num_of_routers_bytes; i++) {
@@ -101,11 +100,6 @@ void Network_services::encode_control_message_init_payload() {
 }
 
 
-void Network_services::encode_control_message_routing_table_payload() {
-
-}
-
-
 void Network_services::encode_control_message_update_payload() {
 
 	Control_message_update_payload payload;
@@ -122,11 +116,6 @@ void Network_services::encode_control_message_update_payload() {
 	payload.cost = cost;
 
 	msg->payload = &payload;
-
-}
-
-
-void Network_services::encode_control_message_crash_payload() {
 
 }
 
@@ -166,17 +155,8 @@ void Network_services::encode_control_message_sendfile_stats_payload() {
 }
 
 
-void Network_services::encode_control_message_last_data_packet_payload() {
-
-}
-
-
-void Network_services::encode_control_message_penultimate_data_packet_payload() {
-
-}
-
-
-void Network_services::encode_control_message(Control_message* message, unsigned char* buffer) {
+void Network_services::encode_control_message(Control_message* message,
+		unsigned char* buffer) {
 
 	uint32_t dest_ip = 0;
 	memcpy(&dest_ip, buffer, 4);
@@ -204,14 +184,8 @@ void Network_services::encode_control_message(Control_message* message, unsigned
 	case INIT:
 		encode_control_message_init_payload();
 		break;
-	case ROUTING_TABLE:
-		encode_control_message_routing_table_payload();
-		break;
 	case UPDATE:
 		encode_control_message_update_payload();
-		break;
-	case CRASH:
-		encode_control_message_crash_payload();
 		break;
 	case SENDFILE:
 		encode_control_message_sendfile_payload();
@@ -219,12 +193,52 @@ void Network_services::encode_control_message(Control_message* message, unsigned
 	case SENDFILE_STATS:
 		encode_control_message_sendfile_stats_payload();
 		break;
-	case LAST_DATA_PACKET:
-		encode_control_message_last_data_packet_payload();
-		break;
-	case PENULTIMATE_DATA_PACKET:
-		encode_control_message_penultimate_data_packet_payload();
-		break;
 	}
+
+}
+
+
+void Network_services::decode_control_message_author() {
+
+	if (payload_length > 0) {
+		memcpy(buff + 8, msg->payload, payload_length);
+	}
+
+}
+
+
+void Network_services::decode_control_message(Control_message* message,
+		unsigned char* buffer) {
+
+	uint32_t dest_ip = 0;
+	memcpy(&dest_ip, message->header.destination_router_ip, 4);
+	dest_ip = htonl(dest_ip);
+	memcpy(buffer, &dest_ip, 4);
+
+	msg = message;
+	buff = buffer;
+	payload_pointer = buffer + 8;
+	control_code = message->header.control_code;
+	payload_length = message->header.payload_length;
+
+	memcpy(buffer + 4, &message->header.control_code, 1);
+
+	message->header.response_time = 0;
+	memcpy(buffer + 5, &message->header.response_time, 1);
+
+	unsigned short payload_length = 0;
+	payload_length = message->header.payload_length;
+	payload_length = htons(payload_length);
+	memcpy(buffer + 6, &payload_length, 2);
+
+
+	switch (control_code) {
+
+	case AUTHOR:
+		decode_control_message_author();
+		break;
+
+	}
+
 
 }

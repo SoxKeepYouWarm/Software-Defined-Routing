@@ -125,22 +125,23 @@ class Network_services {
 	static Control_message* msg;
 	static unsigned char* buff;
 	static unsigned char* payload_pointer;
-	static int control_code;
+	static unsigned char control_code;
 	static int payload_length;
 
 	static void encode_control_message_author_payload();
 	static void encode_control_message_init_payload();
-	static void encode_control_message_routing_table_payload();
 	static void encode_control_message_update_payload();
-	static void encode_control_message_crash_payload();
 	static void encode_control_message_sendfile_payload();
 	static void encode_control_message_sendfile_stats_payload();
-	static void encode_control_message_last_data_packet_payload();
-	static void encode_control_message_penultimate_data_packet_payload();
+
+	static void decode_control_message_author();
 
 public:
 	static void encode_control_message(Control_message* message,
 			unsigned char* buffer);
+	static void decode_control_message(Control_message* message,
+			unsigned char* buffer);
+
 	static void* get_in_addr(struct sockaddr* sa);
 	static void send(int fd, unsigned char* message, size_t size);
 };
