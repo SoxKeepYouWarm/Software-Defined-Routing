@@ -4,5 +4,41 @@ CONTROL_SOCKET_MANAGER: initialized with port: 40000
 CONTROL_SOCKET_MANAGER: initialized address info successfully
 CREATE_SOCKET:  created socket successfully
 LISTEN: FD: 3
+MAIN: new socket FD is: 3
+REGISTER_SOCKET: new fdmax is: 3
 running main in chat server
 
+MAIN: entered main loop
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: FD_ISSET was hit
+CONTROL_SOCKET_MANAGER: handle listener hit
+CONTROL_SOCKET_MANAGER: socket accepted
+MAIN: new socket FD is: 4
+REGISTER_SOCKET: new fdmax is: 4
+MAIN: looping over FD's
+MAIN: entered main loop
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: FD_ISSET was hit
+CONTROL_SOCKET_MANAGER: handle controller hit
+HANDLE_CONTROLLER: Message received was: 
+SET_MESSAGE_DESTINATION_IP: remote ip: %d2130706433
+HANDLE_AUTHOR: response length is: 84
+HANDLE_AUTHOR: response is: I, davidtow, have read and understood the course academic integrity policy.
+SEND: response sent 0 bytes successfully
+MAIN: entered main loop
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: FD_ISSET was hit
+CONTROL_SOCKET_MANAGER: handle controller hit
+HANDLE_CONTROLLER: controller hung up
+MAIN: entered main loop

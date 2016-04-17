@@ -64,6 +64,19 @@ void Control_socket_manager::handle_listener() {
 }
 
 
+void Control_socket_manager::send_empty_response(Control_message* message) {
+
+	message->header.payload_length = 0;
+	message->header.response_time = 0;
+
+	int response_size = 8;
+	unsigned char response[response_size];
+	Network_services::decode_control_message(message, response);
+	Network_services::send(request_fd, response, (size_t) response_size);
+
+}
+
+
 void Control_socket_manager::handle_author(Control_message* message) {
 
 	const char payload[] = "I, davidtow, "
@@ -100,6 +113,10 @@ void Control_socket_manager::handle_init(Control_message* message) {
 	Control_message_init_payload* payload =
 			(Control_message_init_payload*)message->payload;
 
+	// TODO handle init message
+
+	send_empty_response(message);
+
 }
 
 
@@ -110,15 +127,27 @@ void Control_socket_manager::handle_routing_table(Control_message* message) {
 
 void Control_socket_manager::handle_update(Control_message* message) {
 
+	// TODO handle update message
+
+	send_empty_response(message);
+
 }
 
 
 void Control_socket_manager::handle_crash(Control_message* message) {
 
+	// TODO handle update message
+
+	send_empty_response(message);
+
 }
 
 
 void Control_socket_manager::handle_sendfile(Control_message* message) {
+
+	// TODO handle update message
+
+	send_empty_response(message);
 
 }
 

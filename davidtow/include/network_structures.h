@@ -128,7 +128,6 @@ class Network_services {
 	static unsigned char control_code;
 	static int payload_length;
 
-	static void encode_control_message_author_payload();
 	static void encode_control_message_init_payload();
 	static void encode_control_message_update_payload();
 	static void encode_control_message_sendfile_payload();

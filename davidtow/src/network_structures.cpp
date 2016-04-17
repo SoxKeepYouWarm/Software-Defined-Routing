@@ -33,13 +33,6 @@ void Network_services::send(int fd, unsigned char* message, size_t size) {
 }
 
 
-void Network_services::encode_control_message_author_payload() {
-	if (payload_length > 0) {
-		memcpy(&msg->payload, payload_pointer, payload_length);
-	}
-}
-
-
 void Network_services::encode_control_message_init_payload() {
 	Control_message_init_payload payload;
 	// each router entry is 12 bytes long
@@ -121,6 +114,7 @@ void Network_services::encode_control_message_update_payload() {
 
 
 void Network_services::encode_control_message_sendfile_payload() {
+
 	Control_message_sendFile_payload payload;
 
 	uint32_t ip_bytes = 0;
@@ -146,6 +140,7 @@ void Network_services::encode_control_message_sendfile_payload() {
 
 
 void Network_services::encode_control_message_sendfile_stats_payload() {
+
 	Control_message_sendFileStats_payload payload;
 
 	memcpy(&payload.transfer_id, payload_pointer, 1);
@@ -178,9 +173,6 @@ void Network_services::encode_control_message(Control_message* message,
 	payload_pointer = buffer + 8;
 
 	switch (control_code) {
-	case AUTHOR:
-		encode_control_message_author_payload();
-		break;
 	case INIT:
 		encode_control_message_init_payload();
 		break;
