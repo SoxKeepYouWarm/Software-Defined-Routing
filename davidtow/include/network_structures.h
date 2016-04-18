@@ -141,6 +141,9 @@ public:
 	static void decode_control_message(Control_message* message,
 			unsigned char* buffer);
 
+	static void encode_data_message(Data_packet* message,
+			unsigned char* buffer);
+
 	static void* get_in_addr(struct sockaddr* sa);
 	static void send(int fd, unsigned char* message, size_t size);
 };

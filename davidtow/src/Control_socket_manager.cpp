@@ -15,7 +15,7 @@ Control_socket_manager::Control_socket_manager(Router* router, char* port) {
 	this->router = router;
 	this->port = port;
 	this->listener = 0;
-	this->control_fd = 0;
+	this->new_fd = 0;
 	this->request_fd = 0;
 	this->addrlen = 0;
 	this->res = 0;
@@ -50,8 +50,8 @@ void Control_socket_manager::handle_listener() {
 			<< "handle listener hit" << std::endl;
 
 	addrlen = sizeof remoteaddr;
-	control_fd = accept(listener, (struct sockaddr*)&remoteaddr, &addrlen);
-	if (control_fd == -1) {
+	new_fd = accept(listener, (struct sockaddr*)&remoteaddr, &addrlen);
+	if (new_fd == -1) {
 		perror("accept");
 		exit(1);
 	}
@@ -59,7 +59,8 @@ void Control_socket_manager::handle_listener() {
 	std::cout <<"CONTROL_SOCKET_MANAGER: "
 			<< "socket accepted" << std::endl;
 
-	router->register_fd(control_fd);
+	connections.insert(new_fd);
+	router->register_fd(new_fd);
 
 }
 
@@ -122,6 +123,10 @@ void Control_socket_manager::handle_init(Control_message* message) {
 
 void Control_socket_manager::handle_routing_table(Control_message* message) {
 
+	// TODO handle update message
+
+	send_empty_response(message);
+
 }
 
 
@@ -136,7 +141,7 @@ void Control_socket_manager::handle_update(Control_message* message) {
 
 void Control_socket_manager::handle_crash(Control_message* message) {
 
-	// TODO handle update message
+	// TODO handle crash message
 
 	send_empty_response(message);
 
@@ -145,7 +150,7 @@ void Control_socket_manager::handle_crash(Control_message* message) {
 
 void Control_socket_manager::handle_sendfile(Control_message* message) {
 
-	// TODO handle update message
+	// TODO handle sendfile message
 
 	send_empty_response(message);
 
@@ -224,7 +229,7 @@ void Control_socket_manager::handle_controller() {
 	std::cout << "CONTROL_SOCKET_MANAGER: "
 				<< "handle controller hit" << std::endl;
 
-	if ((num_of_bytes = recv(control_fd, buffer, sizeof buffer, 0)) <= 0) {
+	if ((num_of_bytes = recv(request_fd, buffer, sizeof buffer, 0)) <= 0) {
 		// got error or connection closed by client
 		if (num_of_bytes == 0) {
 			// connection closed
@@ -233,8 +238,9 @@ void Control_socket_manager::handle_controller() {
 		} else {
 			perror("recv");
 		}
-		close(control_fd);
-		router->unregister_fd(control_fd);
+		close(request_fd);
+		router->unregister_fd(request_fd);
+		connections.erase(request_fd);
 	} else {
 		printf("HANDLE_CONTROLLER: Message received was: %s\n", buffer);
 
@@ -255,22 +261,12 @@ void Control_socket_manager::handle_controller() {
 void Control_socket_manager::handle_connection(int fd) {
 
 	request_fd = fd;
-	if (fd == listener) handle_listener();
-	if (fd == control_fd) handle_controller();
-
-}
-
-
-int Control_socket_manager::get_control_socket_fd() {
-	return this->control_fd;
-}
-
-
-int Control_socket_manager::manages_fd(int fd) {
-	if (fd == control_fd || fd == listener) {
-		return 1;
+	if (fd == listener) {
+		handle_listener();
 	} else {
-		return 0;
+		handle_controller();
 	}
+
 }
+
 

@@ -17,16 +17,12 @@
 class Router;
 class Control_socket_manager: public Socket_manager {
 
-	int control_fd;
-	int request_fd;
 	Router* router;
 
 public:
 	Control_socket_manager(Router* router, char* port);
 	void initialize_addrinfo();
 	void handle_connection(int fd);
-	int get_control_socket_fd();
-	int manages_fd(int fd);
 
 	void handle_listener();
 	void handle_controller();

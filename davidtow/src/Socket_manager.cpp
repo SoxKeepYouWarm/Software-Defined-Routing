@@ -40,6 +40,8 @@ void Socket_manager::create_socket() {
 	std::cout << "CREATE_SOCKET: "
 			<< " created socket successfully" << std::endl;
 
+	connections.insert(listener);
+
 }
 
 
@@ -58,5 +60,11 @@ void Socket_manager::listen() {
 int Socket_manager::get_listener_fd() {
 	return this->listener;
 }
+
+
+int Socket_manager::manages_fd(int fd) {
+	return connections.find(fd) != connections.end();
+}
+
 
 

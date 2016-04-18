@@ -234,3 +234,12 @@ void Network_services::decode_control_message(Control_message* message,
 
 
 }
+
+
+void Network_services::encode_data_message(Data_packet* message,
+		unsigned char* buffer) {
+
+
+
+}
+

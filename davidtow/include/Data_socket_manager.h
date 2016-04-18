@@ -21,7 +21,9 @@ public:
 	Data_socket_manager(Router* router, char* port);
 	void initialize_addrinfo();
 	void handle_connection(int fd);
-	int manages_fd(int fd);
+
+	void handle_listener();
+	void handle_data();
 };
 
 

@@ -41,8 +41,6 @@ def build_topology_file(num_of_routers):
 if __name__ == '__main__':
     print "running"
 
-
-
     build_topology_file(1)
 
     subprocess.call("rm -R ./output", shell=True)
@@ -54,7 +52,10 @@ if __name__ == '__main__':
     time.sleep(1)
 
     subprocess.call(CONTROLLER + " -t " + TOPOLOGY_FILE + OUTPUT_RULES + AUTHOR_COMMAND + " &", shell=True)
-
+    time.sleep(1)
+    subprocess.call(CONTROLLER + " -t " + TOPOLOGY_FILE + OUTPUT_RULES + INIT_COMMAND + " &", shell=True)
+    time.sleep(1)
+    subprocess.call(CONTROLLER + " -t " + TOPOLOGY_FILE + OUTPUT_RULES + ROUTING_TABLE_COMMAND + " &", shell=True)
 
 
     exit(0)

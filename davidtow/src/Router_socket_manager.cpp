@@ -42,11 +42,3 @@ void Router_socket_manager::handle_connection(int fd) {
 }
 
 
-int Router_socket_manager::manages_fd(int fd) {
-	if (fd == listener) {
-		return 1;
-	} else {
-		return 0;
-	}
-}
-

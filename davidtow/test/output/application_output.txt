@@ -42,3 +42,65 @@ MAIN: FD_ISSET was hit
 CONTROL_SOCKET_MANAGER: handle controller hit
 HANDLE_CONTROLLER: controller hung up
 MAIN: entered main loop
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: FD_ISSET was hit
+CONTROL_SOCKET_MANAGER: handle listener hit
+CONTROL_SOCKET_MANAGER: socket accepted
+MAIN: new socket FD is: 4
+MAIN: looping over FD's
+MAIN: entered main loop
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: FD_ISSET was hit
+CONTROL_SOCKET_MANAGER: handle controller hit
+HANDLE_CONTROLLER: Message received was: 
+HANDLE_INIT: payload length: 16, num_of_routers: 768
+SET_MESSAGE_DESTINATION_IP: remote ip: %d2130706433
+HANDLE_INIT: payload_length: 16
+SEND: response sent 0 bytes successfully
+MAIN: entered main loop
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: FD_ISSET was hit
+CONTROL_SOCKET_MANAGER: handle controller hit
+HANDLE_CONTROLLER: controller hung up
+MAIN: entered main loop
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: FD_ISSET was hit
+CONTROL_SOCKET_MANAGER: handle listener hit
+CONTROL_SOCKET_MANAGER: socket accepted
+MAIN: new socket FD is: 4
+MAIN: looping over FD's
+MAIN: entered main loop
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: FD_ISSET was hit
+CONTROL_SOCKET_MANAGER: handle controller hit
+HANDLE_CONTROLLER: Message received was: 
+SET_MESSAGE_DESTINATION_IP: remote ip: %d2130706433
+SEND: response sent 0 bytes successfully
+MAIN: entered main loop
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: looping over FD's
+MAIN: FD_ISSET was hit
+CONTROL_SOCKET_MANAGER: handle controller hit
+HANDLE_CONTROLLER: controller hung up
+MAIN: entered main loop
