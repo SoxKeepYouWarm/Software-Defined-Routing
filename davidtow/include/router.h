@@ -32,6 +32,8 @@ public:
 	void main();
 	void register_fd(int fd);
 	void unregister_fd(int fd);
+
+	int router_id;
 };
 
 

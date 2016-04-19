@@ -21,7 +21,7 @@
 #include <netdb.h>
 
 typedef struct Router_update_entry {
-	char router_ip[32];
+	uint32_t router_ip;
 	unsigned short port;
 	unsigned short padding;
 	unsigned short id;
@@ -33,13 +33,13 @@ typedef struct Router_update_entry {
 typedef struct Router_update_packet {
 	unsigned short number_of_fields;
 	unsigned short source_router_port;
-	unsigned char source_router_ip[4];
+	uint32_t source_router_ip;
 	Router_update_entry* entry_list;
 } Router_update_packet;
 
 
 typedef struct Control_message_header {
-	unsigned char destination_router_ip[4];
+	uint32_t destination_router_ip;
 	unsigned char control_code;
 	unsigned char response_time;
 	unsigned short payload_length;
@@ -56,10 +56,10 @@ typedef struct Control_message {
 // PORT_TWO: data port
 typedef struct Init_payload_router_entry {
 	unsigned short id;
-	unsigned short port_one;
-	unsigned short port_two;
+	unsigned short router_port;
+	unsigned short data_port;
 	unsigned short cost;
-	unsigned char router_ip[4];
+	uint32_t router_ip;
 } Init_payload_router_entry;
 
 
@@ -70,7 +70,7 @@ typedef struct Control_message_init_payload {
 } Control_message_init_payload;
 
 
-typedef struct Routing_table_entry {
+typedef struct Control_response_routingTable_entry {
 	unsigned short id;
 	unsigned short padding;
 	unsigned short next_hop_id;
@@ -78,7 +78,7 @@ typedef struct Routing_table_entry {
 } Routing_table_entry;
 
 typedef struct Control_response_routingTable_payload {
-	Routing_table_entry* routing_table;
+	Control_response_routingTable_entry* routing_table;
 } Control_response_routingTable_payload;
 
 
@@ -89,7 +89,7 @@ typedef struct Control_message_update_payload {
 
 
 typedef struct Control_message_sendFile_payload {
-	unsigned char destination_router_ip[4];
+	uint32_t destination_router_ip;
 	unsigned char ttl;
 	unsigned char transfer_id;
 	unsigned short init_sequence_number;
@@ -111,7 +111,7 @@ typedef struct Control_response_sendFileStats_payload {
 
 
 typedef struct Data_packet {
-	unsigned char destination_router_ip[4];
+	uint32_t destination_router_ip;
 	unsigned char transfer_id;
 	unsigned char ttl;
 	unsigned short sequence_number;

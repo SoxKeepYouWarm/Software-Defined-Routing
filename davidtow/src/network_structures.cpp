@@ -79,8 +79,8 @@ void Network_services::encode_control_message_init_payload() {
 		ip_bytes = ntohl(ip_bytes);
 
 		entry.id = id_bytes;
-		entry.port_one = port_one_bytes;
-		entry.port_two = port_two_bytes;
+		entry.router_port = port_one_bytes;
+		entry.data_port = port_two_bytes;
 		entry.cost = cost_bytes;
 
 		memcpy(&entry.router_ip, &ip_bytes, 4);
@@ -120,7 +120,8 @@ void Network_services::encode_control_message_sendfile_payload() {
 	uint32_t ip_bytes = 0;
 	memcpy(&ip_bytes, payload_pointer, 4);
 	ip_bytes = ntohl(ip_bytes);
-	memcpy(&payload, &ip_bytes, 4);
+	payload.destination_router_ip = ip_bytes;
+	//memcpy(&payload, &ip_bytes, 4);
 
 	payload.ttl = *(payload_pointer + 4);
 	payload.transfer_id = *(payload_pointer + 5);
@@ -156,7 +157,8 @@ void Network_services::encode_control_message(Control_message* message,
 	uint32_t dest_ip = 0;
 	memcpy(&dest_ip, buffer, 4);
 	dest_ip = ntohl(dest_ip);
-	memcpy(&message->header.destination_router_ip, buffer, 4);
+	message->header.destination_router_ip = dest_ip;
+	//memcpy(&message->header.destination_router_ip, buffer, 4);
 
 	memcpy(&message->header.control_code, buffer + 4, 1);
 	memcpy(&message->header.response_time, buffer + 5, 1);
@@ -202,8 +204,7 @@ void Network_services::decode_control_message_author() {
 void Network_services::decode_control_message(Control_message* message,
 		unsigned char* buffer) {
 
-	uint32_t dest_ip = 0;
-	memcpy(&dest_ip, message->header.destination_router_ip, 4);
+	uint32_t dest_ip = message->header.destination_router_ip;
 	dest_ip = htonl(dest_ip);
 	memcpy(buffer, &dest_ip, 4);
 

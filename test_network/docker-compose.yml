@@ -1,0 +1,84 @@
+
+version: '2'
+
+services:
+  router_one:
+    image: ubuntu
+    working_dir: /router/davidtow
+    command: ["./assignment3", "${control_port_one}"]
+    volumes:
+        - ../davidtow:/router/davidtow
+    networks:
+        router_net:
+            ipv4_address: "${ip_one}"
+    ports:
+        - "${control_port_one}:${control_port_one}"
+        - "${router_port_one}:${router_port_one}"
+        - "${data_port_one}:${data_port_one}"
+
+  router_two:
+    image: ubuntu
+    working_dir: /router/davidtow
+    command: ["./assignment3", "${control_port_two}"]
+    volumes:
+        - ../davidtow:/router/davidtow
+    networks:
+        router_net:
+            ipv4_address: "${ip_two}"
+    ports:
+        - "${control_port_two}:${control_port_two}"
+        - "${router_port_two}:${router_port_two}"
+        - "${data_port_two}:${data_port_two}"
+
+  router_three:
+    image: ubuntu
+    working_dir: /router/davidtow
+    command: ["./assignment3", "${control_port_three}"]
+    volumes:
+        - ../davidtow:/router/davidtow
+    networks:
+        router_net:
+            ipv4_address: "${ip_three}"
+    ports:
+        - "${control_port_three}:${control_port_three}"
+        - "${router_port_three}:${router_port_three}"
+        - "${data_port_three}:${data_port_three}"
+
+  router_four:
+    image: ubuntu
+    working_dir: /router/davidtow
+    command: ["./assignment3", "${control_port_four}"]
+    volumes:
+        - ../davidtow:/router/davidtow
+    networks:
+        router_net:
+            ipv4_address: "${ip_four}"
+    ports:
+        - "${control_port_four}:${control_port_four}"
+        - "${router_port_four}:${router_port_four}"
+        - "${data_port_four}:${data_port_four}"
+
+  router_five:
+    image: ubuntu
+    working_dir: /router/davidtow
+    command: ["./assignment3", "${control_port_five}"]
+    volumes:
+        - ../davidtow:/router/davidtow
+    networks:
+        router_net:
+            ipv4_address: "${ip_five}"
+    ports:
+        - "${control_port_five}:${control_port_five}"
+        - "${router_port_five}:${router_port_five}"
+        - "${data_port_five}:${data_port_five}"
+
+
+
+networks:
+  router_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.20.0.0/16
+        gateway: 172.20.0.1

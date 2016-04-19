@@ -10,6 +10,8 @@ Router::Router(char* control_port): fdmax(0) {
 	FD_ZERO(&master);
 	FD_ZERO(&read_fds);
 
+	router_id = -1;
+
 	router_socket_manager = 0;
 	data_socket_manager = 0;
 
