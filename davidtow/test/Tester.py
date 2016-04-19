@@ -13,7 +13,7 @@ CONTROLLER_ERROR = "./output/controller_error.txt"
 
 OUTPUT_RULES = " 1>> " + CONTROLLER_OUTPUT + " 2>> " + CONTROLLER_ERROR
 
-IP_ADDRESS = "127.0.0.1"
+IP_ADDRESS = "172.20.0.2"
 
 ROUTER_ID = " 1 "
 ROUTING_UPDATE_INTERVAL = " 3 "
@@ -46,16 +46,16 @@ if __name__ == '__main__':
     subprocess.call("rm -R ./output", shell=True)
     subprocess.call("mkdir ./output", shell=True)
 
-    subprocess.call("pkill assignment3", shell=True)
+    #subprocess.call("pkill assignment3", shell=True)
 
-    subprocess.call("../assignment3 40000 1> " + APPLICATION_OUTPUT + " 2> " + APPLICATION_ERROR + " &", shell=True)
-    time.sleep(1)
+    #subprocess.call("../assignment3 40000 1> " + APPLICATION_OUTPUT + " 2> " + APPLICATION_ERROR + " &", shell=True)
+    #time.sleep(1)
 
     subprocess.call(CONTROLLER + " -t " + TOPOLOGY_FILE + OUTPUT_RULES + AUTHOR_COMMAND + " &", shell=True)
-    time.sleep(1)
-    subprocess.call(CONTROLLER + " -t " + TOPOLOGY_FILE + OUTPUT_RULES + INIT_COMMAND + " &", shell=True)
-    time.sleep(1)
-    subprocess.call(CONTROLLER + " -t " + TOPOLOGY_FILE + OUTPUT_RULES + ROUTING_TABLE_COMMAND + " &", shell=True)
+    #time.sleep(1)
+    #subprocess.call(CONTROLLER + " -t " + TOPOLOGY_FILE + OUTPUT_RULES + INIT_COMMAND + " &", shell=True)
+    #time.sleep(1)
+    #subprocess.call(CONTROLLER + " -t " + TOPOLOGY_FILE + OUTPUT_RULES + ROUTING_TABLE_COMMAND + " &", shell=True)
 
 
     exit(0)

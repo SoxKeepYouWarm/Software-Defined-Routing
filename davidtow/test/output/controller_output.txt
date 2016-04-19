@@ -1,46 +1,5 @@
 [33mReading Topology file: [0m./topology_file[0m ...[0m [92mDone![0m
 
 AUTHOR:
-[33mSending control message to: [0m127.0.0.1:40000[0m ...[0m [92mDone![0m
-[33mWaiting for control-response header from router ...[0m [92mDone![0m
-[33mParsing header ...
-[0m
-------------------------------------
-|            127.0.0.1             |
-------------------------------------
-|   0    |   0    |       76       |
-------------------------------------
-
-[33mWaiting for control-response payload (76 bytes) from router ...[0m [92mDone![0m
-[33mWriting response-packet to file: [0mresponse.pkt[0m ...[0m [92mDone![0m
-[33mReading Topology file: [0m./topology_file[0m ...[0m [92mDone![0m
-
-INIT:
-[33mSending control message to: [0m127.0.0.1:40000[0m ...[0m [92mDone![0m
-[33mWaiting for control-response header from router ...[0m [92mDone![0m
-[33mParsing header ...
-[0m
-------------------------------------
-|            127.0.0.1             |
-------------------------------------
-|   1    |   0    |       0        |
-------------------------------------
-
-[33mWaiting for control-response payload (0 bytes) from router ...[0m [92mDone![0m
-[33mWriting response-packet to file: [0mresponse.pkt-1[0m ...[0m [92mDone![0m
-
-[33mReading Topology file: [0m./topology_file[0m ...[0m [92mDone![0m
-
-ROUTING-TABLE:
-[33mSending control message to: [0m127.0.0.1:40000[0m ...[0m [92mDone![0m
-[33mWaiting for control-response header from router ...[0m [92mDone![0m
-[33mParsing header ...
-[0m
-------------------------------------
-|            127.0.0.1             |
-------------------------------------
-|   2    |   0    |       0        |
-------------------------------------
-
-[33mWaiting for control-response payload (0 bytes) from router ...[0m [92mDone![0m
-[33mWriting response-packet to file: [0mresponse.pkt[0m ...[0m [92mDone![0m
+[33mSending control message to: [0m172.20.0.2:40000[0m ...[0m [91mError![0m
+[91m[Errno 111] Connection refused[0m
