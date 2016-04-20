@@ -1,11 +1,13 @@
 
 version: '2'
 
+# ["bash", "-c", "tcpdump", "-v", "&" , "./assignment3", "${control_port_one}"]
+
 services:
   router_one:
     build: ./router
     working_dir: /router/davidtow
-    command: ["bash", "-c", "tcpdump", "net", "${ip_one}", "-w", "packet1.txt", "&" , "./assignment3", "${control_port_one}"]
+    command: ["tcpdump"]
     volumes:
         - ../davidtow:/router/davidtow
     networks:
@@ -15,63 +17,6 @@ services:
         - "${control_port_one}:${control_port_one}"
         - "${router_port_one}:${router_port_one}"
         - "${data_port_one}:${data_port_one}"
-
-  router_two:
-    build: ./router
-    working_dir: /router/davidtow
-    command: ["bash", "-c", "tcpdump", "net", "${ip_two}", "-w", "packet2.txt", "&" , "./assignment3", "${control_port_two}"]
-    volumes:
-        - ../davidtow:/router/davidtow
-    networks:
-        router_net:
-            ipv4_address: "${ip_two}"
-    ports:
-        - "${control_port_two}:${control_port_two}"
-        - "${router_port_two}:${router_port_two}"
-        - "${data_port_two}:${data_port_two}"
-
-  router_three:
-    build: ./router
-    working_dir: /router/davidtow
-    command: ["bash", "-c", "tcpdump", "net", "${ip_three}", "-w", "packet3.txt", "&" , "./assignment3", "${control_port_three}"]
-    volumes:
-        - ../davidtow:/router/davidtow
-    networks:
-        router_net:
-            ipv4_address: "${ip_three}"
-    ports:
-        - "${control_port_three}:${control_port_three}"
-        - "${router_port_three}:${router_port_three}"
-        - "${data_port_three}:${data_port_three}"
-
-  router_four:
-    build: ./router
-    working_dir: /router/davidtow
-    command: ["bash", "-c", "tcpdump", "net", "${ip_four}", "-w", "packet4.txt", "&" , "./assignment3", "${control_port_four}"]
-    volumes:
-        - ../davidtow:/router/davidtow
-    networks:
-        router_net:
-            ipv4_address: "${ip_four}"
-    ports:
-        - "${control_port_four}:${control_port_four}"
-        - "${router_port_four}:${router_port_four}"
-        - "${data_port_four}:${data_port_four}"
-
-  router_five:
-    build: ./router
-    working_dir: /router/davidtow
-    command: ["bash", "-c", "tcpdump", "net", "${ip_five}", "-w", "packet5.txt", "&" , "./assignment3", "${control_port_five}"]
-    volumes:
-        - ../davidtow:/router/davidtow
-    networks:
-        router_net:
-            ipv4_address: "${ip_five}"
-    ports:
-        - "${control_port_five}:${control_port_five}"
-        - "${router_port_five}:${router_port_five}"
-        - "${data_port_five}:${data_port_five}"
-
 
 
 networks:

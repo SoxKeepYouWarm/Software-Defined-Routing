@@ -1,0 +1,55 @@
+  router_two:
+    build: ./router
+    working_dir: /router/davidtow
+    command: ["bash", "-c", "tcpdump", "net", "${ip_two}", "-v", "&" , "./assignment3", "${control_port_two}"]
+    volumes:
+        - ../davidtow:/router/davidtow
+    networks:
+        router_net:
+            ipv4_address: "${ip_two}"
+    ports:
+        - "${control_port_two}:${control_port_two}"
+        - "${router_port_two}:${router_port_two}"
+        - "${data_port_two}:${data_port_two}"
+
+  router_three:
+    build: ./router
+    working_dir: /router/davidtow
+    command: ["bash", "-c", "tcpdump", "net", "${ip_three}", "-v", "&" , "./assignment3", "${control_port_three}"]
+    volumes:
+        - ../davidtow:/router/davidtow
+    networks:
+        router_net:
+            ipv4_address: "${ip_three}"
+    ports:
+        - "${control_port_three}:${control_port_three}"
+        - "${router_port_three}:${router_port_three}"
+        - "${data_port_three}:${data_port_three}"
+
+  router_four:
+    build: ./router
+    working_dir: /router/davidtow
+    command: ["bash", "-c", "tcpdump", "net", "${ip_four}", "-v", "&" , "./assignment3", "${control_port_four}"]
+    volumes:
+        - ../davidtow:/router/davidtow
+    networks:
+        router_net:
+            ipv4_address: "${ip_four}"
+    ports:
+        - "${control_port_four}:${control_port_four}"
+        - "${router_port_four}:${router_port_four}"
+        - "${data_port_four}:${data_port_four}"
+
+  router_five:
+    build: ./router
+    working_dir: /router/davidtow
+    command: ["bash", "-c", "tcpdump", "net", "${ip_five}", "-v", "&" , "./assignment3", "${control_port_five}"]
+    volumes:
+        - ../davidtow:/router/davidtow
+    networks:
+        router_net:
+            ipv4_address: "${ip_five}"
+    ports:
+        - "${control_port_five}:${control_port_five}"
+        - "${router_port_five}:${router_port_five}"
+        - "${data_port_five}:${data_port_five}"
