@@ -1,15 +1,19 @@
 
 version: '2'
 
+# need to run this command to disable cksum calculation offloading
+# ethtool -K ${docker_interface} tx off
+
 # ["bash", "-c", "tcpdump", "-v", "&" , "./assignment3", "${control_port_one}"]
+# ["bash", "-c", "tcpdump", "net", "${ip_one}", "-nvXSs", "0", "&" , "./assignment3", "${control_port_one}"]
 
 services:
   router_one:
     build: ./router
-    working_dir: /router/davidtow
-    command: ["tcpdump"]
+    working_dir: /router/cse489_pa3/test_network
+    command: "bash router_command.sh"
     volumes:
-        - ../davidtow:/router/davidtow
+        - ../../cse489_pa3:/router/cse489_pa3
     networks:
         router_net:
             ipv4_address: "${ip_one}"
@@ -17,7 +21,87 @@ services:
         - "${control_port_one}:${control_port_one}"
         - "${router_port_one}:${router_port_one}"
         - "${data_port_one}:${data_port_one}"
+    environment:
+        - MY_IP=${ip_one}
+        - CONTROL_PORT=${control_port_one}
+        - ROUTER_PORT=${router_port_one}
+        - DATA_PORT=${data_port_one}
 
+  router_two:
+    build: ./router
+    working_dir: /router/cse489_pa3/test_network
+    command: "bash router_command.sh"
+    volumes:
+        - ../../cse489_pa3:/router/cse489_pa3
+    networks:
+        router_net:
+            ipv4_address: "${ip_two}"
+    ports:
+        - "${control_port_two}:${control_port_two}"
+        - "${router_port_two}:${router_port_two}"
+        - "${data_port_two}:${data_port_two}"
+    environment:
+        - MY_IP=${ip_two}
+        - CONTROL_PORT=${control_port_two}
+        - ROUTER_PORT=${router_port_two}
+        - DATA_PORT=${data_port_two}
+
+  router_three:
+    build: ./router
+    working_dir: /router/cse489_pa3/test_network
+    command: "bash router_command.sh"
+    volumes:
+        - ../../cse489_pa3:/router/cse489_pa3
+    networks:
+        router_net:
+            ipv4_address: "${ip_three}"
+    ports:
+        - "${control_port_three}:${control_port_three}"
+        - "${router_port_three}:${router_port_three}"
+        - "${data_port_three}:${data_port_three}"
+    environment:
+        - MY_IP=${ip_three}
+        - CONTROL_PORT=${control_port_three}
+        - ROUTER_PORT=${router_port_three}
+        - DATA_PORT=${data_port_three}
+
+  router_four:
+    build: ./router
+    working_dir: /router/cse489_pa3/test_network
+    command: "bash router_command.sh"
+    volumes:
+        - ../../cse489_pa3:/router/cse489_pa3
+    networks:
+        router_net:
+            ipv4_address: "${ip_four}"
+    ports:
+        - "${control_port_four}:${control_port_four}"
+        - "${router_port_four}:${router_port_four}"
+        - "${data_port_four}:${data_port_four}"
+    environment:
+        - MY_IP=${ip_four}
+        - CONTROL_PORT=${control_port_four}
+        - ROUTER_PORT=${router_port_four}
+        - DATA_PORT=${data_port_four}
+
+  router_five:
+    build: ./router
+    working_dir: /router/cse489_pa3/test_network
+    command: "bash router_command.sh"
+    volumes:
+        - ../../cse489_pa3:/router/cse489_pa3
+    networks:
+        router_net:
+            ipv4_address: "${ip_five}"
+    ports:
+        - "${control_port_five}:${control_port_five}"
+        - "${router_port_five}:${router_port_five}"
+        - "${data_port_five}:${data_port_five}"
+    environment:
+        - MY_IP=${ip_five}
+        - CONTROL_PORT=${control_port_five}
+        - ROUTER_PORT=${router_port_five}
+        - DATA_PORT=${data_port_five}
 
 networks:
   router_net:
