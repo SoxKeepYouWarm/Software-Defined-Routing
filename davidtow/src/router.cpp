@@ -66,7 +66,7 @@ void Router::main() {
 
 		for(int i = 0; i <= fdmax; i++) {
 
-			std::cout << "MAIN: looping over FD's" << std::endl;
+			//std::cout << "MAIN: looping over FD's" << std::endl;
 
 			if (FD_ISSET(i, &read_fds)) {
 

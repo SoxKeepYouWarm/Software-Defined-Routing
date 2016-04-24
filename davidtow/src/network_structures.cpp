@@ -34,7 +34,7 @@ void Network_services::send(int fd, unsigned char* message, size_t size) {
 
 
 void Network_services::encode_control_message_init_payload() {
-	Control_message_init_payload payload;
+	Control_message_init_payload* payload = new Control_message_init_payload;
 	// each router entry is 12 bytes long
 
 	unsigned short num_of_routers_bytes = 0;
@@ -42,21 +42,21 @@ void Network_services::encode_control_message_init_payload() {
 	num_of_routers_bytes = ntohs(num_of_routers_bytes);
 
 	unsigned short update_period_bytes = 0;
-	memcpy(&num_of_routers_bytes, payload_pointer + 2, 2);
+	memcpy(&update_period_bytes, payload_pointer + 2, 2);
 	update_period_bytes = ntohs(update_period_bytes);
 
-	payload.number_of_routers = num_of_routers_bytes;
-	payload.update_period = update_period_bytes;
+	payload->number_of_routers = num_of_routers_bytes;
+	payload->update_period = update_period_bytes;
 
-	printf("HANDLE_INIT: payload length: %d, num_of_routers: %d\n",
+	printf("ENCODE_INIT: payload length: %d, num_of_routers: %d\n",
 			msg->header.payload_length,
 			num_of_routers_bytes);
 
-	payload.entry_list = new Init_payload_router_entry[num_of_routers_bytes];
+	payload->entry_list = new Init_payload_router_entry[num_of_routers_bytes];
 	for (int i = 0; i < num_of_routers_bytes; i++) {
 
 		int offset = (i * 12) + 4;
-		Init_payload_router_entry entry;
+		Init_payload_router_entry* entry = &(payload->entry_list[i]);
 
 		unsigned short id_bytes = 0;
 		memcpy(&id_bytes, payload_pointer + offset, 2);
@@ -78,24 +78,22 @@ void Network_services::encode_control_message_init_payload() {
 		memcpy(&ip_bytes, payload_pointer + offset + 8, 4);
 		ip_bytes = ntohl(ip_bytes);
 
-		entry.id = id_bytes;
-		entry.router_port = port_one_bytes;
-		entry.data_port = port_two_bytes;
-		entry.cost = cost_bytes;
+		entry->id = id_bytes;
+		entry->router_port = port_one_bytes;
+		entry->data_port = port_two_bytes;
+		entry->cost = cost_bytes;
 
-		memcpy(&entry.router_ip, &ip_bytes, 4);
-
-		payload.entry_list[i] = entry;
+		memcpy(&(entry->router_ip), &ip_bytes, 4);
 
 	}
 
-	msg->payload = &payload;
+	msg->payload = (void*)payload;
 }
 
 
 void Network_services::encode_control_message_update_payload() {
 
-	Control_message_update_payload payload;
+	Control_message_update_payload* payload = new Control_message_update_payload;
 
 	unsigned short router_id = 0;
 	memcpy(&router_id, payload_pointer, 2);
@@ -105,26 +103,26 @@ void Network_services::encode_control_message_update_payload() {
 	memcpy(&cost, payload_pointer + 2, 2);
 	cost = ntohs(cost);
 
-	payload.router_id = router_id;
-	payload.cost = cost;
+	payload->router_id = router_id;
+	payload->cost = cost;
 
-	msg->payload = &payload;
+	msg->payload = (void*)payload;
 
 }
 
 
 void Network_services::encode_control_message_sendfile_payload() {
 
-	Control_message_sendFile_payload payload;
+	Control_message_sendFile_payload* payload = new Control_message_sendFile_payload;
 
 	uint32_t ip_bytes = 0;
 	memcpy(&ip_bytes, payload_pointer, 4);
 	ip_bytes = ntohl(ip_bytes);
-	payload.destination_router_ip = ip_bytes;
+	payload->destination_router_ip = ip_bytes;
 	//memcpy(&payload, &ip_bytes, 4);
 
-	payload.ttl = *(payload_pointer + 4);
-	payload.transfer_id = *(payload_pointer + 5);
+	payload->ttl = *(payload_pointer + 4);
+	payload->transfer_id = *(payload_pointer + 5);
 
 	unsigned short seq_num = 0;
 	memcpy(&seq_num, payload_pointer + 6, 2);
@@ -133,20 +131,20 @@ void Network_services::encode_control_message_sendfile_payload() {
 
 	char filename[payload_length];
 	memcpy(filename, payload_pointer, payload_length);
-	payload.filename = filename;
+	payload->filename = filename;
 
-	msg->payload = &payload;
+	msg->payload = (void*)payload;
 
 }
 
 
 void Network_services::encode_control_message_sendfile_stats_payload() {
 
-	Control_message_sendFileStats_payload payload;
+	Control_message_sendFileStats_payload* payload = new Control_message_sendFileStats_payload;
 
-	memcpy(&payload.transfer_id, payload_pointer, 1);
+	memcpy(&payload->transfer_id, payload_pointer, 1);
 
-	msg->payload = &payload;
+	msg->payload = (void*)payload;
 
 }
 
@@ -177,6 +175,8 @@ void Network_services::encode_control_message(Control_message* message,
 	switch (control_code) {
 	case INIT:
 		encode_control_message_init_payload();
+		printf("DEBUG: num_of_routers: %d\n", (
+				(Control_message_init_payload*)msg->payload)->number_of_routers);
 		break;
 	case UPDATE:
 		encode_control_message_update_payload();

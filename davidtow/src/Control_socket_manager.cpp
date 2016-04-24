@@ -114,6 +114,21 @@ void Control_socket_manager::handle_init(Control_message* message) {
 	Control_message_init_payload* payload =
 			(Control_message_init_payload*)message->payload;
 
+	std::cout << "number of routers: " << payload->number_of_routers
+			<< " update period: " << payload->update_period << std::endl;
+
+	for (int i = 0; i < payload->number_of_routers; i++) {
+		Init_payload_router_entry* iter = payload->entry_list + i;
+
+		std::cout << "router entry: "
+				<< " id: " << iter->id
+				<< " router_port: " << iter->router_port
+				<< " data_port: " << iter->data_port
+				<< " cost: " << iter->cost
+				<< " router_ip " << iter->router_ip
+				<< std::endl;
+	}
+
 	// TODO handle init message
 
 	send_empty_response(message);
@@ -177,7 +192,7 @@ void Control_socket_manager::set_message_destination_ip(Control_message* message
 	uint32_t net_ip = htonl(((in_addr*)
 			Network_services::get_in_addr((struct sockaddr*)&remoteaddr))->s_addr);
 
-	std::cout << "SET_MESSAGE_DESTINATION_IP: remote ip: %d"
+	std::cout << "SET_MESSAGE_DESTINATION_IP: remote ip: "
 			<< net_ip << std::endl;
 
 	memcpy(&(message->header.destination_router_ip), &net_ip, 4);
@@ -248,6 +263,12 @@ void Control_socket_manager::handle_controller() {
 
 		Control_message message;
 		Network_services::encode_control_message(&message, buffer);
+
+		Control_message_init_payload* payload =
+					(Control_message_init_payload*)message.payload;
+
+		std::cout << "DEBUG: number of routers: " << payload->number_of_routers
+				<< " update period: " << payload->update_period << std::endl;
 
 		handle_control_message(&message);
 
