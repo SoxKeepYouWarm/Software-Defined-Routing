@@ -1,4 +1,5 @@
-FROM ubuntu
+FROM ubuntu:16.04
 
-RUN sudo apt-get update
-RUN sudo apt-get install -y tcpdump wget libc6-gdb gdb valgrind
+RUN apt-get update
+RUN apt-get upgrade -y
+RUN apt-get install -y build-essential tcpdump wget valgrind binutils

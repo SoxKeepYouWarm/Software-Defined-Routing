@@ -129,6 +129,10 @@ void Control_socket_manager::handle_init(Control_message* message) {
 				<< std::endl;
 	}
 
+
+	this->router->build_routing_table(payload);
+
+
 	// TODO handle init message
 
 	send_empty_response(message);
@@ -137,6 +141,8 @@ void Control_socket_manager::handle_init(Control_message* message) {
 
 
 void Control_socket_manager::handle_routing_table(Control_message* message) {
+
+
 
 	// TODO handle update message
 

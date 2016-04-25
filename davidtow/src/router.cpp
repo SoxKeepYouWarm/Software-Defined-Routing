@@ -11,6 +11,8 @@ Router::Router(char* control_port): fdmax(0) {
 	FD_ZERO(&read_fds);
 
 	router_id = -1;
+	routing_table = 0;
+	routing_table_length = 0;
 
 	router_socket_manager = 0;
 	data_socket_manager = 0;
@@ -24,6 +26,12 @@ Router::Router(char* control_port): fdmax(0) {
 
 Router::~Router() {
 	delete control_socket_manager;
+	/*
+	for (int i = 0; i < routing_table_length; i++) {
+		delete[] routing_table[i];
+	}
+	delete[] routing_table;
+	*/
 }
 
 
@@ -89,3 +97,77 @@ void Router::main() {
 	}
 
 }
+
+
+
+void Router::build_routing_table(Control_message_init_payload* init_payload) {
+
+
+	std::cout << "DEBUG: reached build_routing_table" << std::endl;
+
+	if (this->router_id != -1) {
+		std::cout << "BUILD_ROUTING_TABLE: ERROR: "
+				<< "routing table was already initialized"
+				<< std::endl;
+	}
+
+	routing_table_length = init_payload->number_of_routers;
+	routing_table = new std::vector< std::vector<int> >
+			(routing_table_length + 1, std::vector<int>(routing_table_length + 1, -1));
+
+	std::vector<int> my_vector(routing_table_length + 1);
+
+	for (int i = 0; i < routing_table_length; i++) {
+
+		Init_payload_router_entry* entry = (init_payload->entry_list + i);
+
+		my_vector.at(entry->id) = entry->cost;
+		if (entry->cost == 0) {
+			this->router_id = entry->id;
+		}
+
+	}
+
+	if (this->router_id == -1) {
+		std::cout << "BUILD_ROUTING_TABLE: ERROR: "
+				<< "couldn't find a routing entry id with cost 0"
+				<< std::endl;
+		exit(4);
+	}
+
+
+	for (int i = 1; i < routing_table_length + 1; i++) {
+		routing_table->at(router_id).at(i) = my_vector[i];
+	}
+
+
+	std::cout << "BUILD_ROUTING_TABLE: new routing table"
+			<< std::endl;
+
+	std::cout << "ROUTER_ID: " << router_id << std::endl;
+
+	for (int i = 1; i < routing_table_length + 1; i++) {
+
+		std::cout << "id: " << i
+			<< " cost: " << routing_table->at(router_id).at(i)
+			<< std::endl;
+
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

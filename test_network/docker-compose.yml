@@ -4,18 +4,15 @@ version: '2'
 # need to run this command to disable cksum calculation offloading
 # ethtool -K ${docker_interface} tx off
 
-# ["bash", "-c", "tcpdump", "-v", "&" , "./assignment3", "${control_port_one}"]
-# ["bash", "-c", "tcpdump", "net", "${ip_one}", "-nvXSs", "0", "&" , "./assignment3", "${control_port_one}"]
-
 services:
   router_one:
-    build: ./router
+    image: router
     working_dir: /router/cse489_pa3/test_network
     command: "bash router_command.sh"
     volumes:
         - ../../cse489_pa3:/router/cse489_pa3
     networks:
-        router_net:
+        router_net_one:
             ipv4_address: "${ip_one}"
     ports:
         - "${control_port_one}:${control_port_one}"
@@ -26,15 +23,16 @@ services:
         - CONTROL_PORT=${control_port_one}
         - ROUTER_PORT=${router_port_one}
         - DATA_PORT=${data_port_one}
+        - VALGRIND_LOG=${valgrind_log_one}
 
   router_two:
-    build: ./router
+    image: router
     working_dir: /router/cse489_pa3/test_network
     command: "bash router_command.sh"
     volumes:
         - ../../cse489_pa3:/router/cse489_pa3
     networks:
-        router_net:
+        router_net_two:
             ipv4_address: "${ip_two}"
     ports:
         - "${control_port_two}:${control_port_two}"
@@ -45,15 +43,16 @@ services:
         - CONTROL_PORT=${control_port_two}
         - ROUTER_PORT=${router_port_two}
         - DATA_PORT=${data_port_two}
+        - VALGRIND_LOG=${valgrind_log_two}
 
   router_three:
-    build: ./router
+    image: router
     working_dir: /router/cse489_pa3/test_network
     command: "bash router_command.sh"
     volumes:
         - ../../cse489_pa3:/router/cse489_pa3
     networks:
-        router_net:
+        router_net_three:
             ipv4_address: "${ip_three}"
     ports:
         - "${control_port_three}:${control_port_three}"
@@ -64,15 +63,16 @@ services:
         - CONTROL_PORT=${control_port_three}
         - ROUTER_PORT=${router_port_three}
         - DATA_PORT=${data_port_three}
+        - VALGRIND_LOG=${valgrind_log_three}
 
   router_four:
-    build: ./router
+    image: router
     working_dir: /router/cse489_pa3/test_network
     command: "bash router_command.sh"
     volumes:
         - ../../cse489_pa3:/router/cse489_pa3
     networks:
-        router_net:
+        router_net_four:
             ipv4_address: "${ip_four}"
     ports:
         - "${control_port_four}:${control_port_four}"
@@ -83,15 +83,16 @@ services:
         - CONTROL_PORT=${control_port_four}
         - ROUTER_PORT=${router_port_four}
         - DATA_PORT=${data_port_four}
+        - VALGRIND_LOG=${valgrind_log_four}
 
   router_five:
-    build: ./router
+    image: router
     working_dir: /router/cse489_pa3/test_network
     command: "bash router_command.sh"
     volumes:
         - ../../cse489_pa3:/router/cse489_pa3
     networks:
-        router_net:
+        router_net_five:
             ipv4_address: "${ip_five}"
     ports:
         - "${control_port_five}:${control_port_five}"
@@ -102,12 +103,41 @@ services:
         - CONTROL_PORT=${control_port_five}
         - ROUTER_PORT=${router_port_five}
         - DATA_PORT=${data_port_five}
+        - VALGRIND_LOG=${valgrind_log_five}
 
 networks:
-  router_net:
+  router_net_one:
     driver: bridge
     ipam:
       driver: default
       config:
       - subnet: 172.20.0.0/16
         gateway: 172.20.0.1
+  router_net_two:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.21.0.0/16
+        gateway: 172.21.0.1
+  router_net_three:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.22.0.0/16
+        gateway: 172.22.0.1
+  router_net_four:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.23.0.0/16
+        gateway: 172.23.0.1
+  router_net_five:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.24.0.0/16
+        gateway: 172.24.0.1

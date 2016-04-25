@@ -20,10 +20,34 @@ export control_port_five="40004"
 export data_port_five="1004"
 export router_port_five="2004"
 
-export ip_one="172.20.0.2"
-export ip_two="172.20.0.3"
-export ip_three="172.20.0.4"
-export ip_four="172.20.0.5"
-export ip_five="172.20.0.6"
+export valgrind_log_one="log/valgrind_log_one.txt"
+export valgrind_log_two="log/valgrind_log_two.txt"
+export valgrind_log_three="log/valgrind_log_three.txt"
+export valgrind_log_four="log/valgrind_log_four.txt"
+export valgrind_log_five="log/valgrind_log_five.txt"
 
-docker-compose up
+export ip_one="172.20.0.2"
+export ip_two="172.21.0.2"
+export ip_three="172.22.0.2"
+export ip_four="172.23.0.2"
+export ip_five="172.24.0.2"
+
+if [ $# -eq 1 ]; then
+
+    if [ "$1" = "build" ]; then
+        ./router/docker build -t router --no-cache .;
+    else
+        usage;
+    fi
+
+fi
+
+if [ $# -eq 0 ]; then
+
+    docker-compose up;
+
+fi
+
+
+
+

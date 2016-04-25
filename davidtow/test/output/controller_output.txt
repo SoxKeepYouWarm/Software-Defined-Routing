@@ -14,3 +14,16 @@ INIT:
 [33mWaiting for control-response payload (0 bytes) from router ...[0m [92mDone![0m
 [33mWriting response-packet to file: [0mresponse.pkt-1[0m ...[0m [92mDone![0m
 
+[33mSending control message to: [0m172.21.0.2:40001[0m ...[0m [92mDone![0m
+[33mWaiting for control-response header from router ...[0m [92mDone![0m
+[33mParsing header ...
+[0m
+------------------------------------
+|            172.21.0.1            |
+------------------------------------
+|   1    |   0    |       0        |
+------------------------------------
+
+[33mWaiting for control-response payload (0 bytes) from router ...[0m [92mDone![0m
+[33mWriting response-packet to file: [0mresponse.pkt-2[0m ...[0m [92mDone![0m
+
