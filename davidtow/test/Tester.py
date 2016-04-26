@@ -27,6 +27,7 @@ INIT_PREFIX = " -i "
 ROUTING_TABLE_PREFIX = " -r "
 UPDATE_PREFIX = " -u "
 CRASH_PREFIX = " -c "
+SENDFILE_PREFIX = " -f "
 
 def build_topology_file(num_of_routers, seed):
     topology_file = open("./topology_file", "w")
@@ -56,10 +57,10 @@ def build_topology_file(num_of_routers, seed):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-n", "--router_count", type=int, required=True,
+    parser.add_argument("-N", "--router_count", type=int, required=True,
                         help="Enter the number of routers to test (up to 5)")
 
-    parser.add_argument("-s", "--topology_seed", type=int, required=True,
+    parser.add_argument("-S", "--topology_seed", type=int, required=True,
                         help="Enter seed for topology file delay")
 
     parser.add_argument("-a", "--author", type=str, choices=["1", "2", "3", "4", "5"],
@@ -76,6 +77,9 @@ if __name__ == '__main__':
 
     parser.add_argument("-c", "--crash", type=str, choices=["1", "2", "3", "4", "5"],
                         help="Enter the target router id")
+
+    parser.add_argument("-s", "--sendfile", type=str, nargs=6,
+                        help="format: [src_id] [dest_id] [ttl] [transfer_id] [seqnum] [filename]")
 
     parser.add_argument("-t", "--target_router", type=str, choices=["1", "2", "3", "4", "5"],
                         help="Enter the target router id (1 to 5")
@@ -107,6 +111,10 @@ if __name__ == '__main__':
         subprocess.call(CMD, shell=True)
     elif args.crash:
         CMD += CRASH_PREFIX + args.crash + " &"
+        print CMD
+        subprocess.call(CMD, shell=True)
+    elif args.sendfile:
+        CMD += SENDFILE_PREFIX + " ".join(args.sendfile) + " &"
         print CMD
         subprocess.call(CMD, shell=True)
 
