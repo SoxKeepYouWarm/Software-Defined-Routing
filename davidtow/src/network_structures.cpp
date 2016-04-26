@@ -201,6 +201,47 @@ void Network_services::decode_control_message_author() {
 }
 
 
+void Network_services::decode_control_message_routing_table(Control_message* message,
+		std::vector< std::vector<Routing_table_entry> >* routing_table, int router_id,
+		unsigned char* buffer) {
+
+	uint32_t dest_ip = message->header.destination_router_ip;
+	dest_ip = htonl(dest_ip);
+	memcpy(buffer, &dest_ip, 4);
+
+	memcpy(buffer + 4, &message->header.control_code, 1);
+
+	message->header.response_time = 0;
+	memcpy(buffer + 5, &message->header.response_time, 1);
+
+	unsigned short payload_length = message->header.payload_length;
+	payload_length = htons(payload_length);
+	memcpy(buffer + 6, &payload_length, 2);
+
+	for (int i = 1; i < routing_table->size(); i++) {
+		Routing_table_entry* entry = &routing_table->at(router_id).at(i);
+		int buffer_offset = 8 + (i - 1) * 8;
+
+		unsigned short id = entry->id;
+		id = htons(id);
+		memcpy(buffer + buffer_offset, &id, 2);
+
+		// used as two bytes of padding
+		memset(buffer + buffer_offset + 2, 0, 2);
+
+		unsigned short next_hop = entry->next_hop;
+		next_hop = htons(next_hop);
+		memcpy(buffer + buffer_offset + 4, &next_hop, 2);
+
+		unsigned short cost = entry->cost;
+		cost = htons(cost);
+		memcpy(buffer + buffer_offset + 6, &cost, 2);
+
+	}
+
+}
+
+
 void Network_services::decode_control_message(Control_message* message,
 		unsigned char* buffer) {
 
@@ -219,8 +260,7 @@ void Network_services::decode_control_message(Control_message* message,
 	message->header.response_time = 0;
 	memcpy(buffer + 5, &message->header.response_time, 1);
 
-	unsigned short payload_length = 0;
-	payload_length = message->header.payload_length;
+	unsigned short payload_length = message->header.payload_length;
 	payload_length = htons(payload_length);
 	memcpy(buffer + 6, &payload_length, 2);
 

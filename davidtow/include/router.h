@@ -33,9 +33,12 @@ public:
 	void main();
 	void register_fd(int fd);
 	void unregister_fd(int fd);
-	void build_routing_table(Control_message_init_payload* init_payload);
+	void build_routing_table(
+		Control_message_init_payload* init_payload);
 
-	std::vector< std::vector<int> >* routing_table;
+	std::vector<
+		std::vector<Routing_table_entry> >* routing_table;
+
 	int routing_table_length;
 	int router_id;
 };

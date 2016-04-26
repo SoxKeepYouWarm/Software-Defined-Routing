@@ -20,6 +20,8 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
+#include <vector>
+
 typedef struct Router_update_entry {
 	uint32_t router_ip;
 	unsigned short port;
@@ -75,7 +77,7 @@ typedef struct Control_response_routingTable_entry {
 	unsigned short padding;
 	unsigned short next_hop_id;
 	unsigned short cost;
-} Routing_table_entry;
+} Control_response_routingTable_entry;
 
 typedef struct Control_response_routingTable_payload {
 	Control_response_routingTable_entry* routing_table;
@@ -120,6 +122,13 @@ typedef struct Data_packet {
 } Data_packet;
 
 
+typedef struct Routing_table_entry {
+	unsigned short id;
+	unsigned short next_hop;
+	unsigned short cost;
+} Routing_table_entry;
+
+
 class Network_services {
 
 	static Control_message* msg;
@@ -138,7 +147,14 @@ class Network_services {
 public:
 	static void encode_control_message(Control_message* message,
 			unsigned char* buffer);
+
 	static void decode_control_message(Control_message* message,
+			unsigned char* buffer);
+
+	static void decode_control_message_routing_table(
+			Control_message* message,
+			std::vector< std::vector<Routing_table_entry> >* routing_table,
+			int router_id,
 			unsigned char* buffer);
 
 	static void encode_data_message(Data_packet* message,

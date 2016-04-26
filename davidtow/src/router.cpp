@@ -99,7 +99,6 @@ void Router::main() {
 }
 
 
-
 void Router::build_routing_table(Control_message_init_payload* init_payload) {
 
 
@@ -112,16 +111,22 @@ void Router::build_routing_table(Control_message_init_payload* init_payload) {
 	}
 
 	routing_table_length = init_payload->number_of_routers;
-	routing_table = new std::vector< std::vector<int> >
-			(routing_table_length + 1, std::vector<int>(routing_table_length + 1, -1));
+	routing_table = new std::vector< std::vector<Routing_table_entry> >
+		(routing_table_length + 1, std::vector<Routing_table_entry>(routing_table_length + 1));
 
-	std::vector<int> my_vector(routing_table_length + 1);
+	std::vector<Routing_table_entry> my_vector(routing_table_length + 1);
 
 	for (int i = 0; i < routing_table_length; i++) {
 
 		Init_payload_router_entry* entry = (init_payload->entry_list + i);
 
-		my_vector.at(entry->id) = entry->cost;
+		Routing_table_entry new_entry;
+		new_entry.id = entry->id;
+		new_entry.cost = entry->cost;
+		new_entry.next_hop = entry->id;
+
+		my_vector.at(new_entry.id) = new_entry;
+
 		if (entry->cost == 0) {
 			this->router_id = entry->id;
 		}
@@ -148,8 +153,9 @@ void Router::build_routing_table(Control_message_init_payload* init_payload) {
 
 	for (int i = 1; i < routing_table_length + 1; i++) {
 
-		std::cout << "id: " << i
-			<< " cost: " << routing_table->at(router_id).at(i)
+		std::cout << "id: " << routing_table->at(router_id).at(i).id
+			<< " cost: " << routing_table->at(router_id).at(i).cost
+			<< " next_hop: " << routing_table->at(router_id).at(i).next_hop
 			<< std::endl;
 
 	}

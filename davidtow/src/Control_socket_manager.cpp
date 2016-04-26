@@ -129,11 +129,7 @@ void Control_socket_manager::handle_init(Control_message* message) {
 				<< std::endl;
 	}
 
-
 	this->router->build_routing_table(payload);
-
-
-	// TODO handle init message
 
 	send_empty_response(message);
 
@@ -142,11 +138,20 @@ void Control_socket_manager::handle_init(Control_message* message) {
 
 void Control_socket_manager::handle_routing_table(Control_message* message) {
 
+	std::cout << "HANDLE_ROUTING_TABLE" << std::endl;
 
+	message->header.payload_length = (8 * router->routing_table_length);
+	message->header.response_time = 0;
 
-	// TODO handle update message
+	std::cout << "HANDLE_ROUTING_TABLE: "
+			<< "payload_length: " << message->header.payload_length << std::endl;
 
-	send_empty_response(message);
+	int response_size = 8 + message->header.payload_length;
+	unsigned char response[response_size];
+	Network_services::decode_control_message_routing_table(message,
+			router->routing_table, router->router_id, response);
+	Network_services::send(request_fd, response, (size_t) response_size);
+
 
 }
 
@@ -269,13 +274,6 @@ void Control_socket_manager::handle_controller() {
 
 		Control_message message;
 		Network_services::encode_control_message(&message, buffer);
-
-		Control_message_init_payload* payload =
-					(Control_message_init_payload*)message.payload;
-
-		std::cout << "DEBUG: number of routers: " << payload->number_of_routers
-				<< " update period: " << payload->update_period << std::endl;
-
 		handle_control_message(&message);
 
 		memset(&buffer, 0, sizeof buffer);
