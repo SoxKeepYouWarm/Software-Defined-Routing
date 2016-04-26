@@ -158,7 +158,15 @@ void Control_socket_manager::handle_routing_table(Control_message* message) {
 
 void Control_socket_manager::handle_update(Control_message* message) {
 
-	// TODO handle update message
+	Control_message_update_payload* payload =
+			(Control_message_update_payload*) message->payload;
+
+	router->routing_table->at(router->router_id).
+			at(payload->router_id).cost = payload->cost;
+
+	std::cout << "HANDLE_UPDATE: "
+			<< "router_id: " << payload->router_id
+			<< " new cost: " << payload->cost << std::endl;
 
 	send_empty_response(message);
 
@@ -167,16 +175,18 @@ void Control_socket_manager::handle_update(Control_message* message) {
 
 void Control_socket_manager::handle_crash(Control_message* message) {
 
-	// TODO handle crash message
-
 	send_empty_response(message);
+
+	std::cout << "HANDLE_CRASH: exiting" << std::endl;
+
+	exit(0);
 
 }
 
 
 void Control_socket_manager::handle_sendfile(Control_message* message) {
 
-	// TODO handle sendfile message
+	std::cout << "HANDLE_SENDFILE: " << std::endl;
 
 	send_empty_response(message);
 
@@ -185,15 +195,21 @@ void Control_socket_manager::handle_sendfile(Control_message* message) {
 
 void Control_socket_manager::handle_sendfile_stats(Control_message* message) {
 
+	std::cout << "HANDLE_SENDFILE_STATS: " << std::endl;
+
 }
 
 
 void Control_socket_manager::handle_last_data_packet(Control_message* message) {
 
+	std::cout << "HANDLE_LAST_DATA_PACKET: " << std::endl;
+
 }
 
 
 void Control_socket_manager::handle_penultimate_data_packet(Control_message* message) {
+
+	std::cout << "HANDLE_PENULTIMATE_DATA_PACKET: " << std::endl;
 
 }
 
