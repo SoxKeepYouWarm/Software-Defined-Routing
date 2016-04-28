@@ -12,10 +12,15 @@
 
 #include <vector>
 
+#include <string>
+#include <iostream>
+#include <sstream>
+#include <stdio.h>
 //#include "Socket_manager.h"
 #include "Control_socket_manager.h"
 #include "Router_socket_manager.h"
 #include "Data_socket_manager.h"
+#include "Timer.h"
 
 class Router {
 
@@ -26,6 +31,7 @@ class Router {
 	Control_socket_manager* control_socket_manager;
 	Router_socket_manager* router_socket_manager;
 	Data_socket_manager* data_socket_manager;
+	Timer* timer;
 
 	std::string toString(int val);
 
@@ -43,6 +49,8 @@ public:
 
 	int routing_table_length;
 	int router_id;
+	int is_running_timer;
+	struct timeval tv;
 };
 
 

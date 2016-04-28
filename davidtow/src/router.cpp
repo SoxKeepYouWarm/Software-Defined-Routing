@@ -1,23 +1,16 @@
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <stdio.h>
 
 #include "network_structures.h"
-
 #include "router.h"
 
-Router::Router(char* control_port): fdmax(0) {
+Router::Router(char* control_port): fdmax(0), is_running_timer(0),
+			router_id(-1), routing_table(0), routing_table_length(0),
+			router_socket_manager(0), data_socket_manager(0) {
+
 	// clear the master and temp sets
 	FD_ZERO(&master);
 	FD_ZERO(&read_fds);
 
-	router_id = -1;
-	routing_table = 0;
-	routing_table_length = 0;
-
-	router_socket_manager = 0;
-	data_socket_manager = 0;
+	timer = new Timer(this);
 
 	control_socket_manager = new Control_socket_manager(this, control_port);
 	control_socket_manager->initialize_addrinfo();
@@ -67,9 +60,20 @@ void Router::main() {
 
 		read_fds = master;
 
-		if (select(fdmax+1, &read_fds, NULL, NULL, NULL) == -1) {
+		int select_value;
+		if (is_running_timer) {
+			select_value = select(fdmax+1, &read_fds, NULL, NULL, &tv);
+		} else {
+			select_value = select(fdmax+1, &read_fds, NULL, NULL, NULL);
+		}
+
+		if (select_value == -1) {
 			perror("select");
 			exit(4);
+		} else if (select_value == 0) {
+			// timer just expired
+			std::cout << "MAIN: timer just expired" << std::endl;
+			// TODO: handle timeout
 		}
 
 		for(int i = 0; i <= fdmax; i++) {
@@ -175,6 +179,10 @@ void Router::build_routing_table(Control_message_init_payload* init_payload) {
 			<< std::endl;
 
 	}
+
+	// routing table is setup, time to start the timer
+	timer->start(init_payload->update_period);
+	this->is_running_timer = 1;
 
 }
 

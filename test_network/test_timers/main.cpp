@@ -95,19 +95,24 @@ int main() {
     FD_SET(listener, &master);
     fdmax = listener; 
 
-
+    int is_broadcasting = 0;
 
     while (1) {
 		
         read_fds = master; 
         
-        int sel_val = select(fdmax+1, &read_fds, NULL, NULL, &tv);
+        int sel_val;
+        if (is_broadcasting) {
+            sel_val = select(fdmax+1, &read_fds, NULL, NULL, &tv);
+        } else {
+            sel_val = select(fdmax+1, &read_fds, NULL, NULL, NULL);
+        }
         
 		if (sel_val == -1) {
             perror("select");
             exit(4);
         } else if (sel_val == 0) {
-            printf("Select timed out\n");
+            printf("Select timed out, resetting timer\n");
             tv.tv_sec = 10;
 		    tv.tv_usec = 0;
         }
@@ -119,9 +124,8 @@ int main() {
                     addrlen = sizeof remoteaddr;
 	                newfd = accept(listener, (struct sockaddr*)&remoteaddr, &addrlen);
 	                
-	                printf("time: sec: %ld m_sec: %ld", tv.tv_sec, tv.tv_usec);
-	                tv.tv_sec = 10;
-		            tv.tv_usec = 0;
+	                printf("turning on timer\n");
+	                is_broadcasting = 1;
 	                
 	                if (newfd == -1) {
     	                perror("accept");
@@ -149,7 +153,8 @@ int main() {
 	                } else {
 		                printf("Received %d bytes\n", nbytes);
 		                printf("Message received was: %s\n", buf);
-		                printf("time: sec: %ld m_sec: %ld", tv.tv_sec, tv.tv_usec);
+		                printf("time: sec: [%ld] u_sec: [%ld]", tv.tv_sec, tv.tv_usec);
+		                printf("resetting timer\n");
 		                tv.tv_sec = 10;
 		                tv.tv_usec = 0;
 		                memset(&buf, 0, sizeof buf);
