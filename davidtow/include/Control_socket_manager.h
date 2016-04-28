@@ -1,19 +1,10 @@
 
-#ifndef DAVIDTOW_INCLUDE_CONTROL_SOCKET_MANAGER_H
-#define DAVIDTOW_INCLUDE_CONTROL_SOCKET_MANAGER_H
-
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
+#ifndef CONTROL_SOCKET_MANAGER_H
+#define CONTROL_SOCKET_MANAGER_H
 
 #include "Socket_manager.h"
-#include "network_structures.h"
 
-
+struct Control_message;
 class Router;
 class Control_socket_manager: public Socket_manager {
 

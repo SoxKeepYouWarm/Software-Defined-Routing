@@ -1,9 +1,15 @@
+#include "network_structures.h"
+
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
 
 #include <stdio.h>
 #include <iostream>
 #include <cstring>
-
-#include "network_structures.h"
 
 Control_message* Network_services::msg;
 unsigned char* Network_services::buff;

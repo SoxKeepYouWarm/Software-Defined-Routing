@@ -2,25 +2,15 @@
 #ifndef ROUTER_H
 #define ROUTER_H
 
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-
 #include <vector>
-
 #include <string>
-#include <iostream>
-#include <sstream>
-#include <stdio.h>
-//#include "Socket_manager.h"
-#include "Control_socket_manager.h"
-#include "Router_socket_manager.h"
-#include "Data_socket_manager.h"
-#include "Timer.h"
+
+#include "network_structures.h"
+
+class Control_socket_manager;
+class Router_socket_manager;
+class Data_socket_manager;
+class Timer;
 
 class Router {
 

@@ -4,8 +4,6 @@
 
 #include <list>
 
-//#include "router.h"
-
 struct Event {
 	long seconds;
 	long microseconds;

@@ -1,6 +1,5 @@
-
-#include "router.h"
 #include "Timer.h"
+#include "router.h"
 
 
 Timer::Timer(Router* router): router(router), interval(0) {

@@ -1,14 +1,6 @@
 
-#ifndef DAVIDTOW_INCLUDE_DATA_SOCKET_MANAGER_H
-#define DAVIDTOW_INCLUDE_DATA_SOCKET_MANAGER_H
-
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
+#ifndef DATA_SOCKET_MANAGER_H
+#define DATA_SOCKET_MANAGER_H
 
 #include "Socket_manager.h"
 

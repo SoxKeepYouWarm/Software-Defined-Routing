@@ -1,7 +1,8 @@
+#include "Socket_manager.h"
+
+#include <stdlib.h>
 #include <iostream>
 #include <stdio.h>
-
-#include "Socket_manager.h"
 
 
 Socket_manager::~Socket_manager() {

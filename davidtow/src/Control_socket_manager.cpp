@@ -1,5 +1,6 @@
-#include <iostream>
+#include "Control_socket_manager.h"
 
+#include <iostream>
 #include <cstring>
 #include <sstream>
 #include <string>
@@ -8,7 +9,6 @@
 
 #include "network_structures.h"
 #include "router.h"
-#include "Control_socket_manager.h"
 
 
 Control_socket_manager::Control_socket_manager(Router* router, char* port) {

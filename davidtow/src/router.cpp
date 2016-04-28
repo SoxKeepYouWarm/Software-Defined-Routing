@@ -1,6 +1,17 @@
+#include "router.h"
+
+#include <string>
+#include <iostream>
+#include <sstream>
+#include <stdio.h>
 
 #include "network_structures.h"
-#include "router.h"
+#include "Control_socket_manager.h"
+#include "Router_socket_manager.h"
+#include "Data_socket_manager.h"
+#include "Timer.h"
+
+
 
 Router::Router(char* control_port): fdmax(0), is_running_timer(0),
 			router_id(-1), routing_table(0), routing_table_length(0),
