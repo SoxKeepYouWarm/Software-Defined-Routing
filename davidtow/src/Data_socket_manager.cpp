@@ -8,9 +8,11 @@
 #include "Data_socket_manager.h"
 
 
-Data_socket_manager::Data_socket_manager(Router* router, char* port) {
+Data_socket_manager::Data_socket_manager(Router* router,
+		const char* port) {
 	this->router = router;
-	this->port = port;
+	this->port = new char[6];
+	strcpy(this->port, port);
 	this->listener = 0;
 	this->request_fd = 0;
 	this->new_fd = 0;

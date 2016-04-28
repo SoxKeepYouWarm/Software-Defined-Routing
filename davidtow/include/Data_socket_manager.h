@@ -18,7 +18,8 @@ class Data_socket_manager: public Socket_manager {
 	Router* router;
 
 public:
-	Data_socket_manager(Router* router, char* port);
+	Data_socket_manager(Router* router,
+			const char* port);
 	void initialize_addrinfo();
 	void handle_connection(int fd);
 

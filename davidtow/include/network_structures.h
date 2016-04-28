@@ -12,6 +12,8 @@
 #define LAST_DATA_PACKET 			7
 #define PENULTIMATE_DATA_PACKET		8
 
+#define INFINITY 					0xFFFF
+
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>

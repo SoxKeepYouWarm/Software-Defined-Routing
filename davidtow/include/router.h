@@ -27,6 +27,8 @@ class Router {
 	Router_socket_manager* router_socket_manager;
 	Data_socket_manager* data_socket_manager;
 
+	std::string toString(int val);
+
 public:
 	Router(char* control_port);
 	~Router();
@@ -36,8 +38,8 @@ public:
 	void build_routing_table(
 		Control_message_init_payload* init_payload);
 
-	std::vector<
-		std::vector<Routing_table_entry> >* routing_table;
+	std::vector<std::vector
+		<Routing_table_entry> >* routing_table;
 
 	int routing_table_length;
 	int router_id;

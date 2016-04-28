@@ -1,4 +1,6 @@
 #include <iostream>
+#include <string>
+#include <sstream>
 #include <stdio.h>
 
 #include "network_structures.h"
@@ -25,13 +27,11 @@ Router::Router(char* control_port): fdmax(0) {
 }
 
 Router::~Router() {
+
 	delete control_socket_manager;
-	/*
-	for (int i = 0; i < routing_table_length; i++) {
-		delete[] routing_table[i];
-	}
-	delete[] routing_table;
-	*/
+	delete router_socket_manager;
+	delete data_socket_manager;
+
 }
 
 
@@ -74,8 +74,6 @@ void Router::main() {
 
 		for(int i = 0; i <= fdmax; i++) {
 
-			//std::cout << "MAIN: looping over FD's" << std::endl;
-
 			if (FD_ISSET(i, &read_fds)) {
 
 				std::cout << "MAIN: FD_ISSET was hit" << std::endl;
@@ -96,6 +94,14 @@ void Router::main() {
 		}
 	}
 
+}
+
+
+std::string Router::toString(int val)
+{
+    std::stringstream stream;
+    stream << val;
+    return stream.str();
 }
 
 
@@ -129,6 +135,16 @@ void Router::build_routing_table(Control_message_init_payload* init_payload) {
 
 		if (entry->cost == 0) {
 			this->router_id = entry->id;
+
+			//const char router_port [6];
+			//const char data_port [6];
+
+			const char* router_port = toString(entry->router_port).c_str();
+			const char* data_port = toString(entry->data_port).c_str();
+
+			router_socket_manager = new Router_socket_manager(this, router_port);
+			data_socket_manager = new Data_socket_manager(this, data_port);
+
 		}
 
 	}

@@ -10,16 +10,21 @@ int main() {
     input.open("test.txt", std::ios::binary);
     
     struct stat results;
-    int size = stat("test.txt", &results);
+    stat("test.txt", &results);
 
-    std::string line;
+    int size = results.st_size;
+
+    int buffer_size = 10;
+    char line[buffer_size];
+    
     if (input.is_open()) {
     
-        while ( getline (input, line) ) {
+        while (input.read(line, buffer_size)) {
         
             std::cout << line << std::endl;
         
         }
+        
         input.close();
     
     }

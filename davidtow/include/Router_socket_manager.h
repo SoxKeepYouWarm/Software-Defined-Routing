@@ -18,7 +18,8 @@ class Router_socket_manager: public Socket_manager {
 	Router* router;
 
 public:
-	Router_socket_manager(Router* router, char* port);
+	Router_socket_manager(Router* router,
+			const char* port);
 	void initialize_addrinfo();
 	void handle_connection(int fd);
 };
