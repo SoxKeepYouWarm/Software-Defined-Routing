@@ -1,6 +1,6 @@
-==8== Memcheck, a memory error detector
-==8== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
-==8== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
-==8== Command: ../davidtow/assignment3 40004
-==8== Parent PID: 1
-==8== 
+==12== Memcheck, a memory error detector
+==12== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
+==12== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
+==12== Command: ../davidtow/assignment3 40004
+==12== Parent PID: 1
+==12== 

@@ -28,6 +28,8 @@ Router::Router(char* control_port): fdmax(0), is_running_timer(0),
 	control_socket_manager->create_socket();
 	control_socket_manager->listen();
 	register_fd(control_socket_manager->get_listener_fd());
+
+
 }
 
 Router::~Router() {
@@ -131,6 +133,17 @@ void Router::build_routing_table(Control_message_init_payload* init_payload) {
 	std::cout << "BUILD_ROUTING_TABLE: new routing table built"
 			<< std::endl;
 
+
+	router_socket_manager = new Router_socket_manager(this, routing_table->my_router_port);
+	router_socket_manager->initialize_addrinfo();
+	router_socket_manager->create_socket();
+	register_fd(router_socket_manager->get_listener_fd());
+
+	data_socket_manager = new Data_socket_manager(this, routing_table->my_data_port);
+	data_socket_manager->initialize_addrinfo();
+	data_socket_manager->create_socket();
+	data_socket_manager->listen();
+	register_fd(data_socket_manager->get_listener_fd());
 
 	// routing table is setup, time to start the timer
 	timer->start(init_payload->update_period, routing_table->my_router_id);

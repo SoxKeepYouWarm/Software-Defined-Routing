@@ -66,8 +66,8 @@ if __name__ == '__main__':
     parser.add_argument("-a", "--author", type=str, choices=["1", "2", "3", "4", "5"],
                         help="Enter the target router id", default=False)
 
-    parser.add_argument("-i", "--init", type=str, choices=["1", "2", "3", "4", "5"],
-                        help="Enter the target router id", default=False)
+    parser.add_argument("-i", "--init", type=str,
+                        help="Enter update interval", default=False)
 
     parser.add_argument("-r", "--routing_table", type=str, choices=["1", "2", "3", "4", "5"],
                         help="Enter the target router id")

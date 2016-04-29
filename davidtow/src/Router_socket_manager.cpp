@@ -42,10 +42,35 @@ void Router_socket_manager::handle_connection(int fd) {
 
 	std::cout << "ROUTER_SOCKET_MANAGER: handle connection hit" << std::endl;
 
+	if (fd == listener) {
+		std::cout << "ROUTER_SOCKET_MANAGER: " << std::endl;
+	} else {
+		std::cout << "ERROR: ROUTER_SOCKET_MANAGER: "
+				<< " fd does not match listener" << std::endl;
+	}
+
 	struct sockaddr addr;
 	socklen_t fromlen = sizeof addr;
 
-	num_of_bytes = recvfrom(request_fd, buffer, sizeof buffer, 0, &addr, &fromlen);
+	num_of_bytes = recvfrom(listener, buffer, sizeof buffer, 0, &addr, &fromlen);
+
+	std::cout << "ROUTER_SOCKET_MANAGER: "
+			<< " received " << num_of_bytes << " bytes from listener" << std::endl;
+
+	std::cout << "ROUTER_SOCKET_MANAGER: message: " << buffer << std::endl;
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
