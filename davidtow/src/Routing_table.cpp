@@ -42,7 +42,7 @@ Routing_table::Routing_table(Control_message_init_payload* init_payload) {
 	}
 
 	if (this->my_router_id == -1) {
-		std::cout << "BUILD_ROUTING_TABLE: ERROR: "
+		std::cout << "ROUTING_TABLE: ERROR: "
 				<< "couldn't find a routing entry id with cost 0"
 				<< std::endl;
 		exit(4);

@@ -35,6 +35,8 @@ Router::~Router() {
 	delete control_socket_manager;
 	delete router_socket_manager;
 	delete data_socket_manager;
+	delete timer;
+	delete routing_table;
 
 }
 
@@ -84,7 +86,7 @@ void Router::main() {
 		} else if (select_value == 0) {
 			// timer just expired
 			std::cout << "MAIN: timer just expired" << std::endl;
-			// TODO: handle timeout
+			timer->handle_timeout();
 		}
 
 		for(int i = 0; i <= fdmax; i++) {
@@ -121,6 +123,7 @@ void Router::build_routing_table(Control_message_init_payload* init_payload) {
 		std::cout << "BUILD_ROUTING_TABLE: ERROR: "
 				<< "routing table was already initialized"
 				<< std::endl;
+		return;
 	}
 
 	routing_table = new Routing_table(init_payload);
@@ -132,6 +135,10 @@ void Router::build_routing_table(Control_message_init_payload* init_payload) {
 	// routing table is setup, time to start the timer
 	timer->start(init_payload->update_period, routing_table->my_router_id);
 	this->is_running_timer = 1;
+
+	std::cout << "DEBUG: "
+			<< "tv sec: " << tv.tv_sec
+			<< " tv_usec: " << tv.tv_usec << std::endl;
 
 }
 
