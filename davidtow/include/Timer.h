@@ -4,32 +4,33 @@
 
 #include <list>
 
-struct Event {
+typedef struct Timer_event {
 	long seconds;
 	long microseconds;
 	int router_id;
-};
+	int received_update;
+	int missed_updates;
+} Timer_event;
 
 
 class Router;
 class Timer {
 
-	std::list<Event> timed_events;
+	std::list<Timer_event> registered_events;
 	struct timeval* tv;
 
-	void set_timer_for_next_event();
+	void calculate_remaining_time(Timer_event* event);
 
 	Router* router;
-	int interval;
+	long interval;
 
 public:
 
 	Timer(Router* router);
-	void start(int interval);
+	void start(long interval, int my_router_id);
 
-	void schedule_alarm(float time, struct pkt packet);
-	void handle_next_event_alarm();
-	void remove_alarm(int seq_num);
+	void register_event(int router_id);
+	void handle_timeout();
 
 };
 

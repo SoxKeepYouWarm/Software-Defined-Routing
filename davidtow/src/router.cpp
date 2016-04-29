@@ -10,11 +10,11 @@
 #include "Router_socket_manager.h"
 #include "Data_socket_manager.h"
 #include "Timer.h"
-
+#include "Routing_table.h"
 
 
 Router::Router(char* control_port): fdmax(0), is_running_timer(0),
-			router_id(-1), routing_table(0), routing_table_length(0),
+			routing_table(0),
 			router_socket_manager(0), data_socket_manager(0) {
 
 	// clear the master and temp sets
@@ -112,95 +112,68 @@ void Router::main() {
 }
 
 
-std::string Router::toString(int val)
-{
-    std::stringstream stream;
-    stream << val;
-    return stream.str();
-}
-
-
 void Router::build_routing_table(Control_message_init_payload* init_payload) {
 
 
 	std::cout << "DEBUG: reached build_routing_table" << std::endl;
 
-	if (this->router_id != -1) {
+	if (routing_table != 0) {
 		std::cout << "BUILD_ROUTING_TABLE: ERROR: "
 				<< "routing table was already initialized"
 				<< std::endl;
 	}
 
-	routing_table_length = init_payload->number_of_routers;
-	routing_table = new std::vector< std::vector<Routing_table_entry> >
-		(routing_table_length + 1, std::vector<Routing_table_entry>(routing_table_length + 1));
+	routing_table = new Routing_table(init_payload);
 
-	std::vector<Routing_table_entry> my_vector(routing_table_length + 1);
-
-	for (int i = 0; i < routing_table_length; i++) {
-
-		Init_payload_router_entry* entry = (init_payload->entry_list + i);
-
-		Routing_table_entry new_entry;
-		new_entry.id = entry->id;
-		new_entry.cost = entry->cost;
-		new_entry.next_hop = entry->id;
-
-		my_vector.at(new_entry.id) = new_entry;
-
-		if (entry->cost == 0) {
-			this->router_id = entry->id;
-
-			//const char router_port [6];
-			//const char data_port [6];
-
-			const char* router_port = toString(entry->router_port).c_str();
-			const char* data_port = toString(entry->data_port).c_str();
-
-			router_socket_manager = new Router_socket_manager(this, router_port);
-			data_socket_manager = new Data_socket_manager(this, data_port);
-
-		}
-
-	}
-
-	if (this->router_id == -1) {
-		std::cout << "BUILD_ROUTING_TABLE: ERROR: "
-				<< "couldn't find a routing entry id with cost 0"
-				<< std::endl;
-		exit(4);
-	}
-
-
-	for (int i = 1; i < routing_table_length + 1; i++) {
-		routing_table->at(router_id).at(i) = my_vector[i];
-	}
-
-
-	std::cout << "BUILD_ROUTING_TABLE: new routing table"
+	std::cout << "BUILD_ROUTING_TABLE: new routing table built"
 			<< std::endl;
 
-	std::cout << "ROUTER_ID: " << router_id << std::endl;
-
-	for (int i = 1; i < routing_table_length + 1; i++) {
-
-		std::cout << "id: " << routing_table->at(router_id).at(i).id
-			<< " cost: " << routing_table->at(router_id).at(i).cost
-			<< " next_hop: " << routing_table->at(router_id).at(i).next_hop
-			<< std::endl;
-
-	}
 
 	// routing table is setup, time to start the timer
-	timer->start(init_payload->update_period);
+	timer->start(init_payload->update_period, routing_table->my_router_id);
 	this->is_running_timer = 1;
 
 }
 
 
+int Router::get_my_router_id() {
+	if (this->routing_table) return routing_table->my_router_id;
+	else {
+		std::cout << "ERROR: get_my_router_id: "
+				<< "routing table wasn't initialized" << std::endl;
+		return -1;
+	}
+}
 
 
+int Router::get_routing_table_length() {
+	if (this->routing_table) return routing_table->routing_table_length;
+	else {
+		std::cout << "ERROR: get_routing_table_length: "
+				<< "routing table wasn't initialized" << std::endl;
+		return -1;
+	}
+}
 
+
+const std::vector< std::vector<Routing_table_entry> >* Router::get_routing_table() {
+	if (this->routing_table) return routing_table->get_routing_table();
+	else {
+		std::cout << "ERROR: get_routing_table: "
+				<< "routing table wasn't initialized" << std::endl;
+		return 0;
+	}
+}
+
+
+std::vector< std::vector<Routing_table_entry> >* Router::get_writeable_routing_table() {
+	if (this->routing_table) return routing_table->get_writeable_routing_table();
+	else {
+		std::cout << "ERROR: get_writeable_routing_table: "
+				<< "routing table wasn't initialized" << std::endl;
+		return 0;
+	}
+}
 
 
 

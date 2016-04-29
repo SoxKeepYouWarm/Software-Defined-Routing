@@ -208,7 +208,7 @@ void Network_services::decode_control_message_author() {
 
 
 void Network_services::decode_control_message_routing_table(Control_message* message,
-		std::vector< std::vector<Routing_table_entry> >* routing_table, int router_id,
+		const std::vector< std::vector<Routing_table_entry> >* routing_table, int router_id,
 		unsigned char* buffer) {
 
 	uint32_t dest_ip = message->header.destination_router_ip;
@@ -225,7 +225,7 @@ void Network_services::decode_control_message_routing_table(Control_message* mes
 	memcpy(buffer + 6, &payload_length, 2);
 
 	for (int i = 1; i < routing_table->size(); i++) {
-		Routing_table_entry* entry = &routing_table->at(router_id).at(i);
+		const Routing_table_entry* entry = &routing_table->at(router_id).at(i);
 		int buffer_offset = 8 + (i - 1) * 8;
 
 		unsigned short id = entry->id;

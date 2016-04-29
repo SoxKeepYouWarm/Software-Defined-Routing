@@ -1,4 +1,7 @@
 #include "Timer.h"
+
+#include <iostream>
+
 #include "router.h"
 
 
@@ -7,9 +10,111 @@ Timer::Timer(Router* router): router(router), interval(0) {
 }
 
 
-void Timer::start(int interval) {
+void Timer::start(long interval, int my_router_id) {
 
 	this->interval = interval;
 	// broadcast my vector table to all neighbors
+
+	Timer_event my_update_event;
+
+	// this is the first event being registered so use interval as timeout value
+	my_update_event.seconds = interval;
+	my_update_event.microseconds = 0;
+	my_update_event.router_id = my_router_id;
+	my_update_event.received_update = 0;
+	my_update_event.missed_updates = 0;
+
+	registered_events.push_back(my_update_event);
+
+}
+
+
+void Timer::register_event(int router_id) {
+
+	Timer_event new_event;
+
+	new_event.router_id = router_id;
+	calculate_remaining_time(&new_event);
+	new_event.received_update = 0;
+	new_event.missed_updates = 0;
+
+	registered_events.push_back(new_event);
+
+}
+
+
+void Timer::handle_timeout() {
+	Timer_event popped_event = registered_events.front();
+	registered_events.pop_front();
+
+	// handle event
+	if (popped_event.router_id == router->get_my_router_id()) {
+		// my router needs to broadcast
+
+		// TODO broadcast my vector table
+		std::cout << "TIMER: broadcasting my vector table" << std::endl;
+
+		// reset timer, add back to list
+		calculate_remaining_time(&popped_event);
+		registered_events.push_back(popped_event);
+
+	} else {
+
+		if (popped_event.received_update) {
+
+			std::cout << "TIMER: router_id: " << popped_event.router_id
+					<< " timed out after receiving update" << std::endl;
+
+			popped_event.missed_updates = 0;
+
+			// reset timer, add back to list
+			calculate_remaining_time(&popped_event);
+			registered_events.push_back(popped_event);
+
+		} else {
+
+			std::cout << "TIMER: router_id: " << popped_event.router_id
+					<< " timed out without receiving an update" << std::endl;
+
+			popped_event.missed_updates ++;
+
+			if (popped_event.missed_updates == 3) {
+				// missed three consecutive updates from a router
+
+				std::cout << "TIMER: router_id: " << popped_event.router_id
+						<< " is inactive, setting cost to infinity"
+						<< std::endl;
+
+				// TODO set router cost to infinity
+
+				// event is not added back to the list
+
+			} else {
+
+				// reset timer, add back to list
+				calculate_remaining_time(&popped_event);
+				registered_events.push_back(popped_event);
+
+			}
+
+		}
+
+	}
+
+}
+
+
+void Timer::calculate_remaining_time(Timer_event* event) {
+
+	long clocked_seconds = tv->tv_sec;
+	long clocked_micro_seconds = tv->tv_usec;
+
+	if (clocked_micro_seconds > 0) {
+		event->seconds = interval - clocked_seconds - 1;
+		event->microseconds = 1000000 - clocked_micro_seconds;
+	} else {
+		event->seconds = interval - clocked_seconds;
+		event->microseconds = 0;
+	}
 
 }

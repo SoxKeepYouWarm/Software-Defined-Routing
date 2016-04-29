@@ -76,6 +76,7 @@ typedef struct Control_response_routingTable_entry {
 	unsigned short cost;
 } Control_response_routingTable_entry;
 
+
 typedef struct Control_response_routingTable_payload {
 	Control_response_routingTable_entry* routing_table;
 } Control_response_routingTable_payload;
@@ -150,7 +151,7 @@ public:
 
 	static void decode_control_message_routing_table(
 			Control_message* message,
-			std::vector< std::vector<Routing_table_entry> >* routing_table,
+			const std::vector< std::vector<Routing_table_entry> >* routing_table,
 			int router_id,
 			unsigned char* buffer);
 

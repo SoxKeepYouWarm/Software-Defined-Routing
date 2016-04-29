@@ -140,7 +140,7 @@ void Control_socket_manager::handle_routing_table(Control_message* message) {
 
 	std::cout << "HANDLE_ROUTING_TABLE" << std::endl;
 
-	message->header.payload_length = (8 * router->routing_table_length);
+	message->header.payload_length = (8 * router->get_routing_table_length());
 	message->header.response_time = 0;
 
 	std::cout << "HANDLE_ROUTING_TABLE: "
@@ -149,7 +149,7 @@ void Control_socket_manager::handle_routing_table(Control_message* message) {
 	int response_size = 8 + message->header.payload_length;
 	unsigned char response[response_size];
 	Network_services::decode_control_message_routing_table(message,
-			router->routing_table, router->router_id, response);
+			router->get_routing_table(), router->get_my_router_id(), response);
 	Network_services::send(request_fd, response, (size_t) response_size);
 
 
@@ -161,7 +161,7 @@ void Control_socket_manager::handle_update(Control_message* message) {
 	Control_message_update_payload* payload =
 			(Control_message_update_payload*) message->payload;
 
-	router->routing_table->at(router->router_id).
+	router->get_writeable_routing_table()->at(router->get_my_router_id()).
 			at(payload->router_id).cost = payload->cost;
 
 	std::cout << "HANDLE_UPDATE: "
