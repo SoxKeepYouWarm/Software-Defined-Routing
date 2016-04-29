@@ -34,9 +34,6 @@ public:
 	const std::vector<
 		std::vector<Routing_table_entry> >*
 		get_routing_table();
-	std::vector<
-		std::vector<Routing_table_entry> >*
-		get_writeable_routing_table();
 
 	Control_socket_manager* control_socket_manager;
 	Router_socket_manager* router_socket_manager;

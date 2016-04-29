@@ -73,18 +73,14 @@ Routing_table::~Routing_table() {
 }
 
 
-void Routing_table::initialize_table() {
+void Routing_table::update(int router_id, int cost) {
+
+	this->routing_table->at(my_router_id).at(router_id).cost = cost;
 
 }
-
 
 
 const std::vector< std::vector<Routing_table_entry> >* Routing_table::get_routing_table() {
-	return this->routing_table;
-}
-
-
-std::vector< std::vector<Routing_table_entry> >* Routing_table::get_writeable_routing_table() {
 	return this->routing_table;
 }
 

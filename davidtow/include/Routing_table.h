@@ -19,15 +19,13 @@ class Routing_table {
 public:
 	Routing_table(Control_message_init_payload* init_payload);
 	~Routing_table();
-	void initialize_table();
+
+	void update(int router_id, int cost);
 
 	const std::vector<
 			std::vector<Routing_table_entry> >*
 			get_routing_table();
 
-	std::vector<
-			std::vector<Routing_table_entry> >*
-			get_writeable_routing_table();
 
 	int routing_table_length;
 	int my_router_id;

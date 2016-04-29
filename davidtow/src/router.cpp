@@ -173,16 +173,6 @@ const std::vector< std::vector<Routing_table_entry> >* Router::get_routing_table
 }
 
 
-std::vector< std::vector<Routing_table_entry> >* Router::get_writeable_routing_table() {
-	if (this->routing_table) return routing_table->get_writeable_routing_table();
-	else {
-		std::cout << "ERROR: get_writeable_routing_table: "
-				<< "routing table wasn't initialized" << std::endl;
-		return 0;
-	}
-}
-
-
 
 
 

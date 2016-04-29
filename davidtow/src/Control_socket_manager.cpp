@@ -9,6 +9,7 @@
 
 #include "network_structures.h"
 #include "router.h"
+#include "Routing_table.h"
 
 
 Control_socket_manager::Control_socket_manager(Router* router, char* port) {
@@ -140,6 +141,12 @@ void Control_socket_manager::handle_routing_table(Control_message* message) {
 
 	std::cout << "HANDLE_ROUTING_TABLE" << std::endl;
 
+	if (router->get_routing_table() == 0) {
+		std::cout << "HANDLE_ROUTING_TABLE: "
+				<< "routing table was not initialized, aborting" << std::endl;
+		return;
+	}
+
 	message->header.payload_length = (8 * router->get_routing_table_length());
 	message->header.response_time = 0;
 
@@ -161,8 +168,7 @@ void Control_socket_manager::handle_update(Control_message* message) {
 	Control_message_update_payload* payload =
 			(Control_message_update_payload*) message->payload;
 
-	router->get_writeable_routing_table()->at(router->get_my_router_id()).
-			at(payload->router_id).cost = payload->cost;
+	router->routing_table->update(payload->router_id, payload->cost);
 
 	std::cout << "HANDLE_UPDATE: "
 			<< "router_id: " << payload->router_id
