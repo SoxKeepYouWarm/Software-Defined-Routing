@@ -34,9 +34,6 @@ Routing_table::Routing_table(Control_message_init_payload* init_payload) {
 			strcpy(this->my_router_port, router_port);
 			strcpy(this->my_data_port, data_port);
 
-			//router_socket_manager = new Router_socket_manager(this, router_port);
-			//data_socket_manager = new Data_socket_manager(this, data_port);
-
 		}
 
 	}

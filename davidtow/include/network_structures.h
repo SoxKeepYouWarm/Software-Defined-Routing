@@ -19,6 +19,7 @@
 
 #include <vector>
 
+/*
 typedef struct Router_update_entry {
 	uint32_t router_ip;
 	unsigned short port;
@@ -35,6 +36,7 @@ typedef struct Router_update_packet {
 	uint32_t source_router_ip;
 	Router_update_entry* entry_list;
 } Router_update_packet;
+*/
 
 
 typedef struct Control_message_header {
@@ -127,6 +129,22 @@ typedef struct Routing_table_entry {
 } Routing_table_entry;
 
 
+typedef struct Router_update_entry {
+	unsigned char router_ip[4];
+	unsigned short router_port;
+	unsigned short id;
+	unsigned short cost;
+} Router_update_entry;
+
+
+typedef struct Router_update_message {
+	unsigned short num_of_update_fields;
+	unsigned short router_port;
+	unsigned char router_ip[4];
+	Router_update_entry* update_entries;
+} Router_update_message;
+
+
 class Network_services {
 
 	static Control_message* msg;
@@ -157,6 +175,10 @@ public:
 
 	static void encode_data_message(Data_packet* message,
 			unsigned char* buffer);
+
+	static void encode_router_message(Router_update_message* message,
+			unsigned char* buffer);
+
 
 	static void* get_in_addr(struct sockaddr* sa);
 	static void send(int fd, unsigned char* message, size_t size);

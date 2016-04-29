@@ -10,6 +10,7 @@
 #include "network_structures.h"
 #include "router.h"
 #include "Routing_table.h"
+#include "Util.h"
 
 
 Control_socket_manager::Control_socket_manager(Router* router, char* port) {
@@ -74,7 +75,7 @@ void Control_socket_manager::send_empty_response(Control_message* message) {
 	int response_size = 8;
 	unsigned char response[response_size];
 	Network_services::decode_control_message(message, response);
-	Network_services::send(request_fd, response, (size_t) response_size);
+	::send(request_fd, response, (size_t) response_size);
 
 }
 
@@ -102,7 +103,7 @@ void Control_socket_manager::handle_author(Control_message* message) {
 	printf("HANDLE_AUTHOR: response is: %.*s\n",
 			ntohs(message->header.payload_length), (char*)message->payload);
 
-	Network_services::send(request_fd, response, (size_t) response_size);
+	::send(request_fd, response, (size_t) response_size);
 
 }
 
@@ -157,7 +158,7 @@ void Control_socket_manager::handle_routing_table(Control_message* message) {
 	unsigned char response[response_size];
 	Network_services::decode_control_message_routing_table(message,
 			router->get_routing_table(), router->get_my_router_id(), response);
-	Network_services::send(request_fd, response, (size_t) response_size);
+	::send(request_fd, response, (size_t) response_size);
 
 
 }
@@ -223,7 +224,7 @@ void Control_socket_manager::handle_penultimate_data_packet(Control_message* mes
 void Control_socket_manager::set_message_destination_ip(Control_message* message) {
 
 	uint32_t net_ip = htonl(((in_addr*)
-			Network_services::get_in_addr((struct sockaddr*)&remoteaddr))->s_addr);
+			::get_in_addr((struct sockaddr*)&remoteaddr))->s_addr);
 
 	std::cout << "SET_MESSAGE_DESTINATION_IP: remote ip: "
 			<< net_ip << std::endl;

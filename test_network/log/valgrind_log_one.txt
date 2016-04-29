@@ -1,6 +1,41 @@
-==8== Memcheck, a memory error detector
-==8== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
-==8== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
-==8== Command: ../davidtow/assignment3 40000
-==8== Parent PID: 1
-==8== 
+==7== Memcheck, a memory error detector
+==7== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
+==7== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
+==7== Command: ../davidtow/assignment3 40000
+==7== Parent PID: 1
+==7== 
+==7== 
+==7== Process terminating with default action of signal 6 (SIGABRT): dumping core
+==7==    at 0x5407418: raise (raise.c:54)
+==7==    by 0x5409019: abort (abort.c:89)
+==7==    by 0x5449729: __libc_message (libc_fatal.c:175)
+==7==    by 0x54EA89B: __fortify_fail (fortify_fail.c:37)
+==7==    by 0x54EA83F: __stack_chk_fail (stack_chk_fail.c:28)
+==7==    by 0x40603A: Router_socket_manager::handle_connection(int) (Router_socket_manager.cpp:82)
+==7==    by 0x403E34: Router::main() (router.cpp:103)
+==7==    by 0x40897B: main (davidtow_assignment3.cpp:51)
+==7== 
+==7== HEAP SUMMARY:
+==7==     in use at exit: 77,282 bytes in 19 blocks
+==7==   total heap usage: 37 allocs, 18 frees, 92,348 bytes allocated
+==7== 
+==7== 40 (16 direct, 24 indirect) bytes in 1 blocks are definitely lost in loss record 9 of 17
+==7==    at 0x4C2E0EF: operator new(unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==7==    by 0x405122: Network_services::encode_control_message_init_payload() (network_structures.cpp:36)
+==7==    by 0x405706: Network_services::encode_control_message(Control_message*, unsigned char*) (network_structures.cpp:176)
+==7==    by 0x408780: Control_socket_manager::handle_controller() (Control_socket_manager.cpp:299)
+==7==    by 0x40880C: Control_socket_manager::handle_connection(int) (Control_socket_manager.cpp:315)
+==7==    by 0x403DCF: Router::main() (router.cpp:100)
+==7==    by 0x40897B: main (davidtow_assignment3.cpp:51)
+==7== 
+==7== LEAK SUMMARY:
+==7==    definitely lost: 16 bytes in 1 blocks
+==7==    indirectly lost: 24 bytes in 1 blocks
+==7==      possibly lost: 0 bytes in 0 blocks
+==7==    still reachable: 77,242 bytes in 17 blocks
+==7==         suppressed: 0 bytes in 0 blocks
+==7== Reachable blocks (those to which a pointer was found) are not shown.
+==7== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==7== 
+==7== For counts of detected and suppressed errors, rerun with: -v
+==7== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)

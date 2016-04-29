@@ -5,8 +5,12 @@
 #include <string>
 #include <string.h>
 #include <stdio.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 #include "router.h"
+#include "Util.h"
+#include "network_structures.h"
 
 
 Router_socket_manager::Router_socket_manager(Router* router, const char* port) {
@@ -40,10 +44,8 @@ void Router_socket_manager::initialize_addrinfo() {
 
 void Router_socket_manager::handle_connection(int fd) {
 
-	std::cout << "ROUTER_SOCKET_MANAGER: handle connection hit" << std::endl;
-
 	if (fd == listener) {
-		std::cout << "ROUTER_SOCKET_MANAGER: " << std::endl;
+		std::cout << "ROUTER_SOCKET_MANAGER: hit listener" << std::endl;
 	} else {
 		std::cout << "ERROR: ROUTER_SOCKET_MANAGER: "
 				<< " fd does not match listener" << std::endl;
@@ -58,6 +60,9 @@ void Router_socket_manager::handle_connection(int fd) {
 			<< " received " << num_of_bytes << " bytes from listener" << std::endl;
 
 	std::cout << "ROUTER_SOCKET_MANAGER: message: " << buffer << std::endl;
+
+	Router_update_message message;
+	Network_services::encode_router_message(&message, buffer);
 
 }
 

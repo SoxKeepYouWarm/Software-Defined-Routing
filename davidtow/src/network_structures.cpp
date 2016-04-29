@@ -18,25 +18,10 @@ unsigned char Network_services::control_code;
 int Network_services::payload_length;
 
 
-// get sockaddr, IPv4 or IPv6:
-void* Network_services::get_in_addr(struct sockaddr* sa) {
-	if (sa->sa_family == AF_INET) {
-		return &(((struct sockaddr_in*)sa)->sin_addr);
-	}
-
-	return &(((struct sockaddr_in6*)sa)->sin6_addr);
-}
 
 
-void Network_services::send(int fd, unsigned char* message, size_t size) {
 
-	if (int out_bytes = ::send(fd, message, size, 0) == -1) {
-		perror("send");
-	} else {
-		printf("SEND: response sent %d bytes successfully\n", out_bytes);
-	}
 
-}
 
 
 void Network_services::encode_control_message_init_payload() {
@@ -289,4 +274,54 @@ void Network_services::encode_data_message(Data_packet* message,
 
 
 }
+
+
+void Network_services::encode_router_message(Router_update_message* message,
+		unsigned char* buffer) {
+
+	unsigned short num_of_update_fields = 0;
+	memcpy(&num_of_update_fields, buffer, 2);
+	num_of_update_fields = ntohs(num_of_update_fields);
+	message->num_of_update_fields = num_of_update_fields;
+
+	unsigned short source_router_port = 0;
+	memcpy(&source_router_port, buffer + 2, 2);
+	source_router_port = ntohs(source_router_port);
+	message->router_port = source_router_port;
+
+	uint32_t router_ip = 0;
+	memcpy(&router_ip, buffer + 4, 4);
+	router_ip = ntohl(router_ip);
+	memcpy(message->router_ip, &router_ip, 4);
+
+	message->update_entries = new Router_update_entry[message->num_of_update_fields];
+	for (int i = 0; i < message->num_of_update_fields; i++) {
+
+		Router_update_entry* entry = &message->update_entries[i];
+		int buffer_offset = 8 + (i * 12);
+
+		uint32_t router_ip = 0;
+		memcpy(&router_ip, buffer + buffer_offset, 4);
+		router_ip = ntohl(router_ip);
+		memcpy(entry->router_ip, &router_ip, 4);
+
+		unsigned short id = 0;
+		memcpy(&id, buffer + buffer_offset + 4, 2);
+		id = ntohl(id);
+		memcpy(&entry->id, &id, 2);
+
+		unsigned short cost = 0;
+		memcpy(&cost, buffer + buffer_offset + 6, 2);
+		cost = ntohl(cost);
+		memcpy(&entry->cost, &cost, 2);
+
+	}
+
+}
+
+
+
+
+
+
 
