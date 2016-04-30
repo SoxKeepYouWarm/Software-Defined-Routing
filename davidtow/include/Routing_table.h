@@ -1,6 +1,6 @@
 
-#ifndef DAVIDTOW_INCLUDE_ROUTING_TABLE_H_
-#define DAVIDTOW_INCLUDE_ROUTING_TABLE_H_
+#ifndef ROUTING_TABLE_H
+#define ROUTING_TABLE_H
 
 #include <vector>
 

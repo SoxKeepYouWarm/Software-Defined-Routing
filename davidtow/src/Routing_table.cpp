@@ -71,6 +71,8 @@ Routing_table::Routing_table(Router* router,
 
 Routing_table::~Routing_table() {
 
+	delete routing_table;
+
 }
 
 
@@ -87,15 +89,27 @@ void Routing_table::update_routing(Router_update_message* message) {
 
 	unsigned short sender_router_id = -1;
 
+	std::vector<Routing_table_entry> new_vector(routing_table_length + 1);
+
 	for (int i = 0; i < message->num_of_update_fields; i++) {
 
-		Router_update_entry* entry = &message->update_entries[i];
+		Router_update_entry* message_entry = &message->update_entries[i];
+		Routing_table_entry* table_entry = &new_vector[i];
 
-		if (entry->cost == 0) sender_router_id = entry->id;
+		if (message_entry->cost == 0) sender_router_id = message_entry->id;
 
-		// TODO calculate new shortest paths and next hop routers
+		table_entry->id = message_entry->id;
+		table_entry->cost = message_entry->cost;
 
 	}
+
+	if (sender_router_id == -1) {
+		std::cout << "ERROR: UPDATE_ROUTING: "
+				<< "sender_router_id was not set" << std::endl;
+		return;
+	}
+
+	routing_table->at(sender_router_id) = new_vector;
 
 	router->timer->notify_routing_update_received(sender_router_id);
 

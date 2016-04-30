@@ -77,7 +77,9 @@ void Timer::handle_timeout() {
 			std::cout << "TIMER: router_id: " << popped_event.router_id
 					<< " timed out after receiving update" << std::endl;
 
+			// reset missed_update counter, unset received flag
 			popped_event.missed_updates = 0;
+			popped_event.received_update = 0;
 
 			// reset timer, add back to list
 			calculate_remaining_time(&popped_event);

@@ -19,25 +19,6 @@
 
 #include <vector>
 
-/*
-typedef struct Router_update_entry {
-	uint32_t router_ip;
-	unsigned short port;
-	unsigned short padding;
-	unsigned short id;
-	unsigned short cost;
-
-} Router_update_entry;
-
-
-typedef struct Router_update_packet {
-	unsigned short number_of_fields;
-	unsigned short source_router_port;
-	uint32_t source_router_ip;
-	Router_update_entry* entry_list;
-} Router_update_packet;
-*/
-
 
 typedef struct Control_message_header {
 	uint32_t destination_router_ip;
