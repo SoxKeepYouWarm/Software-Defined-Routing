@@ -149,3 +149,28 @@ void Timer::calculate_remaining_time(Timer_event* event) {
 			<< " microseconds: " << event->microseconds << std::endl;
 
 }
+
+
+
+void Timer::notify_routing_update_received(int router_id) {
+
+	for (std::list<Timer_event>::iterator iter = registered_events.begin();
+			iter != registered_events.end(); iter++) {
+
+		if ((*iter).router_id == router_id) {
+			(*iter).received_update = 1;
+		}
+
+	}
+
+}
+
+
+
+
+
+
+
+
+
+

@@ -31,6 +31,7 @@ public:
 
 	void register_event(int router_id);
 	void handle_timeout();
+	void notify_routing_update_received(int router_id);
 
 };
 

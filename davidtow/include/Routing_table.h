@@ -6,6 +6,8 @@
 
 #include "network_structures.h"
 
+class Router;
+
 class Routing_table {
 
 	typedef struct Entry {
@@ -16,11 +18,15 @@ class Routing_table {
 	std::vector<std::vector
 			<Routing_table_entry> >* routing_table;
 
+	Router* router;
+
 public:
-	Routing_table(Control_message_init_payload* init_payload);
+	Routing_table(Router* router,
+			Control_message_init_payload* init_payload);
 	~Routing_table();
 
-	void update(int router_id, int cost);
+	void update_cost(int router_id, int cost);
+	void update_routing(Router_update_message* message);
 
 	const std::vector<
 			std::vector<Routing_table_entry> >*

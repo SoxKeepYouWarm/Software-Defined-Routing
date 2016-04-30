@@ -169,7 +169,7 @@ void Control_socket_manager::handle_update(Control_message* message) {
 	Control_message_update_payload* payload =
 			(Control_message_update_payload*) message->payload;
 
-	router->routing_table->update(payload->router_id, payload->cost);
+	router->routing_table->update_cost(payload->router_id, payload->cost);
 
 	std::cout << "HANDLE_UPDATE: "
 			<< "router_id: " << payload->router_id

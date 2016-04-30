@@ -128,7 +128,7 @@ void Router::build_routing_table(Control_message_init_payload* init_payload) {
 		return;
 	}
 
-	routing_table = new Routing_table(init_payload);
+	routing_table = new Routing_table(this, init_payload);
 
 	std::cout << "BUILD_ROUTING_TABLE: new routing table built"
 			<< std::endl;

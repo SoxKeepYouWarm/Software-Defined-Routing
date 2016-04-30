@@ -9,6 +9,7 @@
 #include <arpa/inet.h>
 
 #include "router.h"
+#include "Routing_table.h"
 #include "Util.h"
 #include "network_structures.h"
 
@@ -63,6 +64,8 @@ void Router_socket_manager::handle_connection(int fd) {
 
 	Router_update_message message;
 	Network_services::encode_router_message(&message, buffer);
+
+	router->routing_table->update_routing(&message);
 
 }
 

@@ -3,9 +3,13 @@
 #include <iostream>
 #include <string.h>
 
+#include "router.h"
+#include "Timer.h"
 #include "Util.h"
 
-Routing_table::Routing_table(Control_message_init_payload* init_payload) {
+
+Routing_table::Routing_table(Router* router,
+		Control_message_init_payload* init_payload): router(router) {
 
 	routing_table_length = init_payload->number_of_routers;
 
@@ -70,9 +74,30 @@ Routing_table::~Routing_table() {
 }
 
 
-void Routing_table::update(int router_id, int cost) {
+void Routing_table::update_cost(int router_id, int cost) {
 
 	this->routing_table->at(my_router_id).at(router_id).cost = cost;
+
+}
+
+
+void Routing_table::update_routing(Router_update_message* message) {
+
+	// update routing table
+
+	unsigned short sender_router_id = -1;
+
+	for (int i = 0; i < message->num_of_update_fields; i++) {
+
+		Router_update_entry* entry = &message->update_entries[i];
+
+		if (entry->cost == 0) sender_router_id = entry->id;
+
+		// TODO calculate new shortest paths and next hop routers
+
+	}
+
+	router->timer->notify_routing_update_received(sender_router_id);
 
 }
 
