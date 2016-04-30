@@ -157,7 +157,7 @@ void Control_socket_manager::handle_routing_table(Control_message* message) {
 	int response_size = 8 + message->header.payload_length;
 	unsigned char response[response_size];
 	Network_services::decode_control_message_routing_table(message,
-			router->get_routing_table(), router->get_my_router_id(), response);
+			router->routing_table, router->get_my_router_id(), response);
 	::send(request_fd, response, (size_t) response_size);
 
 

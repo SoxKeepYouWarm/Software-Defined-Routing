@@ -4,3 +4,35 @@
 ==7== Command: ../davidtow/assignment3 40001
 ==7== Parent PID: 1
 ==7== 
+==7== Use of uninitialised value of size 8
+==7==    at 0x4F3BB03: ??? (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.21)
+==7==    by 0x4F3D1AB: std::ostreambuf_iterator<char, std::char_traits<char> > std::num_put<char, std::ostreambuf_iterator<char, std::char_traits<char> > >::_M_insert_int<unsigned long>(std::ostreambuf_iterator<char, std::char_traits<char> >, std::ios_base&, char, unsigned long) const (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.21)
+==7==    by 0x4F3D35C: std::num_put<char, std::ostreambuf_iterator<char, std::char_traits<char> > >::do_put(std::ostreambuf_iterator<char, std::char_traits<char> >, std::ios_base&, char, unsigned long) const (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.21)
+==7==    by 0x4F49689: std::ostream& std::ostream::_M_insert<unsigned long>(unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.21)
+==7==    by 0x406AED: Routing_table::print_routing_table() (Routing_table.cpp:166)
+==7==    by 0x406685: Routing_table::Routing_table(Router*, Control_message_init_payload*) (Routing_table.cpp:66)
+==7==    by 0x403EDA: Router::build_routing_table(Control_message_init_payload*) (router.cpp:131)
+==7==    by 0x408E83: Control_socket_manager::handle_init(Control_message*) (Control_socket_manager.cpp:134)
+==7==    by 0x409384: Control_socket_manager::handle_control_message(Control_message*) (Control_socket_manager.cpp:248)
+==7==    by 0x409565: Control_socket_manager::handle_controller() (Control_socket_manager.cpp:300)
+==7==    by 0x4095DE: Control_socket_manager::handle_connection(int) (Control_socket_manager.cpp:315)
+==7==    by 0x403D5F: Router::main() (router.cpp:100)
+==7==  Uninitialised value was created by a stack allocation
+==7==    at 0x406368: Routing_table::Routing_table(Router*, Control_message_init_payload*) (Routing_table.cpp:11)
+==7== 
+==7== Conditional jump or move depends on uninitialised value(s)
+==7==    at 0x4F3BB0F: ??? (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.21)
+==7==    by 0x4F3D1AB: std::ostreambuf_iterator<char, std::char_traits<char> > std::num_put<char, std::ostreambuf_iterator<char, std::char_traits<char> > >::_M_insert_int<unsigned long>(std::ostreambuf_iterator<char, std::char_traits<char> >, std::ios_base&, char, unsigned long) const (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.21)
+==7==    by 0x4F3D35C: std::num_put<char, std::ostreambuf_iterator<char, std::char_traits<char> > >::do_put(std::ostreambuf_iterator<char, std::char_traits<char> >, std::ios_base&, char, unsigned long) const (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.21)
+==7==    by 0x4F49689: std::ostream& std::ostream::_M_insert<unsigned long>(unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.21)
+==7==    by 0x406AED: Routing_table::print_routing_table() (Routing_table.cpp:166)
+==7==    by 0x406685: Routing_table::Routing_table(Router*, Control_message_init_payload*) (Routing_table.cpp:66)
+==7==    by 0x403EDA: Router::build_routing_table(Control_message_init_payload*) (router.cpp:131)
+==7==    by 0x408E83: Control_socket_manager::handle_init(Control_message*) (Control_socket_manager.cpp:134)
+==7==    by 0x409384: Control_socket_manager::handle_control_message(Control_message*) (Control_socket_manager.cpp:248)
+==7==    by 0x409565: Control_socket_manager::handle_controller() (Control_socket_manager.cpp:300)
+==7==    by 0x4095DE: Control_socket_manager::handle_connection(int) (Control_socket_manager.cpp:315)
+==7==    by 0x403D5F: Router::main() (router.cpp:100)
+==7==  Uninitialised value was created by a stack allocation
+==7==    at 0x406368: Routing_table::Routing_table(Router*, Control_message_init_payload*) (Routing_table.cpp:11)
+==7== 

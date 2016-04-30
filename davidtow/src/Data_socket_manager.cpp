@@ -9,7 +9,6 @@
 #include "router.h"
 
 
-
 Data_socket_manager::Data_socket_manager(Router* router,
 		const char* port) {
 	this->router = router;

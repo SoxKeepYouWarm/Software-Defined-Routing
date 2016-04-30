@@ -15,8 +15,7 @@ class Routing_table {
 		int next_hop;
 	} Entry;
 
-	std::vector<std::vector
-			<Routing_table_entry> >* routing_table;
+	std::vector<Routing_table_vector>* routing_table;
 
 	Router* router;
 
@@ -29,9 +28,11 @@ public:
 	void update_routing(Router_update_message* message);
 
 	const std::vector<
-			std::vector<Routing_table_entry> >*
-			get_routing_table();
+		Routing_table_vector>* get_routing_table();
 
+	Routing_table_vector* get_vector(int router_id);
+
+	void print_routing_table();
 
 	int routing_table_length;
 	int my_router_id;

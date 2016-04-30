@@ -176,7 +176,7 @@ int Router::get_routing_table_length() {
 }
 
 
-const std::vector< std::vector<Routing_table_entry> >* Router::get_routing_table() {
+const std::vector<Routing_table_vector>* Router::get_routing_table() {
 	if (this->routing_table) return routing_table->get_routing_table();
 	else {
 		std::cout << "ERROR: get_routing_table: "
