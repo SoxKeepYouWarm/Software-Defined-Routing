@@ -14,6 +14,7 @@ public:
 			const char* port);
 	void initialize_addrinfo();
 	void handle_connection(int fd);
+	void broadcast_vector_table();
 };
 
 

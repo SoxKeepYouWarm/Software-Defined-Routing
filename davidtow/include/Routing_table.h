@@ -27,10 +27,15 @@ public:
 	void update_cost(int router_id, int cost);
 	void update_routing(Router_update_message* message);
 
+	void recalculate_vector();
+	int distance(int router_id_src, int router_id_dest);
+
 	const std::vector<
 		Routing_table_vector>* get_routing_table();
 
 	Routing_table_vector* get_vector(int router_id);
+	Routing_table_vector* get_my_vector();
+	Routing_table_entry* get_my_vector_entry(int router_id);
 
 	void print_routing_table();
 

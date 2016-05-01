@@ -114,8 +114,6 @@ void Routing_table::update_routing(Router_update_message* message) {
 			// entry already exists
 			vector_entry->cost = message_entry->cost;
 
-			// TODO calculate new first hop
-
 		} else {
 
 			// entry does not exist
@@ -123,15 +121,53 @@ void Routing_table::update_routing(Router_update_message* message) {
 			new_entry.id = message_entry->id;
 			new_entry.cost = message_entry->cost;
 
-			// TODO calculate first hop
-
 			update_vector->vector_entries->push_back(new_entry);
 
 		}
 
+		recalculate_vector();
+
 	}
 
 	router->timer->notify_routing_update_received(sender_router_id);
+
+}
+
+
+int Routing_table::distance(int router_id_src, int router_id_dest) {
+
+	return this->get_vector(router_id_src)->get_entry(router_id_dest)->cost;
+
+}
+
+
+void Routing_table::recalculate_vector() {
+
+	for (std::vector<Routing_table_vector>::iterator id_iter = routing_table->begin();
+			id_iter != routing_table->end(); id_iter++) {
+
+		unsigned short src_id = (*id_iter).id;
+		// skip my router_id
+		if (src_id == my_router_id) continue;
+
+		for (std::vector<Routing_table_vector>::iterator vector_iter = routing_table->begin();
+				vector_iter != routing_table->end(); vector_iter++) {
+
+			unsigned short dest_id = (*vector_iter).id;
+
+			if (dest_id == my_router_id) continue;
+
+			unsigned short new_cost = distance(src_id, dest_id) + distance(my_router_id, src_id);
+			if (new_cost < distance(my_router_id, dest_id)) {
+
+				// shorter path found, update vector cost
+				Routing_table_entry* my_entry = this->get_vector(my_router_id)->get_entry(src_id);
+				my_entry->cost = new_cost;
+				my_entry->next_hop = src_id;
+			}
+		}
+
+	}
 
 }
 
@@ -152,6 +188,16 @@ Routing_table_vector* Routing_table::get_vector(int router_id) {
 
 	return 0;
 
+}
+
+
+Routing_table_vector* Routing_table::get_my_vector() {
+	return this->get_vector(my_router_id);
+}
+
+
+Routing_table_entry* Routing_table::get_my_vector_entry(int router_id) {
+	return this->get_my_vector()->get_entry(router_id);
 }
 
 

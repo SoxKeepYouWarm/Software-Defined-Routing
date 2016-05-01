@@ -70,7 +70,11 @@ void Router_socket_manager::handle_connection(int fd) {
 }
 
 
+void Router_socket_manager::broadcast_vector_table() {
 
+
+
+}
 
 
 

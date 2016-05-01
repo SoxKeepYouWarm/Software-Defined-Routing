@@ -63,7 +63,8 @@ void Timer::handle_timeout() {
 	if (popped_event.router_id == router->get_my_router_id()) {
 		// my router needs to broadcast
 
-		// TODO broadcast my vector table
+		router->router_socket_manager->broadcast_vector_table();
+
 		std::cout << "TIMER: broadcasting my vector table" << std::endl;
 
 		// reset timer, add back to list
@@ -99,7 +100,8 @@ void Timer::handle_timeout() {
 						<< " is inactive, setting cost to infinity"
 						<< std::endl;
 
-				// TODO set router cost to infinity
+				// set router cost to infinity
+				router->routing_table->get_my_vector_entry(popped_event.router_id)->cost = INFINITY;
 
 				// event is not added back to the list
 
