@@ -13,7 +13,7 @@ typedef struct Routing_table_entry {
 
 
 typedef struct Routing_table_vector {
-	unsigned char router_ip[4];
+	unsigned int router_ip;
 	unsigned short router_port;
 	unsigned short data_port;
 	unsigned short id;
@@ -32,7 +32,7 @@ typedef struct Routing_table_vector {
 
 
 typedef struct Router_update_entry {
-	unsigned char router_ip[4];
+	unsigned int router_ip;
 	unsigned short router_port;
 	unsigned short id;
 	unsigned short cost;
@@ -41,7 +41,7 @@ typedef struct Router_update_entry {
 
 typedef struct Router_update_message {
 	unsigned short num_of_update_fields;
-	unsigned char router_ip[4];
+	unsigned int router_ip;
 	unsigned short router_port;
 	Router_update_entry* update_entries;
 } Router_update_message;

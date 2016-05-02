@@ -65,16 +65,12 @@ void Network_services::encode_control_message_init_payload() {
 		memcpy(&cost_bytes, payload_pointer + offset + 6, 2);
 		cost_bytes = ntohs(cost_bytes);
 
-		uint32_t ip_bytes;
-		memcpy(&ip_bytes, payload_pointer + offset + 8, 4);
-		ip_bytes = ntohl(ip_bytes);
+		memcpy(&entry->router_ip, payload_pointer + offset + 8, 4);
 
 		entry->id = id_bytes;
 		entry->router_port = port_one_bytes;
 		entry->data_port = port_two_bytes;
 		entry->cost = cost_bytes;
-
-		memcpy(entry->router_ip, &ip_bytes, 4);
 
 	}
 
@@ -106,10 +102,7 @@ void Network_services::encode_control_message_sendfile_payload() {
 
 	Control_message_sendFile_payload* payload = new Control_message_sendFile_payload;
 
-	uint32_t ip_bytes = 0;
-	memcpy(&ip_bytes, payload_pointer, 4);
-	ip_bytes = ntohl(ip_bytes);
-	memcpy(payload->destination_router_ip, &ip_bytes, 4);
+	memcpy(&payload->destination_router_ip, payload_pointer, 4);
 
 	payload->ttl = *(payload_pointer + 4);
 	payload->transfer_id = *(payload_pointer + 5);
@@ -142,10 +135,7 @@ void Network_services::encode_control_message_sendfile_stats_payload() {
 void Network_services::encode_control_message(Control_message* message,
 		unsigned char* buffer) {
 
-	uint32_t dest_ip = 0;
-	memcpy(&dest_ip, buffer, 4);
-	dest_ip = ntohl(dest_ip);
-	memcpy(message->header.destination_router_ip, &dest_ip, 4);
+	memcpy(&message->header.destination_router_ip, buffer, 4);
 
 	memcpy(&message->header.control_code, buffer + 4, 1);
 	memcpy(&message->header.response_time, buffer + 5, 1);
@@ -194,10 +184,7 @@ void Network_services::decode_control_message_routing_table(Control_message* mes
 		Routing_table* routing_table, int router_id,
 		unsigned char* buffer) {
 
-	uint32_t dest_ip = 0;
-	memcpy(&dest_ip, message->header.destination_router_ip, 4);
-	dest_ip = htonl(dest_ip);
-	memcpy(buffer, &dest_ip, 4);
+	memcpy(buffer, &message->header.destination_router_ip, 4);
 
 	memcpy(buffer + 4, &message->header.control_code, 1);
 
@@ -209,8 +196,10 @@ void Network_services::decode_control_message_routing_table(Control_message* mes
 	memcpy(buffer + 6, &payload_length, 2);
 
 	for (int i = 0; i < routing_table->routing_table_length; i++) {
-		const Routing_table_entry* entry = routing_table->get_vector(router_id)->get_entry(i);
-		int buffer_offset = 8 + (i - 1) * 8;
+		const Routing_table_entry* entry =
+				&routing_table->get_vector(router_id)->vector_entries->at(i);
+
+		int buffer_offset = 8 + i * 8;
 
 		unsigned short id = entry->id;
 		id = htons(id);
@@ -235,10 +224,7 @@ void Network_services::decode_control_message_routing_table(Control_message* mes
 void Network_services::decode_control_message(Control_message* message,
 		unsigned char* buffer) {
 
-	uint32_t dest_ip = 0;
-	memcpy(message->header.destination_router_ip, &dest_ip, 4);
-	dest_ip = htonl(dest_ip);
-	memcpy(buffer, &dest_ip, 4);
+	memcpy(buffer, &message->header.destination_router_ip, 4);
 
 	msg = message;
 	buff = buffer;
@@ -289,10 +275,7 @@ void Network_services::encode_router_message(Router_update_message* message,
 	source_router_port = ntohs(source_router_port);
 	message->router_port = source_router_port;
 
-	uint32_t router_ip = 0;
-	memcpy(&router_ip, buffer + 4, 4);
-	router_ip = ntohl(router_ip);
-	memcpy(message->router_ip, &router_ip, 4);
+	memcpy(&message->router_ip, buffer + 4, 4);
 
 	message->update_entries = new Router_update_entry[message->num_of_update_fields];
 	for (int i = 0; i < message->num_of_update_fields; i++) {
@@ -300,10 +283,7 @@ void Network_services::encode_router_message(Router_update_message* message,
 		Router_update_entry* entry = &message->update_entries[i];
 		int buffer_offset = 8 + (i * 12);
 
-		uint32_t router_ip = 0;
-		memcpy(&router_ip, buffer + buffer_offset, 4);
-		router_ip = ntohl(router_ip);
-		memcpy(entry->router_ip, &router_ip, 4);
+		memcpy(&entry->router_ip, buffer + buffer_offset, 4);
 
 		unsigned short id = 0;
 		memcpy(&id, buffer + buffer_offset + 4, 2);
@@ -318,6 +298,48 @@ void Network_services::encode_router_message(Router_update_message* message,
 	}
 
 }
+
+
+void Network_services::decode_routing_table_vector(Routing_table* routing_table,
+		unsigned char* buffer) {
+
+	Routing_table_vector* my_vector = routing_table->get_my_vector();
+
+	unsigned short routing_table_size = my_vector->vector_entries->size();
+	routing_table_size = htons(routing_table_size);
+	memcpy(buffer, &routing_table_size, 2);
+
+	unsigned short src_router_port = my_vector->router_port;
+	src_router_port = htons(src_router_port);
+	memcpy(buffer + 2, &src_router_port, 2);
+
+	memcpy(buffer + 4, &my_vector->router_ip, 4);
+
+	for (int i = 0; i < my_vector->vector_entries->size(); i++) {
+
+		Routing_table_entry* entry = &my_vector->vector_entries->at(i);
+		Routing_table_vector* entry_vector = routing_table->get_vector(entry->id);
+
+		int buffer_offset = 8 + (i * 12);
+
+		memcpy(buffer + buffer_offset, &entry_vector->router_ip, 4);
+
+		unsigned short router_port = entry_vector->router_port;
+		router_port = htons(router_port);
+		memcpy(buffer + buffer_offset + 4, & router_port, 2);
+
+		unsigned short router_id = entry_vector->id;
+		router_id = htons(router_id);
+		memcpy(buffer + buffer_offset + 8, &router_id, 2);
+
+		unsigned short router_cost = entry->cost;
+		router_cost = htons(router_cost);
+		memcpy(buffer + buffer_offset + 10, &router_cost, 2);
+
+	}
+
+}
+
 
 
 

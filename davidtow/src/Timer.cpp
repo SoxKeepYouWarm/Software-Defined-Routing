@@ -3,6 +3,8 @@
 #include <iostream>
 
 #include "router.h"
+#include "Router_socket_manager.h"
+#include "Routing_table.h"
 
 
 Timer::Timer(Router* router): router(router), interval(0) {

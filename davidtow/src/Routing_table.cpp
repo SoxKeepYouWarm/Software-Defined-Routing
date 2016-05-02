@@ -58,6 +58,7 @@ Routing_table::Routing_table(Router* router,
 
 		new_entry.id = entry->id;
 		new_entry.cost = entry->cost;
+		new_entry.next_hop = entry->id;
 
 		my_vector->vector_entries->push_back(new_entry);
 
@@ -207,10 +208,12 @@ void Routing_table::print_routing_table() {
 
 	for (int i = 0; i < routing_table_length; i++) {
 
-		std::cout << "id: " << this->get_vector(my_router_id)->get_entry(i)->id
-				<< " cost: " << this->get_vector(my_router_id)->get_entry(i)->cost
-				<< " next_hop: " << this->get_vector(my_router_id)->get_entry(i)->next_hop
+		if (Routing_table_entry* entry = this->get_my_vector()->get_entry(i)) {
+			std::cout << "id: " << entry->id
+				<< " cost: " << entry->cost
+				<< " next_hop: " << entry->next_hop
 				<< std::endl;
+		}
 
 	}
 

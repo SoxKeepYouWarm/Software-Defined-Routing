@@ -64,6 +64,9 @@ public:
 	static void encode_router_message(Router_update_message* message,
 			unsigned char* buffer);
 
+	static void decode_routing_table_vector(Routing_table* routing_table,
+			unsigned char* buffer);
+
 };
 
 

@@ -4,7 +4,7 @@
 
 
 typedef struct Data_packet {
-	unsigned char destination_router_ip[4];
+	unsigned int destination_router_ip;
 	unsigned char transfer_id;
 	unsigned char ttl;
 	unsigned short sequence_number;

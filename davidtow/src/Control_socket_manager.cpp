@@ -6,6 +6,7 @@
 #include <string>
 #include <string.h>
 #include <stdio.h>
+#include <arpa/inet.h>
 
 #include "network_structures.h"
 #include "router.h"
@@ -223,13 +224,31 @@ void Control_socket_manager::handle_penultimate_data_packet(Control_message* mes
 
 void Control_socket_manager::set_message_destination_ip(Control_message* message) {
 
-	uint32_t net_ip = htonl(((in_addr*)
-			::get_in_addr((struct sockaddr*)&remoteaddr))->s_addr);
+	unsigned int net_ip = ((in_addr*)
+			::get_in_addr((struct sockaddr*)&remoteaddr))->s_addr;
+
+	char dest_str[INET_ADDRSTRLEN];
+	inet_ntop(AF_INET, &net_ip, dest_str, INET_ADDRSTRLEN);
 
 	std::cout << "SET_MESSAGE_DESTINATION_IP: remote ip: "
-			<< net_ip << std::endl;
+			<< dest_str << std::endl;
 
-	memcpy(&(message->header.destination_router_ip), &net_ip, 4);
+	char str[INET_ADDRSTRLEN];
+
+	inet_ntop(AF_INET, &message->header.destination_router_ip,
+					str, INET_ADDRSTRLEN);
+
+	std::cout << "TEST: remote_ip: " << str << std::endl;
+
+	unsigned int temp = 0;
+	memcpy(&temp, &message->header.destination_router_ip, 4);
+	temp = htonl(temp);
+
+	inet_ntop(AF_INET, &temp, str, INET_ADDRSTRLEN);
+
+	std::cout << "SECOND_TEST: remote_ip: " << str << std::endl;
+
+	memcpy(&message->header.destination_router_ip, &net_ip, 4);
 
 }
 

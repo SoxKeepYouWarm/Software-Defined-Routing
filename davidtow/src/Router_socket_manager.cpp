@@ -72,7 +72,9 @@ void Router_socket_manager::handle_connection(int fd) {
 
 void Router_socket_manager::broadcast_vector_table() {
 
+	unsigned char buffer[8 + 12 * router->get_routing_table_length()];
 
+	Network_services::decode_routing_table_vector(router->routing_table, buffer);
 
 }
 

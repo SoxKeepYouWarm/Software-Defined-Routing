@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 typedef struct Control_message_header {
-	unsigned char destination_router_ip[4];
+	unsigned int destination_router_ip;
 	unsigned char control_code;
 	unsigned char response_time;
 	unsigned short payload_length;
@@ -25,7 +25,7 @@ typedef struct Init_payload_router_entry {
 	unsigned short router_port;
 	unsigned short data_port;
 	unsigned short cost;
-	unsigned char router_ip[4];
+	unsigned int router_ip;
 } Init_payload_router_entry;
 
 
@@ -56,7 +56,7 @@ typedef struct Control_message_update_payload {
 
 
 typedef struct Control_message_sendFile_payload {
-	unsigned char destination_router_ip[4];
+	unsigned int destination_router_ip;
 	unsigned char ttl;
 	unsigned char transfer_id;
 	unsigned short init_sequence_number;
