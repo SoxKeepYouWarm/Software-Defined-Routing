@@ -16,7 +16,7 @@ CONTROLLER_ERROR = "./output/controller_error.txt"
 
 OUTPUT_RULES = " 1>> " + CONTROLLER_OUTPUT + " 2>> " + CONTROLLER_ERROR
 
-IP_STEM = "172."
+IP_STEM = "172.20.0."
 IP_ADDRESS = "172.20.0.2"
 
 ROUTER_ID = " 1 "
@@ -37,10 +37,10 @@ def build_topology_file(num_of_routers, seed):
 
     for num in range(0, num_of_routers):
         line = str(num + 1) + " "
-        line += IP_STEM + str(20 + num) + ".0.2 "
+        line += IP_STEM + str(2 + num) + " "
         line += str(40000 + num) + " "
-        line += str(1000) + " "
-        line += str(2000) + "\n"
+        line += str(2000 + num) + " "
+        line += str(1000 + num) + "\n"
         topology_file.write(line)
         sys.stdout.write(line)
 

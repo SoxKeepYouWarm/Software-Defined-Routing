@@ -27,7 +27,7 @@ public:
 	void update_cost(int router_id, int cost);
 	void update_routing(Router_update_message* message);
 
-	void recalculate_vector();
+	void recalculate_vector(int updated_router_id);
 	int distance(int router_id_src, int router_id_dest);
 
 	const std::vector<

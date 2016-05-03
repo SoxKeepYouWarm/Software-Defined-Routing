@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <stdio.h>
+#include <arpa/inet.h>
 
 
 Socket_manager::~Socket_manager() {
@@ -25,6 +26,15 @@ void Socket_manager::create_socket() {
 			close(listener);
 			continue;
 		}
+
+		struct sockaddr_in* addr = (struct sockaddr_in*)p->ai_addr;
+
+		char str[INET_ADDRSTRLEN];
+
+		inet_ntop(AF_INET, &addr->sin_addr,
+				str, INET_ADDRSTRLEN);
+
+		std::cout << "BIND: binded to ip: " << str << std::endl;
 
 		break;
 	}

@@ -18,6 +18,9 @@ typedef struct Routing_table_vector {
 	unsigned short data_port;
 	unsigned short id;
 	Routing_table_entry* get_entry(int router_id) {
+
+		if (this->vector_entries == 0) return 0;
+
 		for (std::vector<Routing_table_entry>::iterator iter = this->vector_entries->begin();
 				iter != this->vector_entries->end(); iter++) {
 			if ((*iter).id == router_id) {

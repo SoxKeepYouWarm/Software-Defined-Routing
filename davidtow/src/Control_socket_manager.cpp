@@ -161,6 +161,7 @@ void Control_socket_manager::handle_routing_table(Control_message* message) {
 			router->routing_table, router->get_my_router_id(), response);
 	::send(request_fd, response, (size_t) response_size);
 
+	router->routing_table->print_routing_table();
 
 }
 

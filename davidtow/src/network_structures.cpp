@@ -278,6 +278,7 @@ void Network_services::encode_router_message(Router_update_message* message,
 	memcpy(&message->router_ip, buffer + 4, 4);
 
 	message->update_entries = new Router_update_entry[message->num_of_update_fields];
+
 	for (int i = 0; i < message->num_of_update_fields; i++) {
 
 		Router_update_entry* entry = &message->update_entries[i];
@@ -285,14 +286,19 @@ void Network_services::encode_router_message(Router_update_message* message,
 
 		memcpy(&entry->router_ip, buffer + buffer_offset, 4);
 
+		unsigned short port = 0;
+		memcpy(&port, buffer + buffer_offset + 4, 2);
+		port = ntohs(port);
+		memcpy(&entry->router_port, &port, 2);
+
 		unsigned short id = 0;
-		memcpy(&id, buffer + buffer_offset + 4, 2);
-		id = ntohl(id);
+		memcpy(&id, buffer + buffer_offset + 8, 2);
+		id = ntohs(id);
 		memcpy(&entry->id, &id, 2);
 
 		unsigned short cost = 0;
-		memcpy(&cost, buffer + buffer_offset + 6, 2);
-		cost = ntohl(cost);
+		memcpy(&cost, buffer + buffer_offset + 10, 2);
+		cost = ntohs(cost);
 		memcpy(&entry->cost, &cost, 2);
 
 	}
@@ -327,6 +333,8 @@ void Network_services::decode_routing_table_vector(Routing_table* routing_table,
 		unsigned short router_port = entry_vector->router_port;
 		router_port = htons(router_port);
 		memcpy(buffer + buffer_offset + 4, & router_port, 2);
+
+		memset(buffer + buffer_offset + 6, 0, 2);
 
 		unsigned short router_id = entry_vector->id;
 		router_id = htons(router_id);

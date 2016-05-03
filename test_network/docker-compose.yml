@@ -12,7 +12,7 @@ services:
     volumes:
         - ../../cse489_pa3:/router/cse489_pa3
     networks:
-        router_net_one:
+        router_net:
             ipv4_address: "${ip_one}"
     ports:
         - "${control_port_one}:${control_port_one}"
@@ -32,7 +32,7 @@ services:
     volumes:
         - ../../cse489_pa3:/router/cse489_pa3
     networks:
-        router_net_two:
+        router_net:
             ipv4_address: "${ip_two}"
     ports:
         - "${control_port_two}:${control_port_two}"
@@ -52,7 +52,7 @@ services:
     volumes:
         - ../../cse489_pa3:/router/cse489_pa3
     networks:
-        router_net_three:
+        router_net:
             ipv4_address: "${ip_three}"
     ports:
         - "${control_port_three}:${control_port_three}"
@@ -72,7 +72,7 @@ services:
     volumes:
         - ../../cse489_pa3:/router/cse489_pa3
     networks:
-        router_net_four:
+        router_net:
             ipv4_address: "${ip_four}"
     ports:
         - "${control_port_four}:${control_port_four}"
@@ -92,7 +92,7 @@ services:
     volumes:
         - ../../cse489_pa3:/router/cse489_pa3
     networks:
-        router_net_five:
+        router_net:
             ipv4_address: "${ip_five}"
     ports:
         - "${control_port_five}:${control_port_five}"
@@ -106,38 +106,38 @@ services:
         - VALGRIND_LOG=${valgrind_log_five}
 
 networks:
-  router_net_one:
+  router_net:
     driver: bridge
     ipam:
       driver: default
       config:
       - subnet: 172.20.0.0/16
         gateway: 172.20.0.1
-  router_net_two:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-      - subnet: 172.21.0.0/16
-        gateway: 172.21.0.1
-  router_net_three:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-      - subnet: 172.22.0.0/16
-        gateway: 172.22.0.1
-  router_net_four:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-      - subnet: 172.23.0.0/16
-        gateway: 172.23.0.1
-  router_net_five:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-      - subnet: 172.24.0.0/16
-        gateway: 172.24.0.1
+#  router_net_two:
+#    driver: bridge
+#    ipam:
+#      driver: default
+#      config:
+#      - subnet: 172.21.0.0/16
+#        gateway: 172.21.0.1
+#  router_net_three:
+#    driver: bridge
+#    ipam:
+#     driver: default
+#      config:
+#      - subnet: 172.22.0.0/16
+#        gateway: 172.22.0.1
+#  router_net_four:
+#    driver: bridge
+#    ipam:
+#      driver: default
+#      config:
+#      - subnet: 172.23.0.0/16
+#        gateway: 172.23.0.1
+#  router_net_five:
+#    driver: bridge
+#    ipam:
+#      driver: default
+#      config:
+#      - subnet: 172.24.0.0/16
+#        gateway: 172.24.0.1
