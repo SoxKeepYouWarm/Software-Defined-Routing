@@ -37,7 +37,7 @@ void Control_socket_manager::initialize_addrinfo() {
 	hints.ai_flags = AI_PASSIVE;
 	int rv;
 	if ((rv = getaddrinfo(NULL, port, &hints, &res)) != 0) {
-		fprintf(stderr, "selectserver: %s\n", gai_strerror(rv));
+		fprintf(stderr, "CONTROL_SOCKET_MANAGER: %s\n", gai_strerror(rv));
 		exit(1);
 	}
 

@@ -15,6 +15,7 @@
 
 
 Router_socket_manager::Router_socket_manager(Router* router, const char* port) {
+	this->logger = Logger::get_logger();
 	this->router = router;
 	this->port = new char[6];
 	strcpy(this->port, port);
@@ -39,7 +40,8 @@ void Router_socket_manager::initialize_addrinfo() {
 	hints.ai_flags = AI_PASSIVE;
 	int rv;
 	if ((rv = getaddrinfo(NULL, port, &hints, &res)) != 0) {
-		fprintf(stderr, "selectserver: %s\n", gai_strerror(rv));
+		logger->router_log("router socket addrinfo loaded with port: %d\n", port);
+		fprintf(stderr, "ROUTER_SOCKET_MANAGER: %s\n", gai_strerror(rv));
 		exit(1);
 	}
 
@@ -60,13 +62,6 @@ void Router_socket_manager::handle_connection(int fd) {
 
 	num_of_bytes = recvfrom(listener, buffer, sizeof buffer, 0, &addr, &fromlen);
 
-	//std::cout << "ROUTER_SOCKET_MANAGER: message: ";
-	//for(int i = 0; i < num_of_bytes; i++) {
-	//	std::cout << std::hex << (int)buffer[i];
-	//	std::cout << " ";
-	//}
-	//std::cout << std::dec << std::endl;
-
 	Router_update_message message;
 	Network_services::encode_router_message(&message, buffer);
 
@@ -75,9 +70,8 @@ void Router_socket_manager::handle_connection(int fd) {
 	inet_ntop(AF_INET, &message.router_ip,
 			ip_str, INET_ADDRSTRLEN);
 
-	std::cout << "ROUTER_SOCKET_MANAGER: "
-			<< " received " << num_of_bytes
-			<< " bytes from " << ip_str << std::endl;
+	logger->router_log("ROUTER_SOCKET_MANAGER: received %d bytes from %s\n",
+			num_of_bytes, ip_str);
 
 	router->routing_table->update_routing(&message);
 

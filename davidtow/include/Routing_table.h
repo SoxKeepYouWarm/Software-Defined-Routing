@@ -17,6 +17,7 @@ class Routing_table {
 	} Entry;
 
 	std::vector<Routing_table_vector>* routing_table;
+	Routing_table_vector shortest_paths;
 
 	Router* router;
 	Logger* logger;
@@ -40,6 +41,7 @@ public:
 	Routing_table_entry* get_my_vector_entry(int router_id);
 
 	void print_routing_table();
+	void print_shortest_paths();
 
 	int routing_table_length;
 	int my_router_id;

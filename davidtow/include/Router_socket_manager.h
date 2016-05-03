@@ -5,14 +5,14 @@
 #include "Socket_manager.h"
 
 
+class Logger;
 struct Routing_table_vector;
 class Router;
 class Router_socket_manager: public Socket_manager {
 
 	Router* router;
 	unsigned char send_buffer[256];
-	//struct addrinfo send_hints, *send_res, *send_p;
-	//int send_socket;
+	Logger* logger;
 
 public:
 	Router_socket_manager(Router* router,

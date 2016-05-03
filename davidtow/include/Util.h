@@ -27,7 +27,8 @@ public:
 	void set_tag(char* tag);
 	void set_tag(const char* tag);
 	void router_log(char* msg);
-	void router_log(const char* msg);
+	//void router_log(const char* msg);
+	void router_log(const char* format, ...);
 
 };
 

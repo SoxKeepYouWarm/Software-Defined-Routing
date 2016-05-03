@@ -7,11 +7,13 @@
 #include <stdio.h>
 #include <fstream>
 #include <iostream>
+#include <stdarg.h>
 
 
 std::string toString(int val)
 {
     std::stringstream stream;
+    stream.clear();
     stream << val;
     return stream.str();
 }
@@ -73,12 +75,14 @@ void Logger::set_tag(const char* tag) {
 	strcpy(router_log_filename, "router_log");
 	strcat(router_log_filename, tag);
 	strcat(router_log_filename, ".log");
+	router_log_file.open (router_log_filename, std::ios::out);
+	router_log_file.close();
 }
 
 
 void Logger::router_log(char* msg) {
 	if (! tag_set) return;
-	router_log_file.open (router_log_filename, std::ios::out);
+	router_log_file.open (router_log_filename, std::ios::out | std::ios::app);
 	if (router_log_file.is_open()) {
 		router_log_file << msg;
 		std::cout << msg;
@@ -91,12 +95,17 @@ void Logger::router_log(char* msg) {
 }
 
 
-void Logger::router_log(const char* msg) {
+void Logger::router_log(const char * format, ... ) {
 	if (! tag_set) return;
-	router_log_file.open (router_log_filename, std::ios::out);
+	router_log_file.open (router_log_filename, std::ios::out | std::ios::app);
 	if (router_log_file.is_open()) {
-		router_log_file << msg;
-		std::cout << msg;
+		char buffer[256];
+		va_list args;
+		va_start (args, format);
+		vsprintf (buffer,format, args);
+		router_log_file << buffer;
+		std::cout << buffer;
+		va_end (args);
 	} else {
 		std::cout << "error writing to log" << std::endl;
 	}
@@ -104,7 +113,5 @@ void Logger::router_log(const char* msg) {
 	router_log_file.close();
 
 }
-
-
 
 

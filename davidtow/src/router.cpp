@@ -134,11 +134,13 @@ void Router::build_routing_table(Control_message_init_payload* init_payload) {
 			<< std::endl;
 
 
+	//std::cout << "FROM ROUTER.CPP router port is: " << routing_table->my_router_port << std::endl;
 	router_socket_manager = new Router_socket_manager(this, routing_table->my_router_port);
 	router_socket_manager->initialize_addrinfo();
 	router_socket_manager->create_socket();
 	register_fd(router_socket_manager->get_listener_fd());
 
+	//std::cout << "FROM ROUTER.CPP data port is: " << routing_table->my_data_port << std::endl;
 	data_socket_manager = new Data_socket_manager(this, routing_table->my_data_port);
 	data_socket_manager->initialize_addrinfo();
 	data_socket_manager->create_socket();
