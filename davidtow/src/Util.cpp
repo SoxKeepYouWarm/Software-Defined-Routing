@@ -61,41 +61,47 @@ Logger* Logger::get_logger() {
 void Logger::set_tag(char* tag) {
 	strcpy(this->tag, tag);
 	tag_set = 1;
-	char filename[32];
-	strcpy(filename, "router_log");
-	strcat(filename, tag);
-	strcat(filename, ".txt");
-	router_log_file.open (filename, std::ios::out);
-	router_log_file << "Router log file\n";
-	std::cout << "created router log" << std::endl;
+	strcpy(router_log_filename, "router_log");
+	strcat(router_log_filename, tag);
+	strcat(router_log_filename, ".txt");
 }
 
 
 void Logger::set_tag(const char* tag) {
 	strcpy(this->tag, tag);
 	tag_set = 1;
-	char filename[32];
-	strcpy(filename, "router_log");
-	strcat(filename, tag);
-	strcat(filename, ".txt");
-	router_log_file.open (filename, std::ios::out);
-	router_log_file << "Router log file\n";
-	std::cout << "created router log" << std::endl;
+	strcpy(router_log_filename, "router_log");
+	strcat(router_log_filename, tag);
+	strcat(router_log_filename, ".txt");
 }
 
 
 void Logger::router_log(char* msg) {
 	if (! tag_set) return;
-	router_log_file << msg;
-	std::cout << msg;
+	router_log_file.open (router_log_filename, std::ios::out);
+	if (router_log_file.is_open()) {
+		router_log_file << msg;
+		std::cout << msg;
+	} else {
+		std::cout << "error writing to log" << std::endl;
+	}
+
+	router_log_file.close();
 
 }
 
 
 void Logger::router_log(const char* msg) {
 	if (! tag_set) return;
-	router_log_file << msg;
-	std::cout << msg;
+	router_log_file.open (router_log_filename, std::ios::out);
+	if (router_log_file.is_open()) {
+		router_log_file << msg;
+		std::cout << msg;
+	} else {
+		std::cout << "error writing to log" << std::endl;
+	}
+
+	router_log_file.close();
 
 }
 
