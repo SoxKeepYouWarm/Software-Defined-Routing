@@ -11,6 +11,8 @@
 Routing_table::Routing_table(Router* router,
 		Control_message_init_payload* init_payload): router(router) {
 
+	this->logger = Logger::get_logger();
+
 	routing_table_length = init_payload->number_of_routers;
 
 	routing_table = new std::vector<Routing_table_vector>;
@@ -43,9 +45,6 @@ Routing_table::Routing_table(Router* router,
 			const char* data_port = toString(entry->data_port).c_str();
 			strcpy(this->my_data_port, data_port);
 
-			std::cout << "DEBUG: router_port: " << router_port
-					<< " data_port: " << data_port << std::endl;
-
 			std::cout << "ROUTING_TABLE: id: " << my_router_id
 					<< " my_router_port: " << my_router_port
 					<< " my_data_port: " << my_data_port << std::endl;
@@ -60,6 +59,9 @@ Routing_table::Routing_table(Router* router,
 				<< std::endl;
 		exit(4);
 	}
+
+	logger->set_tag(::toString(my_router_id).c_str());
+	logger->router_log("hello world\n");
 
 	for (int i = 0; i < routing_table_length; i++) {
 
@@ -122,8 +124,6 @@ void Routing_table::update_routing(Router_update_message* message) {
 
 		Router_update_entry* message_entry = &message->update_entries[i];
 		int msg_id = message_entry->id;
-
-		std::cout << "DEBUG: msg_id: " << msg_id << std::endl;
 
 		// checks if a vector table entry already exists
 		if (Routing_table_entry* vector_entry = update_vector->get_entry(msg_id)) {

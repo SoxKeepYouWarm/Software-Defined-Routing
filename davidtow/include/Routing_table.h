@@ -7,6 +7,7 @@
 #include "network_structures.h"
 
 class Router;
+class Logger;
 
 class Routing_table {
 
@@ -18,6 +19,7 @@ class Routing_table {
 	std::vector<Routing_table_vector>* routing_table;
 
 	Router* router;
+	Logger* logger;
 
 public:
 	Routing_table(Router* router,

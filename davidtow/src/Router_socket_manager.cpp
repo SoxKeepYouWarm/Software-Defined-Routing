@@ -60,12 +60,12 @@ void Router_socket_manager::handle_connection(int fd) {
 
 	num_of_bytes = recvfrom(listener, buffer, sizeof buffer, 0, &addr, &fromlen);
 
-	std::cout << "ROUTER_SOCKET_MANAGER: message: ";
-	for(int i = 0; i < num_of_bytes; i++) {
-		std::cout << std::hex << (int)buffer[i];
-		std::cout << " ";
-	}
-	std::cout << std::dec << std::endl;
+	//std::cout << "ROUTER_SOCKET_MANAGER: message: ";
+	//for(int i = 0; i < num_of_bytes; i++) {
+	//	std::cout << std::hex << (int)buffer[i];
+	//	std::cout << " ";
+	//}
+	//std::cout << std::dec << std::endl;
 
 	Router_update_message message;
 	Network_services::encode_router_message(&message, buffer);
@@ -79,25 +79,7 @@ void Router_socket_manager::handle_connection(int fd) {
 			<< " received " << num_of_bytes
 			<< " bytes from " << ip_str << std::endl;
 
-	std::cout << "DEBUG: "
-			<< "num_of_fields: " << message.num_of_update_fields
-			<< " router_ip: " << message.router_ip
-			<< " router_port: " << message.router_port << std::endl;
-
-	for (int i = 0; i < message.num_of_update_fields; i++) {
-
-		Router_update_entry* entry = &message.update_entries[i];
-		std::cout << "ROUTER_SOCKET_MANAGER: HANDLE_CONNECTION: "
-				<< "id: " << entry->id
-				<< " cost: " << entry->cost
-				<< " router_ip: " << entry->router_ip
-				<< " router_port: " << entry->router_port << std::endl;
-
-	}
-
 	router->routing_table->update_routing(&message);
-
-	std::cout << "DEBUG: testing something" << std::endl;
 
 }
 
@@ -118,6 +100,8 @@ void Router_socket_manager::broadcast_vector_table() {
 			iter != routing_table_entries->end(); iter++) {
 
 		if ((*iter).cost == 0) continue;
+		if ((*iter).cost == INFINITY) continue;
+
 		Routing_table_vector* target_vector =
 				router->routing_table->get_vector((*iter).id);
 
@@ -176,9 +160,6 @@ void Router_socket_manager::send_vector_table(Routing_table_vector* dest_vector,
 
 	unsigned int dest_ip = dest_vector->router_ip;
 	unsigned short dest_port = dest_vector->router_port;
-
-	//memset(send_buffer, 0, 256);
-	//memcpy(send_buffer, msg, msg_length);
 
 	int sent_bytes = sendto(send_socket, msg, msg_length, 0,
 			send_res->ai_addr, send_res->ai_addrlen);

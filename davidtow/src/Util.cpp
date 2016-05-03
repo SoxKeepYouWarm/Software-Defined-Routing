@@ -1,9 +1,13 @@
 #include "Util.h"
 
 #include <string>
+#include <string.h>
 #include <sstream>
 #include <netinet/in.h>
 #include <stdio.h>
+#include <fstream>
+#include <iostream>
+
 
 std::string toString(int val)
 {
@@ -32,3 +36,69 @@ void send(int fd, unsigned char* message, size_t size) {
 	}
 
 }
+
+
+Logger* Logger::logger = 0;
+
+Logger::Logger() {
+	tag_set = 0;
+
+}
+
+
+Logger::~Logger() {
+	router_log_file.close();
+	delete logger;
+}
+
+
+Logger* Logger::get_logger() {
+	if ( ! logger ) logger = new Logger();
+	return logger;
+}
+
+
+void Logger::set_tag(char* tag) {
+	strcpy(this->tag, tag);
+	tag_set = 1;
+	char filename[32];
+	strcpy(filename, "router_log");
+	strcat(filename, tag);
+	strcat(filename, ".txt");
+	router_log_file.open (filename, std::ios::out);
+	router_log_file << "Router log file\n";
+	std::cout << "created router log" << std::endl;
+}
+
+
+void Logger::set_tag(const char* tag) {
+	strcpy(this->tag, tag);
+	tag_set = 1;
+	char filename[32];
+	strcpy(filename, "router_log");
+	strcat(filename, tag);
+	strcat(filename, ".txt");
+	router_log_file.open (filename, std::ios::out);
+	router_log_file << "Router log file\n";
+	std::cout << "created router log" << std::endl;
+}
+
+
+void Logger::router_log(char* msg) {
+	if (! tag_set) return;
+	router_log_file << msg;
+	std::cout << msg;
+
+}
+
+
+void Logger::router_log(const char* msg) {
+	if (! tag_set) return;
+	router_log_file << msg;
+	std::cout << msg;
+
+}
+
+
+
+

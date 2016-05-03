@@ -25,7 +25,7 @@
 #include <stdio.h>
 
 #include "router.h"
-
+#include "Util.h"
 /**
  * main function
  *
@@ -38,6 +38,8 @@ int main(int argc, char **argv)
 	std::cout << "Running main" << std::endl;
 
 	std::cout << "argc is " << argc << std::endl;
+
+	Logger* logger = Logger::get_logger();
 
 	char* control_port_input;
 	if (argc == 2) {
