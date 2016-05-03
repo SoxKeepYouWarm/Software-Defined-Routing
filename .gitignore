@@ -27,4 +27,5 @@
 *.out
 *.app
 
-*.txt
+# Log files
+*.log

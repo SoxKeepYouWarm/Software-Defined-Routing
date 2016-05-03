@@ -63,7 +63,7 @@ void Logger::set_tag(char* tag) {
 	tag_set = 1;
 	strcpy(router_log_filename, "router_log");
 	strcat(router_log_filename, tag);
-	strcat(router_log_filename, ".txt");
+	strcat(router_log_filename, ".log");
 }
 
 
@@ -72,7 +72,7 @@ void Logger::set_tag(const char* tag) {
 	tag_set = 1;
 	strcpy(router_log_filename, "router_log");
 	strcat(router_log_filename, tag);
-	strcat(router_log_filename, ".txt");
+	strcat(router_log_filename, ".log");
 }
 
 
