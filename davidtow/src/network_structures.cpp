@@ -309,7 +309,7 @@ void Network_services::encode_router_message(Router_update_message* message,
 void Network_services::decode_routing_table_vector(Routing_table* routing_table,
 		unsigned char* buffer) {
 
-	Routing_table_vector* my_vector = routing_table->get_my_vector();
+	Routing_table_vector* my_vector = routing_table->get_shortest_paths();
 
 	unsigned short routing_table_size = my_vector->vector_entries->size();
 	routing_table_size = htons(routing_table_size);

@@ -30,7 +30,7 @@ public:
 	void update_cost(int router_id, int cost);
 	void update_routing(Router_update_message* message);
 
-	void recalculate_vector(int updated_router_id);
+	void calculate_shortests();
 	int distance(int router_id_src, int router_id_dest);
 
 	const std::vector<
@@ -39,6 +39,7 @@ public:
 	Routing_table_vector* get_vector(int router_id);
 	Routing_table_vector* get_my_vector();
 	Routing_table_entry* get_my_vector_entry(int router_id);
+	Routing_table_vector* get_shortest_paths();
 
 	void print_routing_table();
 	void print_shortest_paths();

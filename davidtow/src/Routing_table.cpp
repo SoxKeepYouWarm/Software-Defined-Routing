@@ -31,19 +31,11 @@ Routing_table::Routing_table(Router* router,
 		new_vector.data_port = entry->data_port;
 		new_vector.vector_entries = new std::vector<Routing_table_entry>;
 
-		logger->router_log("ROUTING_TABLE_ENTRY: id: %d | "
-				"router_ip: %d | router_port: %d | data_port: %d\n",
-				entry->id, entry->router_ip, entry->router_port, entry->data_port);
-
 		routing_table->push_back(new_vector);
 
 		if (entry->cost == 0) {
 			this->my_router_id = entry->id;
-			//this->get_vector(my_router_id)->vector_entries =
-			//		new std::vector<Routing_table_entry>;
-			//std::cout << "ROUTER COST IS 0 PORT: " << entry->router_port << std::endl;
 			const char* router_port = toString(entry->router_port).c_str();
-			//std::cout << "ROUTER PORT AS STRING: " << router_port << std::endl;
 			strcpy(this->my_router_port, router_port);
 			const char* data_port = toString(entry->data_port).c_str();
 			strcpy(this->my_data_port, data_port);
@@ -63,8 +55,7 @@ Routing_table::Routing_table(Router* router,
 	logger->router_log("ROUTING_TABLE: id: %d | "
 			"my_router_port: %s | my_data_port: %s\n",
 			my_router_id, my_router_port, my_data_port);
-	//std::cout << "router port: " << my_router_port << " data_port: " << my_data_port << std::endl;
-	// initialize my routing vector entries
+
 	for (int i = 0; i < routing_table_length; i++) {
 
 		Routing_table_vector* my_vector = this->get_vector(my_router_id);
@@ -80,6 +71,7 @@ Routing_table::Routing_table(Router* router,
 
 	}
 
+	calculate_shortests();
 	print_routing_table();
 
 }
@@ -94,6 +86,16 @@ Routing_table::~Routing_table() {
 
 void Routing_table::update_cost(int router_id, int cost) {
 
+	if (!routing_table) {
+		std::cout << "UPDATE_COST: "
+				<< "routing table has not been initialized yet" << std::endl;
+		return;
+	}
+
+	logger->router_log("UPDATE_COST: my_id: %d | "
+			"target_id: %d | old_cost: %d | new_cost: %d\n",
+			my_router_id, router_id,
+			get_vector(my_router_id)->get_entry(router_id)->cost, cost);
 	this->get_vector(my_router_id)->get_entry(router_id)->cost = cost;
 
 }
@@ -150,7 +152,7 @@ void Routing_table::update_routing(Router_update_message* message) {
 			if (i == 0) {
 				logger->router_log("UPDATED_ROUTING: "
 						"adding new vector entries for router_id: %d\n",
-						message_entry->id);
+						sender_router_id);
 			}
 
 			// entry does not exist
@@ -165,8 +167,8 @@ void Routing_table::update_routing(Router_update_message* message) {
 
 	}
 
-	recalculate_vector(sender_router_id);
-
+	calculate_shortests();
+	print_routing_table();
 	router->timer->notify_routing_update_received(sender_router_id);
 
 }
@@ -179,7 +181,7 @@ int Routing_table::distance(int router_id_src, int router_id_dest) {
 }
 
 
-void Routing_table::recalculate_vector(int updated_router_id) {
+void Routing_table::calculate_shortests() {
 
 	for (std::vector<Routing_table_vector>::iterator vector_iter = routing_table->begin();
 			vector_iter != routing_table->end(); vector_iter++) {
@@ -265,16 +267,21 @@ Routing_table_entry* Routing_table::get_my_vector_entry(int router_id) {
 }
 
 
+Routing_table_vector* Routing_table::get_shortest_paths() {
+	return &this->shortest_paths;
+}
+
+
 void Routing_table::print_routing_table() {
 
-	logger->router_log("ROUTER_TABLE: ROUTER_ID: %d\n", my_router_id);
+	logger->router_log("ROUTING_TABLE: ROUTER_ID: %d\n", my_router_id);
 
-	for (int i = 0; i < routing_table_length; i++) {
+	for (std::vector<Routing_table_entry>::iterator iter =
+			get_my_vector()->vector_entries->begin();
+			iter != get_my_vector()->vector_entries->end(); iter++) {
 
-		if (Routing_table_entry* entry = this->get_my_vector()->get_entry(i)) {
-			logger->router_log("id: %d | cost: %d | next_hop: %d\n",
-					entry->id, entry->cost, entry->next_hop);
-		}
+		logger->router_log("id: %d | cost: %d | next_hop: %d\n",
+				(*iter).id, (*iter).cost, (*iter).next_hop);
 
 	}
 

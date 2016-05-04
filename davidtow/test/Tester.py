@@ -29,7 +29,7 @@ UPDATE_PREFIX = " -u "
 CRASH_PREFIX = " -c "
 SENDFILE_PREFIX = " -f "
 
-def build_topology_file(num_of_routers, seed):
+def build_topology_file(num_of_routers, seed, shape):
     topology_file = open("./topology_file", "w")
     topology_file.write(str(num_of_routers) + '\n')
 
@@ -48,6 +48,12 @@ def build_topology_file(num_of_routers, seed):
         line = str(num) + " "
         line += str(num + 1) + " "
         line += str(random.randint(1, 10)) + "\n"
+        topology_file.write(line)
+        sys.stdout.write(line)
+
+    if shape == "ring":
+        line = "1 " + str(num_of_routers) + " "
+        line += str(random.randint(1, 10)) + '\n'
         topology_file.write(line)
         sys.stdout.write(line)
 
@@ -84,9 +90,15 @@ if __name__ == '__main__':
     parser.add_argument("-t", "--target_router", type=str, choices=["1", "2", "3", "4", "5"],
                         help="Enter the target router id (1 to 5")
 
+    parser.add_argument("--shape", type=str, choices=["line", "ring", "triangle"],
+                        help="Choose line or ring for topology layout")
+
     args = parser.parse_args()
 
-    build_topology_file(args.router_count, args.topology_seed)
+    if args.shape == "triangle":
+        TOPOLOGY_FILE = "./topology_race_to_infinity"
+    else:
+        build_topology_file(args.router_count, args.topology_seed, args.shape)
 
     subprocess.call("rm -R ./output", shell=True)
     subprocess.call("mkdir ./output", shell=True)
