@@ -12,6 +12,7 @@
 #include "router.h"
 #include "Routing_table.h"
 #include "Util.h"
+#include "Data_socket_manager.h"
 
 
 Control_socket_manager::Control_socket_manager(Router* router, char* port) {
@@ -197,7 +198,51 @@ void Control_socket_manager::handle_sendfile(Control_message* message) {
 
 	std::cout << "HANDLE_SENDFILE: " << std::endl;
 
+	Control_message_sendFile_payload* payload =
+			(Control_message_sendFile_payload*)message->payload;
+
 	send_empty_response(message);
+
+	if (payload->destination_router_ip ==
+			router->routing_table->get_my_vector()->router_ip) {
+		// this router is the file destination
+		// this shouldn't happen, raise error
+		std::cerr << "sendfile destination is my router ip" << std::endl;
+		return;
+	} else if (payload->ttl == 0) {
+		// drop packet
+		std::cerr << "sendfile ttl is already 0" << std::endl;
+		return;
+	}
+
+	std::ifstream send_file;
+	send_file.open(payload->filename, std::ifstream::in | std::ifstream::binary);
+
+	int buffer_size = 1024;
+	char line[buffer_size];
+
+	if (send_file.is_open()) {
+
+		unsigned short seq_num = 0;
+		while (send_file.read(line, buffer_size)) {
+
+			Data_packet* data = new Data_packet;
+			data->destination_router_ip = payload->destination_router_ip;
+			data->transfer_id = payload->transfer_id;
+			data->ttl = payload->ttl;
+			data->sequence_number = seq_num;
+			data->fin_and_padding = 0;
+			memcpy(data->data, line, 1024);
+
+			router->data_socket_manager->send_data(data);
+			seq_num += 1024;
+
+		}
+
+		send_file.close();
+
+	}
+
 
 }
 

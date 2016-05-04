@@ -4,6 +4,7 @@
 
 #include "Socket_manager.h"
 
+struct Data_packet;
 class Router;
 class Data_socket_manager: public Socket_manager {
 
@@ -17,6 +18,8 @@ public:
 
 	void handle_listener();
 	void handle_data();
+
+	void send_data(Data_packet* data);
 };
 
 

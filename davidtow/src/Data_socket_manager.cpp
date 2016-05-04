@@ -110,3 +110,19 @@ void Data_socket_manager::handle_connection(int fd) {
 
 
 
+void Data_socket_manager::send_data(Data_packet* data) {
+
+	// TODO send data to target
+
+	delete data;
+}
+
+
+
+
+
+
+
+
+
+
