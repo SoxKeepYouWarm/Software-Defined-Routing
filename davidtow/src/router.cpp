@@ -21,14 +21,13 @@ Router::Router(char* control_port): fdmax(0), is_running_timer(0),
 	FD_ZERO(&master);
 	FD_ZERO(&read_fds);
 
-	timer = new Timer(this);
-
 	control_socket_manager = new Control_socket_manager(this, control_port);
 	control_socket_manager->initialize_addrinfo();
 	control_socket_manager->create_socket();
 	control_socket_manager->listen();
 	register_fd(control_socket_manager->get_listener_fd());
 
+	timer = new Timer(this);
 
 }
 

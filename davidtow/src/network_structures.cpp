@@ -112,9 +112,11 @@ void Network_services::encode_control_message_sendfile_payload() {
 	seq_num = ntohs(seq_num);
 	memcpy(&payload + 6, &seq_num, 2);
 
-	payload->filename = new char[payload_length];
-	memcpy(payload->filename, payload_pointer, payload_length);
-
+	std::cout << "DEBUG: "
+			<< "creating new char array with size " << payload_length -8 << std::endl;
+	payload->filename = new char[payload_length - 8];
+	memcpy(payload->filename, payload_pointer + 8, payload_length - 8);
+	std::cout << "DEBUG : sendfile payload: " << payload->filename << std::endl;
 	msg->payload = (void*)payload;
 
 }
@@ -147,7 +149,7 @@ void Network_services::encode_control_message(Control_message* message,
 	msg = message;
 	buff = buffer;
 	control_code = message->header.control_code;
-	payload_length = message->header.payload_length;
+	Network_services::payload_length = message->header.payload_length;
 	payload_pointer = buffer + 8;
 
 	switch (control_code) {
