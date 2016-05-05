@@ -80,6 +80,25 @@ void Data_socket_manager::handle_data() {
 				message.transfer_id, message.ttl, message.sequence_number,
 				message.fin_and_padding);
 
+
+		if (message.destination_router_ip ==
+				router->routing_table->get_my_vector()->router_ip) {
+			// file is destined for this router
+			logger->data_log("HANDLE_DATA: packet is destined for this router\n");
+			write_data_to_file(&message);
+		} else {
+			// file needs to be forwarded
+			if ((int)message.ttl > 0) {
+				logger->data_log("HANDLE_DATA: packet is being forwarded\n");
+				message.ttl = (unsigned char)((int)message.ttl - 1);
+				send_data(&message);
+			} else {
+				// ttl is 0, drop packet
+				logger->data_log("HANDLE_DATA: ttl is 0, dropping packet\n");
+			}
+		}
+
+
 		memset(&data_buffer, 0, sizeof data_buffer);
 
 	}
@@ -202,7 +221,11 @@ void Data_socket_manager::send_data(Data_packet* data) {
 }
 
 
+void Data_socket_manager::write_data_to_file(Data_packet* data) {
 
+	logger->data_log("WRITE_DATA_TO_FILE: writing data to file\n");
+
+}
 
 
 

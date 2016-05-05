@@ -22,6 +22,7 @@ public:
 	void handle_data();
 
 	void send_data(Data_packet* data);
+	void write_data_to_file(Data_packet* data);
 };
 
 
