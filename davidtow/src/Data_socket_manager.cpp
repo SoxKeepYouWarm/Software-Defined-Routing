@@ -14,6 +14,7 @@
 
 Data_socket_manager::Data_socket_manager(Router* router,
 		const char* port) {
+	this->logger = Logger::get_logger();
 	this->router = router;
 	this->port = new char[6];
 	strcpy(this->port, port);
@@ -46,14 +47,13 @@ void Data_socket_manager::initialize_addrinfo() {
 
 void Data_socket_manager::handle_data() {
 
-	std::cout << "DATA_SOCKET_MANAGER: "
-			<< "handle controller hit" << std::endl;
+	logger->data_log("HANDLE_DATA: handle data hit\n");
 
 	if ((num_of_bytes = recv(request_fd, data_buffer, sizeof data_buffer, 0)) <= 0) {
 		// got error or connection closed by client
 		if (num_of_bytes == 0) {
 			// connection closed
-			printf("HANDLE_DATA: controller hung up\n");
+			logger->data_log("HANDLE_DATA: connection hung up\n");
 
 		} else {
 			perror("recv");
@@ -62,7 +62,8 @@ void Data_socket_manager::handle_data() {
 		router->unregister_fd(request_fd);
 		connections.erase(request_fd);
 	} else {
-		printf("HANDLE_DATA: Message received was: %s\n", data_buffer);
+
+		logger->data_log("HANDLE_DATA: message received: %s\n", data_buffer);
 
 		// handle incoming data
 
@@ -80,8 +81,7 @@ void Data_socket_manager::handle_data() {
 
 void Data_socket_manager::handle_listener() {
 
-	std::cout << "DATA_SOCKET_MANAGER: "
-			<< "handle listener hit" << std::endl;
+	logger->data_log("DATA_SOCKET_MANAGER: handle listener hit\n");
 
 	addrlen = sizeof remoteaddr;
 	new_fd = accept(listener, (struct sockaddr*)&remoteaddr, &addrlen);
@@ -90,8 +90,7 @@ void Data_socket_manager::handle_listener() {
 		exit(1);
 	}
 
-	std::cout <<"DATA_SOCKET_MANAGER: "
-			<< "socket accepted" << std::endl;
+	logger->data_log("DATA_SOCKET_MANAGER: socket accepted\n");
 
 	connections.insert(new_fd);
 	router->register_fd(new_fd);
@@ -120,6 +119,7 @@ void Data_socket_manager::send_data(Data_packet* data) {
 	unsigned char message[msg_size];
 	Network_services::decode_data_message(data, message);
 
+	logger->data_log("SEND_DATA: data: %s\n", message);
 
 	unsigned int data_ip = data->destination_router_ip;
 	unsigned int destination_router_id =
@@ -132,8 +132,6 @@ void Data_socket_manager::send_data(Data_packet* data) {
 			router->routing_table->get_vector(next_hop_id)->router_ip;
 	unsigned int next_hop_router_port =
 			router->routing_table->get_vector(next_hop_id)->data_port;
-
-	std::cout << "SEND_DATA:" << std::endl;
 
 	struct addrinfo send_hints, *send_res, *send_p;
 	int send_socket;
@@ -153,6 +151,7 @@ void Data_socket_manager::send_data(Data_packet* data) {
 
 	int rv;
 	if ((rv = getaddrinfo(ip_str, port_str, &send_hints, &send_res)) != 0) {
+		logger->data_log("DATA_SOCKET: send data error: %s\n", gai_strerror(rv));
 		fprintf(stderr, "data_socket:send_data: %s\n", gai_strerror(rv));
 		exit(1);
 	}
@@ -177,13 +176,10 @@ void Data_socket_manager::send_data(Data_packet* data) {
 	}
 
 	if (connect(send_socket, send_res->ai_addr, send_res->ai_addrlen) < 0){
+		logger->data_log("DATA_SOCKET_MANAGER: send_data: error on connect\n");
 		std::cerr << "DATA_SOCKET_MANAGER: error on connect" << std::endl;
 	} else {
-
-		std::cout << "DATA_SOCKET_MANAGER: connected send_socket" << std::endl;
-
-
-
+		logger->data_log("DATA_SOCKET_MANAGER: send_data: connected send socket\n");
 	}
 
 
@@ -192,10 +188,7 @@ void Data_socket_manager::send_data(Data_packet* data) {
 	freeaddrinfo(send_res);
 	// all done with this
 
-	std::cout << "DATA_SOCKET_MANAGER: "
-			<< " sent " << sent_bytes << " bytes to " << ip_str << std::endl;
-
-
+	logger->data_log("SEND_DATA: sent %d bytes to %s\n", sent_bytes, ip_str);
 
 	delete data;
 }

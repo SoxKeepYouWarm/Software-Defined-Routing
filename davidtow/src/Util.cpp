@@ -70,6 +70,7 @@ void Logger::set_tag(char* tag) {
 
 
 void Logger::set_tag(const char* tag) {
+
 	strcpy(this->tag, tag);
 	tag_set = 1;
 	strcpy(router_log_filename, "router_log");
@@ -77,6 +78,13 @@ void Logger::set_tag(const char* tag) {
 	strcat(router_log_filename, ".log");
 	router_log_file.open (router_log_filename, std::ios::out);
 	router_log_file.close();
+
+	strcpy(data_log_filename, "data_log");
+	strcat(data_log_filename, tag);
+	strcat(data_log_filename, ".log");
+	data_log_file.open(data_log_filename, std::ios::out);
+	data_log_file.close();
+
 }
 
 
@@ -113,5 +121,44 @@ void Logger::router_log(const char * format, ... ) {
 	router_log_file.close();
 
 }
+
+
+
+
+void Logger::data_log(char* msg) {
+	if (! tag_set) return;
+	data_log_file.open (data_log_filename, std::ios::out | std::ios::app);
+	if (data_log_file.is_open()) {
+		data_log_file << msg;
+		std::cout << msg;
+	} else {
+		std::cout << "error writing to log" << std::endl;
+	}
+
+	data_log_file.close();
+
+}
+
+
+void Logger::data_log(const char * format, ... ) {
+	if (! tag_set) return;
+	data_log_file.open (data_log_filename, std::ios::out | std::ios::app);
+	if (data_log_file.is_open()) {
+		char buffer[256];
+		va_list args;
+		va_start (args, format);
+		vsprintf (buffer,format, args);
+		data_log_file << buffer;
+		std::cout << buffer;
+		va_end (args);
+	} else {
+		std::cout << "error writing to log" << std::endl;
+	}
+
+	data_log_file.close();
+
+}
+
+
 
 

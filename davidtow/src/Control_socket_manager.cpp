@@ -16,6 +16,7 @@
 
 
 Control_socket_manager::Control_socket_manager(Router* router, char* port) {
+	this->logger = Logger::get_logger();
 	this->router = router;
 	this->port = port;
 	this->listener = 0;
@@ -201,7 +202,10 @@ void Control_socket_manager::handle_sendfile(Control_message* message) {
 	Control_message_sendFile_payload* payload =
 			(Control_message_sendFile_payload*)message->payload;
 
-	send_empty_response(message);
+	if (!router->routing_table || !router->routing_table->get_my_vector()) {
+		std::cerr << "HANDLE_SENDFILE: routing table was not initialized" << std::endl;
+		return;
+	}
 
 	if (payload->destination_router_ip ==
 			router->routing_table->get_my_vector()->router_ip) {
@@ -215,16 +219,18 @@ void Control_socket_manager::handle_sendfile(Control_message* message) {
 		return;
 	}
 
+	logger->data_log("HANDLE_SENDFILE: filename is: %s\n", payload->filename);
+
 	std::ifstream send_file;
 	send_file.open(payload->filename, std::ifstream::in | std::ifstream::binary);
 
 	int buffer_size = 1024;
-	char line[buffer_size];
+	unsigned char line[buffer_size];
 
 	if (send_file.is_open()) {
 
 		unsigned short seq_num = 0;
-		while (send_file.read(line, buffer_size)) {
+		while (send_file.read((char*)line, buffer_size)) {
 
 			Data_packet* data = new Data_packet;
 			data->destination_router_ip = payload->destination_router_ip;
@@ -235,14 +241,17 @@ void Control_socket_manager::handle_sendfile(Control_message* message) {
 			memcpy(data->data, line, 1024);
 
 			router->data_socket_manager->send_data(data);
-			seq_num += 1024;
+			seq_num++;
 
 		}
 
 		send_file.close();
 
+	} else {
+		logger->data_log("HANDLE_SENDFILE: file was not open\n");
 	}
 
+	send_empty_response(message);
 
 }
 

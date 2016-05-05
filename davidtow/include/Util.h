@@ -16,7 +16,9 @@ class Logger {
 	static Logger* logger;
 	char tag[16];
 	char router_log_filename[32];
+	char data_log_filename[32];
 	std::ofstream router_log_file;
+	std::ofstream data_log_file;
 	int tag_set;
 
 	Logger();
@@ -26,9 +28,12 @@ public:
 	static Logger* get_logger();
 	void set_tag(char* tag);
 	void set_tag(const char* tag);
+
 	void router_log(char* msg);
-	//void router_log(const char* msg);
 	void router_log(const char* format, ...);
+
+	void data_log(char* msg);
+	void data_log(const char* format, ...);
 
 };
 

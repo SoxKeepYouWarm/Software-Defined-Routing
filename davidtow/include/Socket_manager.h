@@ -8,6 +8,8 @@
 
 #include <set>
 
+class Logger;
+
 class Socket_manager {
 
 public:
@@ -40,6 +42,8 @@ protected:
 	socklen_t addrlen;
 
 	char remoteIP[INET6_ADDRSTRLEN];
+
+	Logger* logger;
 
 };
 

@@ -112,9 +112,8 @@ void Network_services::encode_control_message_sendfile_payload() {
 	seq_num = ntohs(seq_num);
 	memcpy(&payload + 6, &seq_num, 2);
 
-	char filename[payload_length];
-	memcpy(filename, payload_pointer, payload_length);
-	payload->filename = filename;
+	payload->filename = new char[payload_length];
+	memcpy(payload->filename, payload_pointer, payload_length);
 
 	msg->payload = (void*)payload;
 

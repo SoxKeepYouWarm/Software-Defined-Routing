@@ -7,7 +7,7 @@
 int main() {
 
     std::ifstream input;
-    input.open("test.txt", std::ios::binary);
+    input.open("sample.txt", std::ios::binary);
     
     struct stat results;
     stat("test.txt", &results);
