@@ -63,14 +63,22 @@ void Data_socket_manager::handle_data() {
 		connections.erase(request_fd);
 	} else {
 
-		logger->data_log("HANDLE_DATA: message received: %s\n", data_buffer);
+		logger->data_log("HANDLE_DATA: received: %d bytes\n", num_of_bytes);
+
+		for (int i = 0; i < num_of_bytes; i++) {
+			std::cout << std::hex << (int)data_buffer[i] << " ";
+		}
+		std::cout << std::dec << std::endl;
 
 		// handle incoming data
 
 		Data_packet message;
 		Network_services::encode_data_message(&message, data_buffer);
 
-		//handle_control_message(&message);
+		logger->data_log("HANDLE_DATA: destination_router_ip: %u | transfer_id: %u | "
+				"ttl: %u | seq_num: %u | fin: %u\n", message.destination_router_ip,
+				message.transfer_id, message.ttl, message.sequence_number,
+				message.fin_and_padding);
 
 		memset(&data_buffer, 0, sizeof data_buffer);
 
