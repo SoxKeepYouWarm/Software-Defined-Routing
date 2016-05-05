@@ -58,6 +58,9 @@ public:
 			int router_id,
 			unsigned char* buffer);
 
+	static void decode_data_message(Data_packet* message,
+			unsigned char* buffer);
+
 	static void encode_data_message(Data_packet* message,
 			unsigned char* buffer);
 

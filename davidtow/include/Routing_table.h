@@ -41,6 +41,9 @@ public:
 	Routing_table_entry* get_my_vector_entry(int router_id);
 	Routing_table_vector* get_shortest_paths();
 
+	unsigned int get_routerId_from_ip(unsigned int router_ip);
+	unsigned int get_next_hop_routerId(unsigned int destination_id);
+
 	void print_routing_table();
 	void print_shortest_paths();
 

@@ -257,7 +257,41 @@ void Network_services::decode_control_message(Control_message* message,
 void Network_services::encode_data_message(Data_packet* message,
 		unsigned char* buffer) {
 
+	memcpy(&message->destination_router_ip, buffer, 4);
+	memcpy(&message->transfer_id, buffer + 4, 1);
+	memcpy(&message->ttl, buffer + 5, 1);
 
+	unsigned short seq_num = 0;
+	memcpy(&seq_num, buffer + 6, 2);
+	seq_num = ntohs(seq_num);
+	message->sequence_number = seq_num;
+
+	unsigned int fin = 0;
+	memcpy(&fin, buffer + 8, 4);
+	fin = ntohl(fin);
+	message->fin_and_padding = fin;
+
+	memcpy(&message->data, buffer + 12, 1024);
+
+}
+
+
+void Network_services::decode_data_message(Data_packet* message,
+		unsigned char* buffer) {
+
+	memcpy(buffer, &message->destination_router_ip, 4);
+	memcpy(buffer + 4, &message->transfer_id, 1);
+	memcpy(buffer + 5, &message->ttl, 1);
+
+	unsigned short seq_num = message->sequence_number;
+	seq_num = htons(seq_num);
+	memcpy(buffer + 6, &seq_num, 2);
+
+	unsigned int fin = message->fin_and_padding;
+	fin = htonl(fin);
+	memcpy(buffer + 8, &fin, 4);
+
+	memcpy(buffer + 12, &message->data, 1024);
 
 }
 

@@ -304,6 +304,32 @@ void Routing_table::print_shortest_paths() {
 
 
 
+unsigned int Routing_table::get_routerId_from_ip(unsigned int router_ip) {
+
+	for (std::vector<Routing_table_vector>::iterator iter = routing_table->begin();
+			iter != routing_table->end(); iter++) {
+
+		if ((*iter).router_ip == router_ip) {
+			return (*iter).id;
+		}
+
+	}
+
+	return 0;
+
+}
+
+
+unsigned int Routing_table::get_next_hop_routerId(unsigned int destination_id) {
+
+	return shortest_paths.get_entry(destination_id)->next_hop;
+
+}
+
+
+
+
+
 
 
 

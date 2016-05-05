@@ -10,6 +10,8 @@ class Data_socket_manager: public Socket_manager {
 
 	Router* router;
 
+	unsigned char data_buffer[2048];
+
 public:
 	Data_socket_manager(Router* router,
 			const char* port);
