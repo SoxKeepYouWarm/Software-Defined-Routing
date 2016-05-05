@@ -225,6 +225,21 @@ void Data_socket_manager::write_data_to_file(Data_packet* data) {
 
 	logger->data_log("WRITE_DATA_TO_FILE: writing data to file\n");
 
+	char filename[64];
+	strcpy(filename, "file-");
+	strcat(filename, ::toString((int)data->transfer_id).c_str());
+
+	logger->data_log("WRITE_DATA_TO_FILE: filename is: %s\n", filename);
+
+	std::ofstream output;
+	output.open(filename, std::ofstream::app | std::ofstream::binary);
+
+	if (output.is_open()) {
+		output << data->data;
+	} else {
+		logger->data_log("WRITE_DATA_TO_FILE: failed to open output file\n");
+	}
+
 }
 
 
