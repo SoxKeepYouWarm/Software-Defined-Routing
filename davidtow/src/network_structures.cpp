@@ -226,6 +226,11 @@ void Network_services::decode_control_message_routing_table(Control_message* mes
 }
 
 
+void Network_services::decode_control_message_packet() {
+	memcpy(buff + 8, msg->payload, payload_length);
+}
+
+
 void Network_services::decode_control_message(Control_message* message,
 		unsigned char* buffer) {
 
@@ -252,7 +257,9 @@ void Network_services::decode_control_message(Control_message* message,
 	case AUTHOR:
 		decode_control_message_author();
 		break;
-
+	case LAST_DATA_PACKET:
+	case PENULTIMATE_DATA_PACKET:
+		decode_control_message_packet();
 	}
 
 

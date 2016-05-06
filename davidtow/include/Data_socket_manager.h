@@ -18,7 +18,8 @@ class Data_socket_manager: public Socket_manager {
 	struct addrinfo outgoing_hints, *outgoing_res, *outgoing_p;
 	int outgoing_socket;
 
-	//std::vector<char*> message_chunk_buffer;
+	unsigned char last_packet[1024];
+	unsigned char second_last_packet[1024];
 
 public:
 	Data_socket_manager(Router* router,
@@ -33,6 +34,10 @@ public:
 	void close_connection();
 	void send_data(Data_packet* payload);
 	void write_data_to_file(Data_packet* data);
+
+	const unsigned char* get_last_packet();
+	const unsigned char* get_second_last_packet();
+
 };
 
 

@@ -44,6 +44,7 @@ class Network_services {
 	static void encode_control_message_sendfile_stats_payload();
 
 	static void decode_control_message_author();
+	static void decode_control_message_packet();
 
 public:
 	static void encode_control_message(Control_message* message,

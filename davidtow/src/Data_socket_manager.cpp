@@ -36,6 +36,10 @@ Data_socket_manager::Data_socket_manager(Router* router,
 	this->outgoing_p = 0;
 	this->outgoing_socket = 0;
 
+	memset(this->last_packet, 0, sizeof last_packet);
+	memset(this->second_last_packet, 0, sizeof second_last_packet);
+
+
 	std::cout << "DATA_SOCKET_MANAGER: initialized with port: "
 			<< port << std::endl;
 }
@@ -85,6 +89,9 @@ void Data_socket_manager::handle_data() {
 		// handle incoming data
 		Data_packet message;
 		Network_services::encode_data_message(&message, incoming_buffer);
+
+		memcpy(second_last_packet, last_packet, 1024);
+		memcpy(last_packet, message.data, 1024);
 
 		logger->data_log("HANDLE_DATA: destination_router_ip: %u | transfer_id: %u | "
 				"ttl: %u | seq_num: %u | fin: %u\n", message.destination_router_ip,
@@ -268,6 +275,18 @@ void Data_socket_manager::write_data_to_file(Data_packet* data) {
 	}
 
 }
+
+
+const unsigned char* Data_socket_manager::get_last_packet() {
+	return this->last_packet;
+}
+
+
+const unsigned char* Data_socket_manager::get_second_last_packet() {
+	return this->second_last_packet;
+}
+
+
 
 
 

@@ -28,6 +28,8 @@ ROUTING_TABLE_PREFIX = " -r "
 UPDATE_PREFIX = " -u "
 CRASH_PREFIX = " -c "
 SENDFILE_PREFIX = " -f "
+LAST_PACKET_PREFIX = " -l "
+PENULTIMATE_PREFIX = " -p "
 
 def build_topology_file(num_of_routers, seed, shape):
     topology_file = open("./topology_file", "w")
@@ -87,6 +89,12 @@ if __name__ == '__main__':
     parser.add_argument("-s", "--sendfile", type=str, nargs=6,
                         help="format: [src_id] [dest_id] [ttl] [transfer_id] [seqnum] [filename]")
 
+    parser.add_argument("-l", "--last_packet", type=str, nargs=1,
+                        help="last_packet: format: [target_router_id]")
+
+    parser.add_argument("-p", "--penultimate", type=str, nargs=1,
+                        help="penultimate_packet: format: [target_router_id]")
+
     parser.add_argument("-t", "--target_router", type=str, choices=["1", "2", "3", "4", "5"],
                         help="Enter the target router id (1 to 5")
 
@@ -129,12 +137,13 @@ if __name__ == '__main__':
         CMD += SENDFILE_PREFIX + " ".join(args.sendfile) + " &"
         print CMD
         subprocess.call(CMD, shell=True)
-
-
-    #time.sleep(1)
-    #subprocess.call(CONTROLLER + " -t " + TOPOLOGY_FILE + OUTPUT_RULES + INIT_COMMAND + " &", shell=True)
-    #time.sleep(1)
-    #subprocess.call(CONTROLLER + " -t " + TOPOLOGY_FILE + OUTPUT_RULES + ROUTING_TABLE_COMMAND + " &", shell=True)
-
+    elif args.last_packet:
+        CMD += LAST_PACKET_PREFIX + " ".join(args.last_packet) + " &"
+        print CMD
+        subprocess.call(CMD, shell=True)
+    elif args.penultimate:
+        CMD += PENULTIMATE_PREFIX + " ".join(args.penultimate) + " &"
+        print CMD
+        subprocess.call(CMD, shell=True)
 
     exit(0)

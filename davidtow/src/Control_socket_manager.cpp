@@ -275,12 +275,36 @@ void Control_socket_manager::handle_last_data_packet(Control_message* message) {
 
 	std::cout << "HANDLE_LAST_DATA_PACKET: " << std::endl;
 
+	unsigned short payload_length = 1024;
+
+	message->header.payload_length = payload_length;
+	message->header.response_time = 0;
+	message->payload = (void*)router->data_socket_manager->get_last_packet();
+
+	int response_size = 8 + payload_length;
+	unsigned char response[response_size];
+	Network_services::decode_control_message(message, response);
+
+	::send(request_fd, response, (size_t) response_size);
+
 }
 
 
 void Control_socket_manager::handle_penultimate_data_packet(Control_message* message) {
 
 	std::cout << "HANDLE_PENULTIMATE_DATA_PACKET: " << std::endl;
+
+	unsigned short payload_length = 1024;
+
+	message->header.payload_length = payload_length;
+	message->header.response_time = 0;
+	message->payload = (void*)router->data_socket_manager->get_last_packet();
+
+	int response_size = 8 + payload_length;
+	unsigned char response[response_size];
+	Network_services::decode_control_message(message, response);
+
+	::send(request_fd, response, (size_t) response_size);
 
 }
 
