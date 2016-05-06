@@ -229,6 +229,7 @@ void Control_socket_manager::handle_sendfile(Control_message* message) {
 
 	if (send_file.is_open()) {
 
+		router->data_socket_manager->initialize_connection(payload->destination_router_ip);
 		unsigned short seq_num = 0;
 		while (send_file.read((char*)line, buffer_size)) {
 
@@ -237,7 +238,13 @@ void Control_socket_manager::handle_sendfile(Control_message* message) {
 			data->transfer_id = payload->transfer_id;
 			data->ttl = payload->ttl;
 			data->sequence_number = seq_num;
-			data->fin_and_padding = 0;
+
+			if (send_file.eof()) {
+				data->fin_and_padding = 0x8000;
+			} else {
+				data->fin_and_padding = 0;
+			}
+
 			memcpy(data->data, line, 1024);
 
 			router->data_socket_manager->send_data(data);
@@ -245,6 +252,7 @@ void Control_socket_manager::handle_sendfile(Control_message* message) {
 
 		}
 
+		router->data_socket_manager->close_connection();
 		send_file.close();
 
 	} else {

@@ -7,14 +7,14 @@
 int main() {
 
     std::ifstream input;
-    input.open("sample.txt", std::ios::binary);
+    input.open("test_file.bin", std::ios::binary);
     
     struct stat results;
-    stat("test.txt", &results);
+    stat("test_file.bin", &results);
 
     int size = results.st_size;
 
-    int buffer_size = 10;
+    int buffer_size = 16;
     char line[buffer_size];
     
     if (input.is_open()) {
@@ -22,7 +22,9 @@ int main() {
         while (input.read(line, buffer_size)) {
         
             std::cout << line << std::endl;
-        
+            std::ofstream output;
+            output.open("copy.bin", std::ios::binary);
+            output.write(line, buffer_size);      
         }
         
         input.close();

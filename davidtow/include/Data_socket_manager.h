@@ -10,7 +10,15 @@ class Data_socket_manager: public Socket_manager {
 
 	Router* router;
 
-	unsigned char data_buffer[2048];
+	unsigned char incoming_buffer[1036];
+	struct addrinfo incoming_hints, *incoming_res, *incoming_p;
+	int incoming_socket;
+
+	unsigned char outgoing_buffer[1036];
+	struct addrinfo outgoing_hints, *outgoing_res, *outgoing_p;
+	int outgoing_socket;
+
+	//std::vector<char*> message_chunk_buffer;
 
 public:
 	Data_socket_manager(Router* router,
@@ -21,7 +29,9 @@ public:
 	void handle_listener();
 	void handle_data();
 
-	void send_data(Data_packet* data);
+	void initialize_connection(unsigned int ip);
+	void close_connection();
+	void send_data(Data_packet* payload);
 	void write_data_to_file(Data_packet* data);
 };
 
