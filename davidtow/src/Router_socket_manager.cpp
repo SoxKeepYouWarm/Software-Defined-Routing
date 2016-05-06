@@ -84,6 +84,7 @@ void Router_socket_manager::broadcast_vector_table() {
 
 	int msg_length = 8 + 12 * router->get_routing_table_length();
 	unsigned char buffer[msg_length];
+	memset(buffer, 0, msg_length);
 
 	Network_services::decode_routing_table_vector(router->routing_table, buffer);
 

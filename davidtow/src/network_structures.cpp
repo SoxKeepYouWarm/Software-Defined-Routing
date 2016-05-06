@@ -196,11 +196,13 @@ void Network_services::decode_control_message_routing_table(Control_message* mes
 	payload_length = htons(payload_length);
 	memcpy(buffer + 6, &payload_length, 2);
 
-	for (int i = 0; i < routing_table->routing_table_length; i++) {
-		const Routing_table_entry* entry =
-				&routing_table->get_vector(router_id)->vector_entries->at(i);
+	int count = 0;
+	for (std::vector<Routing_table_entry>::iterator iter =
+			routing_table->get_shortest_paths()->vector_entries->begin();
+			iter != routing_table->get_shortest_paths()->vector_entries->end(); iter++) {
 
-		int buffer_offset = 8 + i * 8;
+		Routing_table_entry* entry = &(*iter);
+		int buffer_offset = 8 + count * 8;
 
 		unsigned short id = entry->id;
 		id = htons(id);
@@ -216,6 +218,8 @@ void Network_services::decode_control_message_routing_table(Control_message* mes
 		unsigned short cost = entry->cost;
 		cost = htons(cost);
 		memcpy(buffer + buffer_offset + 6, &cost, 2);
+
+		count++;
 
 	}
 
