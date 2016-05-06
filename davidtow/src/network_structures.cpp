@@ -227,7 +227,38 @@ void Network_services::decode_control_message_routing_table(Control_message* mes
 
 
 void Network_services::decode_control_message_packet() {
-	memcpy(buff + 8, msg->payload, payload_length);
+	memcpy(payload_pointer, msg->payload, payload_length);
+}
+
+
+void Network_services::decode_control_message_sendfile_stats(Control_message* message,
+		Data_record* data, unsigned char* buffer) {
+
+	memcpy(buffer, &message->header.destination_router_ip, 4);
+	memcpy(buffer + 4, &message->header.control_code, 1);
+	memcpy(buffer + 5, &message->header.response_time, 1);
+
+	unsigned short payload_length = message->header.payload_length;
+	payload_length = htons(payload_length);
+	memcpy(buffer + 6, &payload_length, 2);
+
+	memcpy(buffer + 8, &data->transfer_id, 1);
+	memcpy(buffer + 9, &data->ttl, 1);
+	memset(buffer + 10, 0, 2);
+
+	int count = 0;
+	for (std::vector<unsigned short>::iterator iter = data->seq_nums.begin();
+			iter != data->seq_nums.end(); iter++) {
+		int buffer_offset = 12 + (count * 2);
+
+		unsigned short seq_num = (*iter);
+		seq_num = htons(seq_num);
+		memcpy(buffer + buffer_offset, &seq_num, 2);
+
+		count++;
+
+	}
+
 }
 
 
@@ -260,6 +291,7 @@ void Network_services::decode_control_message(Control_message* message,
 	case LAST_DATA_PACKET:
 	case PENULTIMATE_DATA_PACKET:
 		decode_control_message_packet();
+		break;
 	}
 
 

@@ -59,6 +59,9 @@ public:
 			int router_id,
 			unsigned char* buffer);
 
+	static void decode_control_message_sendfile_stats(Control_message* message,
+			Data_record* data, unsigned char* buffer);
+
 	static void decode_data_message(Data_packet* message,
 			unsigned char* buffer);
 

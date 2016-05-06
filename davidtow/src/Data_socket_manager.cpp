@@ -60,6 +60,73 @@ void Data_socket_manager::initialize_addrinfo() {
 }
 
 
+void Data_socket_manager::handle_packet(Data_packet* packet) {
+
+	packet->ttl = (unsigned char)((int)packet->ttl - 1);
+
+	if (packet->destination_router_ip ==
+			router->routing_table->get_my_vector()->router_ip) {
+		// file is destined for this router
+		logger->data_log("HANDLE_DATA: packet is destined for this router\n");
+		write_data_to_file(packet);
+	} else {
+		// file needs to be forwarded
+
+		if ((int)packet->ttl > 0) {
+			logger->data_log("HANDLE_DATA: packet is being forwarded\n");
+
+			// check if an outbound connection has already been established
+			if (! outgoing_socket) {
+				logger->data_log("HANDLE_DATA: connection being initialized\n");
+				initialize_connection(packet->destination_router_ip);
+			}
+
+			send_data(packet);
+
+			if (packet->fin_and_padding == 0x8000) {
+				close_connection();
+			}
+
+		} else {
+			// ttl is 0, drop packet
+			logger->data_log("HANDLE_DATA: ttl is 0, dropping packet\n");
+		}
+	}
+
+}
+
+
+Data_record* Data_socket_manager::get_data_record(unsigned char transfer_id) {
+
+	for (std::vector<Data_record>::iterator iter = transfer_records.begin();
+			iter != transfer_records.end(); iter++) {
+		if (transfer_id == (*iter).transfer_id) return &(*iter);
+	}
+
+	return 0;
+
+}
+
+
+void Data_socket_manager::update_transfer_records(Data_packet* packet) {
+
+	if (Data_record* existing_record = get_data_record(packet->transfer_id)) {
+		existing_record->seq_nums.push_back(packet->sequence_number);
+		logger->data_log("UPDATE_TRANSFER_LOG: updating record id: %d\n",
+				packet->transfer_id);
+	} else {
+		Data_record new_record;
+		new_record.transfer_id = packet->transfer_id;
+		new_record.ttl = packet->ttl;
+		new_record.seq_nums.push_back(packet->sequence_number);
+		transfer_records.push_back(new_record);
+		logger->data_log("UPDATE_TRANSFER_LOG: adding new record id: %d\n",
+				packet->transfer_id);
+	}
+
+}
+
+
 void Data_socket_manager::handle_data() {
 
 	logger->data_log("HANDLE_DATA: handle data hit\n");
@@ -90,6 +157,7 @@ void Data_socket_manager::handle_data() {
 		Data_packet message;
 		Network_services::encode_data_message(&message, incoming_buffer);
 
+		// update last packet and penultimate packet record
 		memcpy(second_last_packet, last_packet, 1024);
 		memcpy(last_packet, message.data, 1024);
 
@@ -98,38 +166,10 @@ void Data_socket_manager::handle_data() {
 				message.transfer_id, message.ttl, message.sequence_number,
 				message.fin_and_padding);
 
+		handle_packet(&message);
 
-		message.ttl = (unsigned char)((int)message.ttl - 1);
-
-		if (message.destination_router_ip ==
-				router->routing_table->get_my_vector()->router_ip) {
-			// file is destined for this router
-			logger->data_log("HANDLE_DATA: packet is destined for this router\n");
-			write_data_to_file(&message);
-		} else {
-			// file needs to be forwarded
-
-			if ((int)message.ttl > 0) {
-				logger->data_log("HANDLE_DATA: packet is being forwarded\n");
-
-				// check if an outbound connection has already been established
-				if (! outgoing_socket) {
-					logger->data_log("HANDLE_DATA: connection being initialized\n");
-					initialize_connection(message.destination_router_ip);
-				}
-
-				send_data(&message);
-
-				if (message.fin_and_padding == 0x8000) {
-					close_connection();
-				}
-
-			} else {
-				// ttl is 0, drop packet
-				logger->data_log("HANDLE_DATA: ttl is 0, dropping packet\n");
-			}
-		}
-
+		// update transfer records
+		update_transfer_records(&message);
 
 		memset(&outgoing_buffer, 0, sizeof outgoing_buffer);
 
@@ -238,8 +278,6 @@ void Data_socket_manager::send_data(Data_packet* data) {
 	// send data to target
 
 	Network_services::decode_data_message(data, outgoing_buffer);
-
-	logger->data_log("SEND_DATA: data: %s\n", outgoing_buffer);
 
 	int sent_bytes = send(outgoing_socket, outgoing_buffer, sizeof outgoing_buffer, 0);
 	//int ack_bytes = recv(send_socket, ack_buffer, ack_size, 0);

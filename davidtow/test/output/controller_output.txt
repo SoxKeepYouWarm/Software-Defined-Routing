@@ -1,6 +1,6 @@
 [33mReading Topology file: [0m./topology_file[0m ...[0m [92mDone![0m
 
-PENULTIMATE-DATA-PACKET:
+SENDFILE-STATS:
 [33mSending control message to: [0m172.20.0.3:40001[0m ...[0m [92mDone![0m
 [33mWaiting for control-response header from router ...[0m [92mDone![0m
 [33mParsing header ...
@@ -8,8 +8,8 @@ PENULTIMATE-DATA-PACKET:
 ------------------------------------
 |            172.20.0.1            |
 ------------------------------------
-|   8    |   0    |      1024      |
+|   6    |   0    |       24       |
 ------------------------------------
 
-[33mWaiting for control-response payload (1024 bytes) from router ...[0m [92mDone![0m
+[33mWaiting for control-response payload (24 bytes) from router ...[0m [92mDone![0m
 [33mWriting response-packet to file: [0mresponse.pkt[0m ...[0m [92mDone![0m

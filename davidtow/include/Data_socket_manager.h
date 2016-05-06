@@ -3,6 +3,7 @@
 #define DATA_SOCKET_MANAGER_H
 
 #include "Socket_manager.h"
+#include "Data_socket_definitions.h"
 
 struct Data_packet;
 class Router;
@@ -21,6 +22,8 @@ class Data_socket_manager: public Socket_manager {
 	unsigned char last_packet[1024];
 	unsigned char second_last_packet[1024];
 
+	std::vector<Data_record> transfer_records;
+
 public:
 	Data_socket_manager(Router* router,
 			const char* port);
@@ -29,6 +32,9 @@ public:
 
 	void handle_listener();
 	void handle_data();
+	void handle_packet(Data_packet* packet);
+	void update_transfer_records(Data_packet* packet);
+	Data_record* get_data_record(unsigned char transfer_id);
 
 	void initialize_connection(unsigned int ip);
 	void close_connection();

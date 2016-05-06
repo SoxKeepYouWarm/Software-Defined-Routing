@@ -30,6 +30,7 @@ CRASH_PREFIX = " -c "
 SENDFILE_PREFIX = " -f "
 LAST_PACKET_PREFIX = " -l "
 PENULTIMATE_PREFIX = " -p "
+SENDFILE_STATS_PREFIX = " -s "
 
 def build_topology_file(num_of_routers, seed, shape):
     topology_file = open("./topology_file", "w")
@@ -89,6 +90,9 @@ if __name__ == '__main__':
     parser.add_argument("-s", "--sendfile", type=str, nargs=6,
                         help="format: [src_id] [dest_id] [ttl] [transfer_id] [seqnum] [filename]")
 
+    parser.add_argument("-ss", "--sendfile_stats", type=str, nargs=2,
+                        help="sendfile_stats: format: [target_router_id] [transfer_id]")
+
     parser.add_argument("-l", "--last_packet", type=str, nargs=1,
                         help="last_packet: format: [target_router_id]")
 
@@ -143,6 +147,10 @@ if __name__ == '__main__':
         subprocess.call(CMD, shell=True)
     elif args.penultimate:
         CMD += PENULTIMATE_PREFIX + " ".join(args.penultimate) + " &"
+        print CMD
+        subprocess.call(CMD, shell=True)
+    elif args.sendfile_stats:
+        CMD += SENDFILE_STATS_PREFIX + " ".join(args.sendfile_stats) + " &"
         print CMD
         subprocess.call(CMD, shell=True)
 

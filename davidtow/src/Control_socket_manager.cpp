@@ -268,6 +268,24 @@ void Control_socket_manager::handle_sendfile_stats(Control_message* message) {
 
 	std::cout << "HANDLE_SENDFILE_STATS: " << std::endl;
 
+	Control_message_sendFileStats_payload* payload =
+			(Control_message_sendFileStats_payload*)message->payload;
+
+	if (Data_record* existing_record =
+			router->data_socket_manager->get_data_record(payload->transfer_id)) {
+
+		unsigned short payload_length = 4 + (existing_record->seq_nums.size() * 2);
+		unsigned char response[8 + payload_length];
+		message->header.payload_length = payload_length;
+		message->header.response_time = 0;
+
+		Network_services::decode_control_message_sendfile_stats(message, existing_record, response);
+		::send(request_fd, response, (size_t) response);
+
+	} else {
+		std::cout << "ERROR: transfer_id has no associated data records" << std::endl;
+	}
+
 }
 
 
