@@ -24,9 +24,7 @@ Router_socket_manager::Router_socket_manager(Router* router, const char* port) {
 	this->res = 0;
 	this->p = 0;
 	this->MAXIMUM_CONNECTIONS = 1;
-	//this->send_res = 0;
-	//this->send_p = 0;
-	//this->send_socket = 0;
+
 	std::cout << "ROUTER_SOCKET_MANAGER: initialized with port: "
 			<< port << std::endl;
 }

@@ -13,6 +13,7 @@ typedef struct Timer_event {
 } Timer_event;
 
 
+class Logger;
 class Router;
 class Timer {
 
@@ -22,6 +23,8 @@ class Timer {
 	void calculate_remaining_time(Timer_event* event);
 
 	Router* router;
+	Logger* logger;
+
 	long interval;
 
 public:
@@ -32,6 +35,7 @@ public:
 	void register_event(int router_id);
 	void handle_timeout();
 	void notify_routing_update_received(int router_id);
+	int is_registered(int router_id);
 
 };
 

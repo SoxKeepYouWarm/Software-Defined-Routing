@@ -5,10 +5,12 @@
 #include "router.h"
 #include "Router_socket_manager.h"
 #include "Routing_table.h"
+#include "Util.h"
 
 
 Timer::Timer(Router* router): router(router), interval(0) {
 	this->tv = &router->tv;
+	this->logger = Logger::get_logger();
 }
 
 
@@ -45,6 +47,9 @@ void Timer::register_event(int router_id) {
 	new_event.missed_updates = 0;
 
 	registered_events.push_back(new_event);
+
+	logger->router_log("REGISTER_EVENT: "
+			"registered timer event for id: %d\n", router_id);
 
 }
 
@@ -90,20 +95,19 @@ void Timer::handle_timeout() {
 
 		} else {
 
-			std::cout << "TIMER: router_id: " << popped_event.router_id
-					<< " timed out without receiving an update" << std::endl;
+			logger->router_log("TIMER: router_id: %d timed out without "
+					"receiving an update\n", popped_event.router_id);
 
 			popped_event.missed_updates ++;
 
 			if (popped_event.missed_updates == 3) {
 				// missed three consecutive updates from a router
 
-				std::cout << "TIMER: router_id: " << popped_event.router_id
-						<< " is inactive, setting cost to infinity"
-						<< std::endl;
+				logger->router_log("TIMER: router_id: %d is inactive, setting "
+						"cost to infinity\n", popped_event.router_id);
 
 				// set router cost to infinity
-				router->routing_table->get_my_vector_entry(popped_event.router_id)->cost = INFINITY;
+				router->routing_table->update_cost(popped_event.router_id, INFINITY);
 
 				// event is not added back to the list
 
@@ -172,7 +176,18 @@ void Timer::notify_routing_update_received(int router_id) {
 }
 
 
+int Timer::is_registered(int router_id) {
 
+	for (std::list<Timer_event>::iterator iter = registered_events.begin();
+				iter != registered_events.end(); iter++) {
+
+		if ((*iter).router_id == router_id) return 1;
+
+	}
+
+	return 0;
+
+}
 
 
 

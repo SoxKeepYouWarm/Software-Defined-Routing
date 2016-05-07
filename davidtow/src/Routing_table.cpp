@@ -94,9 +94,10 @@ void Routing_table::update_cost(int router_id, int cost) {
 
 	logger->router_log("UPDATE_COST: my_id: %d | "
 			"target_id: %d | old_cost: %d | new_cost: %d\n",
-			my_router_id, router_id,
-			get_vector(my_router_id)->get_entry(router_id)->cost, cost);
-	this->get_vector(my_router_id)->get_entry(router_id)->cost = cost;
+			my_router_id, router_id, get_my_vector_entry(router_id)->cost, cost);
+
+	this->get_my_vector_entry(router_id)->cost = cost;
+	calculate_shortests();
 
 }
 
@@ -170,6 +171,9 @@ void Routing_table::update_routing(Router_update_message* message) {
 	calculate_shortests();
 	print_routing_table();
 	router->timer->notify_routing_update_received(sender_router_id);
+	if (!router->timer->is_registered(sender_router_id)) {
+		router->timer->register_event(sender_router_id);
+	}
 
 }
 

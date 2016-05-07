@@ -239,14 +239,15 @@ void Control_socket_manager::handle_sendfile(Control_message* message) {
 			data->ttl = payload->ttl;
 			data->sequence_number = seq_num;
 
-			if (send_file.eof()) {
-				data->fin_and_padding = 0x8000;
+			int eof = send_file.peek();
+			if (eof == EOF) {
+				data->fin_and_padding = 0x80000000;
 			} else {
 				data->fin_and_padding = 0;
 			}
 
 			memcpy(data->data, line, 1024);
-
+			logger->data_log("HANDLE_SENDFILE: fin_and_padding: %d\n", data->fin_and_padding);
 			router->data_socket_manager->send_data(data);
 			seq_num++;
 
