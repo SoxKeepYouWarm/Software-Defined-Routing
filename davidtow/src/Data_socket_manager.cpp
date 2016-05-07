@@ -159,7 +159,7 @@ void Data_socket_manager::handle_data() {
 
 		// update last packet and penultimate packet record
 		memcpy(second_last_packet, last_packet, 1024);
-		memcpy(last_packet, message.data, 1024);
+		memcpy(last_packet, message.data + 12, 1024);
 
 		logger->data_log("HANDLE_DATA: destination_router_ip: %u | transfer_id: %u | "
 				"ttl: %u | seq_num: %u | fin: %u\n", message.destination_router_ip,
